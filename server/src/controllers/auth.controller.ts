@@ -85,6 +85,36 @@ export async function patientPinLogin(req: Request, res: Response, next: NextFun
   }
 }
 
+export async function updateCaregiverProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    if (!req.user) return next(createError('No autenticado', 401))
+
+    const { name, currentPassword, newPassword } = req.body
+
+    const caregiver = await prisma.caregiver.findUnique({ where: { id: req.user.id } })
+    if (!caregiver) return next(createError('Cuidador no encontrado', 404))
+
+    const updateData: { name?: string; passwordHash?: string } = {}
+
+    if (name?.trim()) updateData.name = name.trim()
+
+    if (currentPassword && newPassword) {
+      const valid = await bcrypt.compare(currentPassword, caregiver.passwordHash)
+      if (!valid) return next(createError('Contraseña actual incorrecta', 400))
+      updateData.passwordHash = await bcrypt.hash(newPassword, 10)
+    }
+
+    const updated = await prisma.caregiver.update({
+      where: { id: req.user.id },
+      data: updateData,
+    })
+
+    res.json({ caregiver: { id: updated.id, name: updated.name, email: updated.email } })
+  } catch (err) {
+    next(err)
+  }
+}
+
 export async function listPatientsForLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { caregiverEmail } = req.query

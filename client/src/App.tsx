@@ -12,13 +12,18 @@ import { CaregiverLayout } from './layouts/CaregiverLayout'
 import { ProtectedRoute } from './components/shared/ProtectedRoute'
 
 import { PatientHome } from './pages/patient/PatientHome'
+import { PatientAgenda } from './pages/patient/PatientAgenda'
 import { ActivityRouter } from './pages/activities/ActivityRouter'
 import { ActivityResult } from './pages/activities/ActivityResult'
+import { MemoryGallery } from './pages/activities/MemoryGallery'
+import { BreathingExercise } from './pages/activities/BreathingExercise'
 import { CaregiverDashboard } from './pages/caregiver/CaregiverDashboard'
 import { PatientList } from './pages/caregiver/PatientList'
 import { PatientDetail } from './pages/caregiver/PatientDetail'
 import { PatientProgress } from './pages/caregiver/PatientProgress'
 import { ManageMedia } from './pages/caregiver/ManageMedia'
+import { CaregiverProgress } from './pages/caregiver/CaregiverProgress'
+import { CaregiverSettings } from './pages/caregiver/CaregiverSettings'
 
 function RootRedirect() {
   const { isAuthenticated, role } = useAuthStore()
@@ -53,9 +58,9 @@ export default function App() {
           <Route index element={<PatientHome />} />
           <Route path="activity/:type" element={<ActivityRouter />} />
           <Route path="activity-result" element={<ActivityResult />} />
-          <Route path="agenda" element={<div className="p-8 text-center text-2xl font-black text-[#5C4033]">Mi Agenda 🗓️</div>} />
-          <Route path="gallery" element={<div className="p-8 text-center text-2xl font-black text-[#5C4033]">Mis Recuerdos 📷</div>} />
-          <Route path="breathing" element={<div className="p-8 text-center text-2xl font-black text-[#5C4033]">Respiración 🌸</div>} />
+          <Route path="agenda" element={<PatientAgenda />} />
+          <Route path="gallery" element={<MemoryGallery />} />
+          <Route path="breathing" element={<BreathingExercise />} />
         </Route>
 
         {/* Cuidador */}
@@ -72,8 +77,8 @@ export default function App() {
           <Route path="patients/:patientId" element={<PatientDetail />} />
           <Route path="patients/:patientId/progress" element={<PatientProgress />} />
           <Route path="patients/:patientId/media" element={<ManageMedia />} />
-          <Route path="progress" element={<div className="text-center p-8">Progreso — próximamente</div>} />
-          <Route path="settings" element={<div className="text-center p-8">Configuración — próximamente</div>} />
+          <Route path="progress" element={<CaregiverProgress />} />
+          <Route path="settings" element={<CaregiverSettings />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

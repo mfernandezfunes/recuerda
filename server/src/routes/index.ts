@@ -5,6 +5,7 @@ import sessionsRouter from './sessions.routes'
 import activitiesRouter from './activities.routes'
 import mediaRouter from './media.routes'
 import moodRouter from './mood.routes'
+import patientSelfRouter from './patient-self.routes'
 
 const router = Router()
 
@@ -14,5 +15,6 @@ router.use('/sessions', sessionsRouter)
 router.use('/activities', activitiesRouter)
 router.use('/media', mediaRouter)
 router.use('/mood', moodRouter)
+router.use('/patient', patientSelfRouter)
 
 export default router
