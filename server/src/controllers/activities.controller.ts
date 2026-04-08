@@ -29,12 +29,26 @@ export async function listActivitySettings(req: Request, res: Response, next: Ne
     })
     if (!patient) return next(createError('Paciente no encontrado', 404))
 
-    const settings = await prisma.activitySetting.findMany({
+    const existing = await prisma.activitySetting.findMany({
       where: { patientId: req.params.id },
       orderBy: { order: 'asc' },
     })
 
-    res.json(settings)
+    // Auto-create settings for any new activity types added after patient creation
+    const existingTypes = new Set(existing.map((s) => s.activityType))
+    const maxOrder = existing.reduce((m, s) => Math.max(m, s.order), existing.length - 1)
+    const missing = Object.values(ActivityType)
+      .filter((t) => !existingTypes.has(t))
+      .map((t, i) => ({ activityType: t, difficulty: Difficulty.EASY, enabled: true, order: maxOrder + i + 1 }))
+
+    if (missing.length > 0) {
+      await prisma.activitySetting.createMany({
+        data: missing.map((m) => ({ patientId: req.params.id, ...m })),
+        skipDuplicates: true,
+      })
+    }
+
+    res.json([...existing, ...missing])
   } catch (err) {
     next(err)
   }
