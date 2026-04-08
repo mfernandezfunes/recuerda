@@ -15,6 +15,10 @@ const TODAY_ACTIVITIES: ActivityType[] = [
   'FIND_OBJECT',
   'SERIES_PATTERNS',
   'WORD_SEARCH',
+  'WHAT_IS_MISSING',
+  'PROVERBS',
+  'ODD_ONE_OUT',
+  'SIMPLE_MATH',
 ]
 
 export function PatientHome() {

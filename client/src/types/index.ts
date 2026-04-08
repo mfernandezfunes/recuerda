@@ -26,6 +26,7 @@ export type ActivityType =
   | 'SIMPLE_PUZZLE' | 'COLORING' | 'WORD_SEARCH'
   | 'MEMORY_GALLERY' | 'DAY_AGENDA' | 'BREATHING'
   | 'SERIES_PATTERNS' | 'MOOD_CHECKIN'
+  | 'WHAT_IS_MISSING' | 'PROVERBS' | 'ODD_ONE_OUT' | 'SIMPLE_MATH'
 
 export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD'
 
@@ -60,4 +61,8 @@ export const ACTIVITY_META: Record<ActivityType, ActivityMeta> = {
   BREATHING:      { type: 'BREATHING',       label: 'Respiración',     icon: '🌸', color: '#D8B4FE', description: 'Un momento de calma' },
   SERIES_PATTERNS:{ type: 'SERIES_PATTERNS', label: 'Patrones',        icon: '🔢', color: '#FFF3A3', description: '¿Qué sigue en la serie?' },
   MOOD_CHECKIN:   { type: 'MOOD_CHECKIN',    label: '¿Cómo te sentís?',icon: '😊', color: '#FFCBA4', description: 'Contanos cómo estás' },
+  WHAT_IS_MISSING:{ type: 'WHAT_IS_MISSING', label: '¿Qué falta?',    icon: '🔍', color: '#87CEEB', description: '¿Qué objeto falta?' },
+  PROVERBS:       { type: 'PROVERBS',        label: 'Refranes',        icon: '💬', color: '#D8B4FE', description: 'Completá el refrán' },
+  ODD_ONE_OUT:    { type: 'ODD_ONE_OUT',     label: '¿Cuál no va?',   icon: '🤔', color: '#FFCBA4', description: '¿Cuál no pertenece al grupo?' },
+  SIMPLE_MATH:    { type: 'SIMPLE_MATH',     label: 'Calculá',         icon: '🔢', color: '#C8E6C8', description: 'Operaciones simples' },
 }

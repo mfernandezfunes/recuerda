@@ -12,6 +12,10 @@ import { OrderStory } from './OrderStory'
 import { SimplePuzzle } from './SimplePuzzle'
 import { Coloring } from './Coloring'
 import { CompleteSong } from './CompleteSong'
+import { WhatIsMissing } from './WhatIsMissing'
+import { Proverbs } from './Proverbs'
+import { OddOneOut } from './OddOneOut'
+import { SimpleMath } from './SimpleMath'
 
 const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   who_is_this: WhoIsThis,
@@ -27,6 +31,10 @@ const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   simple_puzzle: SimplePuzzle,
   coloring: Coloring,
   complete_song: CompleteSong,
+  what_is_missing: WhatIsMissing,
+  proverbs: Proverbs,
+  odd_one_out: OddOneOut,
+  simple_math: SimpleMath,
 }
 
 export function ActivityRouter() {
