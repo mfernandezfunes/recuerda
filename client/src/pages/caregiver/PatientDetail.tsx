@@ -1,5 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { patientsApi } from '../../api/patients.api'
 import { mediaApi } from '../../api/media.api'
 import { resolveMediaUrl } from '../../api/client'
@@ -62,6 +77,69 @@ const DIFFICULTY_LABELS: Record<string, string> = {
 
 const MED_COLORS = ['#87CEEB', '#8FBC8F', '#FFCBA4', '#FFF3A3', '#D8B4FE', '#FFADB5']
 
+function SortableActivityRow({
+  type, meta, enabled, difficulty, isSaving, onToggle, onDifficulty,
+}: {
+  type: ActivityType
+  meta: typeof ACTIVITY_META[ActivityType]
+  enabled: boolean
+  difficulty: string
+  isSaving: boolean
+  onToggle: () => void
+  onDifficulty: (d: 'EASY' | 'MEDIUM' | 'HARD') => void
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: type })
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100"
+    >
+      <div className="flex items-center gap-3">
+        {/* Drag handle */}
+        <span
+          {...attributes}
+          {...listeners}
+          className="text-gray-300 cursor-grab active:cursor-grabbing shrink-0 text-lg select-none"
+          style={{ touchAction: 'none' }}
+        >
+          ☰
+        </span>
+        <span className="text-2xl shrink-0">{meta.icon}</span>
+        <div className="flex-1 min-w-0">
+          <p className="font-black text-[#5C4033] text-sm">{meta.label} — {meta.description}</p>
+          <p className="text-xs text-[#8FBC8F] font-semibold mt-0.5">🧠 {meta.trains}</p>
+        </div>
+        <button
+          onClick={onToggle}
+          disabled={isSaving}
+          className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${enabled ? 'bg-[#8FBC8F]' : 'bg-gray-200'} disabled:opacity-60`}
+        >
+          <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${enabled ? 'left-7' : 'left-1'}`} />
+        </button>
+      </div>
+      {enabled && (
+        <div className="mt-2 flex gap-2 pl-10">
+          {(['EASY', 'MEDIUM', 'HARD'] as const).map((d) => (
+            <button
+              key={d}
+              onClick={() => onDifficulty(d)}
+              disabled={isSaving}
+              className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
+                difficulty === d ? 'bg-[#8FBC8F] text-white' : 'bg-gray-100 text-[#8D7061]'
+              } disabled:opacity-60`}
+            >
+              {{ EASY: 'Fácil', MEDIUM: 'Medio', HARD: 'Difícil' }[d]}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function PatientDetail() {
   const { patientId } = useParams<{ patientId: string }>()
   const navigate = useNavigate()
@@ -85,7 +163,9 @@ export function PatientDetail() {
 
   // Activity settings
   const [activitySettings, setActivitySettings] = useState<ActivitySetting[]>([])
+  const [activityOrder, setActivityOrder] = useState<ActivityType[]>([])
   const [savingActivity, setSavingActivity] = useState<string | null>(null)
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
 
   // Agenda
   const [agendaItems, setAgendaItems] = useState<AgendaItem[]>([])
@@ -114,7 +194,10 @@ export function PatientDetail() {
     try {
       const res = await patientsApi.get(patientId)
       setPatient(res.data)
-      setActivitySettings(res.data.activitySettings || [])
+      const settings: ActivitySetting[] = res.data.activitySettings || []
+      const sorted = [...settings].sort((a, b) => ((a as any).order ?? 0) - ((b as any).order ?? 0))
+      setActivitySettings(sorted)
+      setActivityOrder(sorted.map((s) => s.activityType))
     } catch {
       // ignore
     } finally {
@@ -242,6 +325,25 @@ export function PatientDetail() {
     } catch {
       // ignore
     }
+  }
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (!over || active.id === over.id || !patientId) return
+
+    const oldIndex = activityOrder.indexOf(active.id as ActivityType)
+    const newIndex = activityOrder.indexOf(over.id as ActivityType)
+    const newOrder = arrayMove(activityOrder, oldIndex, newIndex)
+
+    setActivityOrder(newOrder)
+    setActivitySettings((prev) =>
+      newOrder.map((type) => prev.find((s) => s.activityType === type)!)
+    )
+
+    await patientsApi.reorderActivitySettings(
+      patientId,
+      newOrder.map((type, i) => ({ activityType: type, order: i }))
+    ).catch(() => {})
   }
 
   async function handleToggleActivity(type: ActivityType, enabled: boolean) {
@@ -598,62 +700,34 @@ export function PatientDetail() {
       {activeTab === 'actividades' && (
         <div className="space-y-4">
           <h3 className="font-black text-[#5C4033]">Configuración de actividades</h3>
-          <div className="space-y-2">
-            {(Object.keys(ACTIVITY_META) as ActivityType[]).map((type) => {
-              const meta = ACTIVITY_META[type]
-              const setting = activitySettings.find((s) => s.activityType === type)
-              const enabled = setting?.enabled ?? true
-              const difficulty = setting?.difficulty ?? 'EASY'
-              const isSaving = savingActivity === type
-
-              return (
-                <div
-                  key={type}
-                  className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl shrink-0">{meta.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-black text-[#5C4033] text-sm">{meta.label} — {meta.description}</p>
-                      <p className="text-xs text-[#8FBC8F] font-semibold mt-0.5">🧠 {meta.trains}</p>
-                    </div>
-                    {/* Toggle */}
-                    <button
-                      onClick={() => handleToggleActivity(type, !enabled)}
-                      disabled={isSaving}
-                      className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${
-                        enabled ? 'bg-[#8FBC8F]' : 'bg-gray-200'
-                      } disabled:opacity-60`}
-                    >
-                      <span
-                        className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${
-                          enabled ? 'left-7' : 'left-1'
-                        }`}
-                      />
-                    </button>
-                  </div>
-                  {enabled && (
-                    <div className="mt-2 flex gap-2">
-                      {(['EASY', 'MEDIUM', 'HARD'] as const).map((d) => (
-                        <button
-                          key={d}
-                          onClick={() => handleChangeDifficulty(type, d)}
-                          disabled={isSaving}
-                          className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
-                            difficulty === d
-                              ? 'bg-[#8FBC8F] text-white'
-                              : 'bg-gray-100 text-[#8D7061]'
-                          } disabled:opacity-60`}
-                        >
-                          {DIFFICULTY_LABELS[d]}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
+          <p className="text-xs text-[#8D7061] font-semibold flex items-center gap-1">
+            ☰ Arrastrá para cambiar el orden
+          </p>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={activityOrder} strategy={verticalListSortingStrategy}>
+              <div className="space-y-2">
+                {activityOrder.map((type) => {
+                  const meta = ACTIVITY_META[type]
+                  const setting = activitySettings.find((s) => s.activityType === type)
+                  const enabled = setting?.enabled ?? true
+                  const difficulty = setting?.difficulty ?? 'EASY'
+                  const isSaving = savingActivity === type
+                  return (
+                    <SortableActivityRow
+                      key={type}
+                      type={type}
+                      meta={meta}
+                      enabled={enabled}
+                      difficulty={difficulty}
+                      isSaving={isSaving}
+                      onToggle={() => handleToggleActivity(type, !enabled)}
+                      onDifficulty={(d) => handleChangeDifficulty(type, d)}
+                    />
+                  )
+                })}
+              </div>
+            </SortableContext>
+          </DndContext>
         </div>
       )}
 

@@ -44,7 +44,8 @@ router.get('/activity-settings', async (req, res, next) => {
     const patientId = req.user!.id
     const settings = await prisma.activitySetting.findMany({
       where: { patientId },
-      select: { activityType: true, difficulty: true, enabled: true },
+      select: { activityType: true, difficulty: true, enabled: true, order: true },
+      orderBy: { order: 'asc' },
     })
     res.json(settings)
   } catch (err) {

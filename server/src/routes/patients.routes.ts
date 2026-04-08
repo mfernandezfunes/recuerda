@@ -14,6 +14,7 @@ import {
 import {
   listActivitySettings,
   updateActivitySetting,
+  reorderActivitySettings,
 } from '../controllers/activities.controller'
 import {
   listAgendaItems,
@@ -79,6 +80,7 @@ router.delete('/:id/family-members/:fmId', deleteFamilyMember)
 // Activity settings (nested)
 router.get('/:id/activity-settings', listActivitySettings)
 router.put('/:id/activity-settings/:type', updateActivitySetting)
+router.put('/:id/activity-settings-reorder', reorderActivitySettings)
 
 // Agenda (nested)
 router.get('/:id/agenda', listAgendaItems)

@@ -28,11 +28,11 @@ export function PatientHome() {
     if (!patient?.id) return
     apiClient.get('/patient/activity-settings')
       .then((r) => {
-        const settings = r.data as { activityType: ActivityType; enabled: boolean }[]
+        const settings = r.data as { activityType: ActivityType; enabled: boolean; order: number }[]
         const enabled = settings
-          .filter((s) => s.enabled)
+          .filter((s) => s.enabled && ALL_ACTIVITIES.includes(s.activityType))
+          .sort((a, b) => a.order - b.order)
           .map((s) => s.activityType)
-          .filter((t) => ALL_ACTIVITIES.includes(t))
         if (enabled.length > 0) setEnabledActivities(enabled)
       })
       .catch(() => {}) // fallback: show all

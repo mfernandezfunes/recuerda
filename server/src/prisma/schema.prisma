@@ -152,6 +152,7 @@ model ActivitySetting {
   activityType ActivityType
   difficulty   Difficulty   @default(EASY)
   enabled      Boolean      @default(true)
+  order        Int          @default(0)
   extraConfig  Json?
 
   patient      Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)

@@ -30,6 +30,7 @@ export async function listActivitySettings(req: Request, res: Response, next: Ne
 
     const settings = await prisma.activitySetting.findMany({
       where: { patientId: req.params.id },
+      orderBy: { order: 'asc' },
     })
 
     res.json(settings)
@@ -80,6 +81,33 @@ export async function updateActivitySetting(req: Request, res: Response, next: N
     })
 
     res.json(setting)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function reorderActivitySettings(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    if (!req.user) return next(createError('No autenticado', 401))
+
+    const patient = await prisma.patient.findFirst({
+      where: { id: req.params.id, caregiverId: req.user.id },
+    })
+    if (!patient) return next(createError('Paciente no encontrado', 404))
+
+    const order: { activityType: string; order: number }[] = req.body.order
+    if (!Array.isArray(order)) return next(createError('order debe ser un array', 400))
+
+    await Promise.all(
+      order.map((item) =>
+        prisma.activitySetting.updateMany({
+          where: { patientId: req.params.id, activityType: item.activityType as ActivityType },
+          data: { order: item.order },
+        })
+      )
+    )
+
+    res.json({ ok: true })
   } catch (err) {
     next(err)
   }

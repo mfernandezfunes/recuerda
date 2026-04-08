@@ -1,0 +1,1 @@
+ALTER TABLE "activity_settings" ADD COLUMN "order" INTEGER NOT NULL DEFAULT 0;

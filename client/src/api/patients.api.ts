@@ -49,6 +49,8 @@ export const patientsApi = {
     type: string,
     data: { difficulty?: string; enabled?: boolean }
   ) => apiClient.put('/patients/' + patientId + '/activity-settings/' + type, data),
+  reorderActivitySettings: (patientId: string, order: { activityType: string; order: number }[]) =>
+    apiClient.put('/patients/' + patientId + '/activity-settings-reorder', { order }),
 
   getProgress: (patientId: string) =>
     apiClient.get('/patients/' + patientId + '/progress'),
