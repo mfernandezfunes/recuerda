@@ -135,6 +135,7 @@ enum ActivityType {
   PROVERBS
   ODD_ONE_OUT
   SIMPLE_MATH
+  SUDOKU
 }
 
 enum Difficulty {

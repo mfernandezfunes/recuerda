@@ -16,6 +16,7 @@ import { WhatIsMissing } from './WhatIsMissing'
 import { Proverbs } from './Proverbs'
 import { OddOneOut } from './OddOneOut'
 import { SimpleMath } from './SimpleMath'
+import { Sudoku } from './Sudoku'
 
 const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   who_is_this: WhoIsThis,
@@ -35,6 +36,7 @@ const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   proverbs: Proverbs,
   odd_one_out: OddOneOut,
   simple_math: SimpleMath,
+  sudoku: Sudoku,
 }
 
 export function ActivityRouter() {

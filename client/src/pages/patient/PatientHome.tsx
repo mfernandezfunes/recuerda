@@ -23,6 +23,7 @@ const TODAY_ACTIVITIES: ActivityType[] = [
   'PROVERBS',
   'ODD_ONE_OUT',
   'SIMPLE_MATH',
+  'SUDOKU',
 ]
 
 export function PatientHome() {
@@ -110,6 +111,18 @@ export function PatientHome() {
           <div className="text-left">
             <p className="font-black text-[#5C4033] text-lg">Ejercicio de respiración</p>
             <p className="text-[#8D7061] text-sm font-semibold">Un momento de calma</p>
+          </div>
+        </motion.button>
+
+        <motion.button
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+          onClick={() => navigate('/patient/activity/mood_checkin')}
+          className="w-full bg-[#FFCBA440] border-2 border-[#FFCBA4] rounded-3xl py-4 px-5 flex items-center gap-4"
+        >
+          <span className="text-4xl">😊</span>
+          <div className="text-left">
+            <p className="font-black text-[#5C4033] text-lg">¿Cómo me sentís hoy?</p>
+            <p className="text-[#8D7061] text-sm font-semibold">Contanos cómo estás</p>
           </div>
         </motion.button>
       </div>

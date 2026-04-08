@@ -10,8 +10,6 @@ type Direction = { dr: number; dc: number }
 const DIRECTIONS: Direction[] = [
   { dr: 0, dc: 1 },   // horizontal →
   { dr: 1, dc: 0 },   // vertical ↓
-  { dr: 1, dc: 1 },   // diagonal ↘
-  { dr: 1, dc: -1 },  // diagonal ↙
 ]
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'

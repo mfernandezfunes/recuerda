@@ -556,3 +556,58 @@ export function generateSimplePuzzleContent(difficulty: Difficulty): {
 
   return { ...picked, gridSize }
 }
+
+// ─── SUDOKU ───────────────────────────────────────────────────────────────────
+
+interface SudokuPuzzle {
+  puzzle: (number | null)[][]
+  solution: number[][]
+  size: 4
+}
+
+// Valid 4x4 Sudoku puzzles. null = empty cell for the player to fill.
+const SUDOKU_PUZZLES_EASY: SudokuPuzzle[] = [
+  {
+    size: 4,
+    solution: [[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]],
+    puzzle:   [[1,null,3,null],[null,4,null,2],[2,null,4,null],[null,3,null,1]],
+  },
+  {
+    size: 4,
+    solution: [[2,1,4,3],[4,3,2,1],[1,2,3,4],[3,4,1,2]],
+    puzzle:   [[null,1,null,3],[4,null,2,null],[null,2,null,4],[3,null,1,null]],
+  },
+  {
+    size: 4,
+    solution: [[3,4,1,2],[1,2,3,4],[4,3,2,1],[2,1,4,3]],
+    puzzle:   [[3,null,null,2],[null,2,3,null],[4,null,null,1],[null,1,4,null]],
+  },
+  {
+    size: 4,
+    solution: [[4,3,2,1],[2,1,4,3],[3,4,1,2],[1,2,3,4]],
+    puzzle:   [[null,3,null,1],[2,null,4,null],[null,4,null,2],[1,null,3,null]],
+  },
+]
+
+const SUDOKU_PUZZLES_MEDIUM: SudokuPuzzle[] = [
+  {
+    size: 4,
+    solution: [[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]],
+    puzzle:   [[1,null,null,4],[null,4,null,null],[null,null,4,null],[null,null,null,1]],
+  },
+  {
+    size: 4,
+    solution: [[2,1,4,3],[4,3,2,1],[1,2,3,4],[3,4,1,2]],
+    puzzle:   [[2,null,null,null],[null,null,2,null],[null,2,null,null],[null,null,null,2]],
+  },
+  {
+    size: 4,
+    solution: [[3,4,1,2],[1,2,3,4],[4,3,2,1],[2,1,4,3]],
+    puzzle:   [[3,null,null,null],[null,2,null,null],[null,null,2,null],[null,null,null,3]],
+  },
+]
+
+export function generateSudokuContent(difficulty: Difficulty): SudokuPuzzle {
+  const pool = difficulty === Difficulty.EASY ? SUDOKU_PUZZLES_EASY : SUDOKU_PUZZLES_MEDIUM
+  return pool[Math.floor(Math.random() * pool.length)]
+}

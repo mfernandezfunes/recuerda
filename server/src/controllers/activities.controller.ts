@@ -16,6 +16,7 @@ import {
   generateOddOneOutContent,
   generateSimpleMathContent,
   generateSimplePuzzleContent,
+  generateSudokuContent,
 } from '../services/activityContent.service'
 
 export async function listActivitySettings(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -150,6 +151,9 @@ export async function getActivityContent(req: Request, res: Response, next: Next
         break
       case ActivityType.SIMPLE_PUZZLE:
         content = generateSimplePuzzleContent(diff)
+        break
+      case ActivityType.SUDOKU:
+        content = generateSudokuContent(diff)
         break
       default:
         content = { message: 'Actividad sin generador de contenido dinámico' }

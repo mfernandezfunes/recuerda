@@ -21,19 +21,8 @@ function checkWordMatch(word: string, candidate: string): boolean {
 }
 
 /**
- * Snap direction vector to nearest of 8 compass directions.
- * Returns [rowStep, colStep] each ∈ {-1, 0, 1}.
- */
-function snapDirection(dr: number, dc: number): [number, number] {
-  if (dr === 0 && dc === 0) return [0, 0]
-  const angle = Math.atan2(dr, dc)
-  const snapped = Math.round(angle / (Math.PI / 4)) * (Math.PI / 4)
-  return [Math.round(Math.sin(snapped)), Math.round(Math.cos(snapped))]
-}
-
-/**
- * Build a straight line of cells from anchor toward current,
- * snapped to the nearest of 8 directions.
+ * Build a straight horizontal or vertical line from anchor to current.
+ * Snaps to whichever axis has the larger delta.
  */
 function buildLine(
   anchor: CellPos,
@@ -45,15 +34,11 @@ function buildLine(
   const dc = current.col - anchor.col
   if (dr === 0 && dc === 0) return [anchor]
 
-  const [sr, sc] = snapDirection(dr, dc)
-
-  // Steps: for diagonal use min(|dr|,|dc|), otherwise the appropriate axis
-  const dist =
-    sr !== 0 && sc !== 0
-      ? Math.min(Math.abs(dr), Math.abs(dc))
-      : sr !== 0
-      ? Math.abs(dr)
-      : Math.abs(dc)
+  // Snap to the dominant axis (horizontal or vertical)
+  const horizontal = Math.abs(dc) >= Math.abs(dr)
+  const sr = horizontal ? 0 : dr > 0 ? 1 : -1
+  const sc = horizontal ? (dc > 0 ? 1 : -1) : 0
+  const dist = horizontal ? Math.abs(dc) : Math.abs(dr)
 
   const cells: CellPos[] = []
   for (let i = 0; i <= dist; i++) {
