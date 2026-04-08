@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuthStore } from '../../store/auth.store'
@@ -32,13 +32,29 @@ export function BreathingExercise() {
   const [done, setDone] = useState(false)
   const [started, setStarted] = useState(false)
 
-  const handleComplete = useCallback(() => {
-    setDone(true)
-    addStars(3)
-    const durationSecs = stopTimer()
-    if (sessionId) {
+  // Stable refs so the timer effect doesn't re-run when callbacks change identity
+  const speakRef = useRef(speak)
+  const navigateRef = useRef(navigate)
+  const sessionIdRef = useRef(sessionId)
+  const addStarsRef = useRef(addStars)
+  const stopTimerRef = useRef(stopTimer)
+  const patientNameRef = useRef(patient?.name)
+
+  useEffect(() => { speakRef.current = speak })
+  useEffect(() => { navigateRef.current = navigate })
+  useEffect(() => { sessionIdRef.current = sessionId })
+  useEffect(() => { addStarsRef.current = addStars })
+  useEffect(() => { stopTimerRef.current = stopTimer })
+  useEffect(() => { patientNameRef.current = patient?.name })
+
+  // Handle completion separately, reading from refs
+  useEffect(() => {
+    if (!done) return
+    addStarsRef.current(3)
+    const durationSecs = stopTimerRef.current()
+    if (sessionIdRef.current) {
       sessionsApi
-        .logActivity(sessionId, {
+        .logActivity(sessionIdRef.current, {
           activityType: 'BREATHING',
           difficulty: 'EASY',
           starsEarned: 3,
@@ -46,40 +62,40 @@ export function BreathingExercise() {
         })
         .catch(() => {})
     }
-    speak('¡Muy bien! Hiciste todos los ciclos de respiración.')
-    setTimeout(() => {
-      navigate('/patient/activity-result', {
-        state: { starsEarned: 3, activityType: 'BREATHING', patientName: patient?.name ?? '' },
+    speakRef.current('¡Muy bien! Hiciste todos los ciclos de respiración.')
+    const t = setTimeout(() => {
+      navigateRef.current('/patient/activity-result', {
+        state: { starsEarned: 3, activityType: 'BREATHING', patientName: patientNameRef.current ?? '' },
       })
     }, 3000)
-  }, [addStars, stopTimer, sessionId, speak, navigate, patient?.name])
+    return () => clearTimeout(t)
+  }, [done])
 
+  // Timer: only depends on primitive state values — never recreated by callback identity changes
   useEffect(() => {
     if (!started || paused || done) return
 
     const config = PHASE_CONFIG[phase]
-    speak(config.label)
+    speakRef.current(config.label)
 
     const timer = setTimeout(() => {
       const phaseIdx = PHASES.indexOf(phase)
-      const nextPhaseIdx = (phaseIdx + 1) % PHASES.length
-      const nextPhase = PHASES[nextPhaseIdx]
+      const isLastPhase = phaseIdx === PHASES.length - 1
 
-      if (phaseIdx === PHASES.length - 1) {
-        // completed a cycle
+      if (isLastPhase) {
         const newCycle = cycle + 1
         if (newCycle >= TOTAL_CYCLES) {
-          handleComplete()
+          setDone(true)
           return
         }
         setCycle(newCycle)
       }
 
-      setPhase(nextPhase)
+      setPhase(PHASES[(phaseIdx + 1) % PHASES.length])
     }, config.duration * 1000)
 
     return () => clearTimeout(timer)
-  }, [phase, paused, done, started, cycle, speak, handleComplete])
+  }, [phase, paused, done, started, cycle])
 
   const handleStart = () => {
     setStarted(true)
