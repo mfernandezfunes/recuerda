@@ -8,8 +8,12 @@ import { useActivityTimer } from '../../hooks/useActivityTimer'
 import { sessionsApi } from '../../api/sessions.api'
 
 const PALETTE = [
+  // Fila 1: colores vivos
   '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF',
-  '#FF922B', '#CC5DE8', '#F06595', '#74C0FC',
+  '#FF922B', '#CC5DE8', '#F06595', '#20B2AA',
+  // Fila 2: colores naturales y neutros
+  '#8B4513', '#228B22', '#87CEEB', '#FFDAB9',
+  '#B0B0B0', '#333333', '#FFFFFF', '#800000',
 ]
 
 const CANVAS_SIZE = 400
@@ -572,8 +576,8 @@ export function Coloring() {
         }}
       />
 
-      {/* Color Palette */}
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+      {/* Color Palette — 8 per row */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '8px', width: '100%', maxWidth: '480px' }}>
         {PALETTE.map((color) => (
           <motion.button
             key={color}
@@ -581,17 +585,16 @@ export function Coloring() {
             whileHover={{ scale: 1.1 }}
             onClick={() => setSelectedColor(color)}
             style={{
-              width: '60px',
-              height: '60px',
+              width: '100%',
+              aspectRatio: '1',
               borderRadius: '50%',
               backgroundColor: color,
-              border: selectedColor === color ? '4px solid #5C4033' : '3px solid transparent',
-              boxShadow:
-                selectedColor === color
-                  ? '0 0 0 3px rgba(92,64,51,0.3)'
-                  : '0 3px 8px rgba(0,0,0,0.2)',
+              border: selectedColor === color ? '4px solid #5C4033' : '2px solid #ccc',
+              boxShadow: selectedColor === color
+                ? '0 0 0 3px rgba(92,64,51,0.35)'
+                : '0 2px 6px rgba(0,0,0,0.18)',
               cursor: 'pointer',
-              transition: 'border 0.15s',
+              transition: 'border 0.15s, box-shadow 0.15s',
             }}
             aria-label={`Color ${color}`}
           />
