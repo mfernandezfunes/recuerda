@@ -557,57 +557,143 @@ export function generateSimplePuzzleContent(difficulty: Difficulty): {
   return { ...picked, gridSize }
 }
 
+
 // ─── SUDOKU ───────────────────────────────────────────────────────────────────
 
 interface SudokuPuzzle {
   puzzle: (number | null)[][]
   solution: number[][]
-  size: 4
+  size: 4 | 6 | 9
+  boxRows: number
+  boxCols: number
 }
 
-// Valid 4x4 Sudoku puzzles. null = empty cell for the player to fill.
-const SUDOKU_PUZZLES_EASY: SudokuPuzzle[] = [
+// ── 4×4  (EASY) ──
+const SUDOKU_EASY: SudokuPuzzle[] = [
   {
-    size: 4,
+    size: 4, boxRows: 2, boxCols: 2,
     solution: [[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]],
     puzzle:   [[1,null,3,null],[null,4,null,2],[2,null,4,null],[null,3,null,1]],
   },
   {
-    size: 4,
+    size: 4, boxRows: 2, boxCols: 2,
     solution: [[2,1,4,3],[4,3,2,1],[1,2,3,4],[3,4,1,2]],
     puzzle:   [[null,1,null,3],[4,null,2,null],[null,2,null,4],[3,null,1,null]],
   },
   {
-    size: 4,
+    size: 4, boxRows: 2, boxCols: 2,
     solution: [[3,4,1,2],[1,2,3,4],[4,3,2,1],[2,1,4,3]],
     puzzle:   [[3,null,null,2],[null,2,3,null],[4,null,null,1],[null,1,4,null]],
   },
   {
-    size: 4,
+    size: 4, boxRows: 2, boxCols: 2,
     solution: [[4,3,2,1],[2,1,4,3],[3,4,1,2],[1,2,3,4]],
     puzzle:   [[null,3,null,1],[2,null,4,null],[null,4,null,2],[1,null,3,null]],
   },
 ]
 
-const SUDOKU_PUZZLES_MEDIUM: SudokuPuzzle[] = [
+// ── 6×6  (MEDIUM) ──
+// Solution: rows have 1-6, cols have 1-6, each 2×3 box has 1-6
+const SUDOKU_MEDIUM: SudokuPuzzle[] = [
   {
-    size: 4,
-    solution: [[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]],
-    puzzle:   [[1,null,null,4],[null,4,null,null],[null,null,4,null],[null,null,null,1]],
+    size: 6, boxRows: 2, boxCols: 3,
+    solution: [
+      [1,2,3,4,5,6],
+      [4,5,6,1,2,3],
+      [2,3,1,5,6,4],
+      [5,6,4,2,3,1],
+      [3,1,2,6,4,5],
+      [6,4,5,3,1,2],
+    ],
+    puzzle: [
+      [1,null,3,null,null,6],
+      [null,5,null,1,null,null],
+      [2,null,null,5,6,null],
+      [null,6,4,null,null,1],
+      [null,null,2,null,4,null],
+      [6,null,null,3,null,2],
+    ],
   },
   {
-    size: 4,
-    solution: [[2,1,4,3],[4,3,2,1],[1,2,3,4],[3,4,1,2]],
-    puzzle:   [[2,null,null,null],[null,null,2,null],[null,2,null,null],[null,null,null,2]],
+    size: 6, boxRows: 2, boxCols: 3,
+    solution: [
+      [2,3,4,5,6,1],
+      [5,6,1,2,3,4],
+      [3,4,2,6,1,5],
+      [6,1,5,3,4,2],
+      [4,2,3,1,5,6],
+      [1,5,6,4,2,3],
+    ],
+    puzzle: [
+      [2,null,null,5,null,1],
+      [null,6,1,null,3,null],
+      [null,4,null,null,1,5],
+      [6,null,5,null,null,2],
+      [null,2,null,1,null,null],
+      [1,null,6,null,2,null],
+    ],
+  },
+]
+
+// ── 9×9  (HARD) ──
+// Solution from the classic Wikipedia example
+const SUDOKU_HARD: SudokuPuzzle[] = [
+  {
+    size: 9, boxRows: 3, boxCols: 3,
+    solution: [
+      [5,3,4,6,7,8,9,1,2],
+      [6,7,2,1,9,5,3,4,8],
+      [1,9,8,3,4,2,5,6,7],
+      [8,5,9,7,6,1,4,2,3],
+      [4,2,6,8,5,3,7,9,1],
+      [7,1,3,9,2,4,8,5,6],
+      [9,6,1,5,3,7,2,8,4],
+      [2,8,7,4,1,9,6,3,5],
+      [3,4,5,2,8,6,1,7,9],
+    ],
+    puzzle: [
+      [5,3,null,null,7,null,null,null,null],
+      [6,null,null,1,9,5,null,null,null],
+      [null,9,8,null,null,null,null,6,null],
+      [8,null,null,null,6,null,null,null,3],
+      [4,null,null,8,null,3,null,null,1],
+      [7,null,null,null,2,null,null,null,6],
+      [null,6,null,null,null,null,2,8,null],
+      [null,null,null,4,1,9,null,null,5],
+      [null,null,null,null,8,null,null,7,9],
+    ],
   },
   {
-    size: 4,
-    solution: [[3,4,1,2],[1,2,3,4],[4,3,2,1],[2,1,4,3]],
-    puzzle:   [[3,null,null,null],[null,2,null,null],[null,null,2,null],[null,null,null,3]],
+    size: 9, boxRows: 3, boxCols: 3,
+    solution: [
+      [8,6,7,9,1,2,3,4,5],
+      [9,1,5,4,3,8,6,7,2],
+      [4,3,2,6,7,5,8,9,1],
+      [2,8,3,1,9,4,7,5,6],
+      [7,5,9,2,8,6,1,3,4],
+      [1,4,6,3,5,7,2,8,9],
+      [3,9,4,8,6,1,5,2,7],
+      [5,2,1,7,4,3,9,6,8],
+      [6,7,8,5,2,9,4,1,3],
+    ],
+    puzzle: [
+      [8,null,null,null,1,null,3,null,5],
+      [null,1,5,4,null,null,null,7,null],
+      [4,null,null,null,7,5,null,null,1],
+      [null,8,null,1,null,null,null,5,null],
+      [7,null,9,null,null,null,1,null,4],
+      [null,4,null,null,null,7,null,8,null],
+      [3,null,null,8,6,null,null,null,7],
+      [null,2,null,null,null,3,9,6,null],
+      [6,null,8,null,2,null,null,null,3],
+    ],
   },
 ]
 
 export function generateSudokuContent(difficulty: Difficulty): SudokuPuzzle {
-  const pool = difficulty === Difficulty.EASY ? SUDOKU_PUZZLES_EASY : SUDOKU_PUZZLES_MEDIUM
+  const pool =
+    difficulty === Difficulty.EASY   ? SUDOKU_EASY   :
+    difficulty === Difficulty.MEDIUM ? SUDOKU_MEDIUM  :
+                                       SUDOKU_HARD
   return pool[Math.floor(Math.random() * pool.length)]
 }
