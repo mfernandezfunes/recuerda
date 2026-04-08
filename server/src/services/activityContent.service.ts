@@ -528,3 +528,31 @@ export async function generateCompleteSongContent(
     options,
   }
 }
+
+// ─── SIMPLE PUZZLE ────────────────────────────────────────────────────────────
+
+export function generateSimplePuzzleContent(difficulty: Difficulty): {
+  emoji: string
+  label: string
+  gridSize: number
+} {
+  const EASY_PUZZLES = [
+    { emoji: '🌈', label: 'Arco iris' },
+    { emoji: '🌻', label: 'Girasol' },
+    { emoji: '🦋', label: 'Mariposa' },
+    { emoji: '⭐', label: 'Estrella' },
+  ]
+  const MEDIUM_PUZZLES = [
+    { emoji: '🏡', label: 'Casa' },
+    { emoji: '🌸', label: 'Flor' },
+    { emoji: '🍎', label: 'Manzana' },
+    { emoji: '🐶', label: 'Perro' },
+    { emoji: '🎨', label: 'Arte' },
+  ]
+
+  const pool = difficulty === Difficulty.EASY ? EASY_PUZZLES : MEDIUM_PUZZLES
+  const picked = pool[Math.floor(Math.random() * pool.length)]
+  const gridSize = difficulty === Difficulty.EASY ? 2 : 3
+
+  return { ...picked, gridSize }
+}

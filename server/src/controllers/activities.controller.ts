@@ -15,6 +15,7 @@ import {
   generateProverbsContent,
   generateOddOneOutContent,
   generateSimpleMathContent,
+  generateSimplePuzzleContent,
 } from '../services/activityContent.service'
 
 export async function listActivitySettings(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -146,6 +147,9 @@ export async function getActivityContent(req: Request, res: Response, next: Next
         break
       case ActivityType.SIMPLE_MATH:
         content = await generateSimpleMathContent(diff)
+        break
+      case ActivityType.SIMPLE_PUZZLE:
+        content = generateSimplePuzzleContent(diff)
         break
       default:
         content = { message: 'Actividad sin generador de contenido dinámico' }

@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   DndContext,
   DragOverlay,
-  MouseSensor,
-  TouchSensor,
+  PointerSensor,
   useSensor,
   useSensors,
   useDroppable,
@@ -162,8 +161,7 @@ export function SimplePuzzle() {
   const movesRef = useRef(0)
 
   const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 100, tolerance: 5 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   )
 
   useEffect(() => {
@@ -232,7 +230,7 @@ export function SimplePuzzle() {
       // Check completion
       const newSlotMap = { ...slotMap, [slotIndex]: draggedPiece }
       const totalSlots = Object.keys(newSlotMap).length
-      const filledCorrectly = Object.values(newSlotMap).filter(Boolean).length + 1 // +1 for current
+      const filledCorrectly = Object.values(newSlotMap).filter(Boolean).length
 
       if (filledCorrectly === totalSlots) {
         const n = totalSlots
