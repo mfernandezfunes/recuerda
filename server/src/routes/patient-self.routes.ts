@@ -38,6 +38,20 @@ router.get('/agenda', async (req, res, next) => {
   }
 })
 
+// GET /api/patient/activity-settings
+router.get('/activity-settings', async (req, res, next) => {
+  try {
+    const patientId = req.user!.id
+    const settings = await prisma.activitySetting.findMany({
+      where: { patientId },
+      select: { activityType: true, difficulty: true, enabled: true },
+    })
+    res.json(settings)
+  } catch (err) {
+    next(err)
+  }
+})
+
 // GET /api/patient/medications
 router.get('/medications', async (req, res, next) => {
   try {

@@ -1,29 +1,19 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '../../store/auth.store'
 import { useSessionStore } from '../../store/session.store'
 import { useTTS } from '../../hooks/useTTS'
 import { sessionsApi } from '../../api/sessions.api'
+import apiClient from '../../api/client'
 import { ACTIVITY_META } from '../../types'
 import type { ActivityType } from '../../types'
 
-const TODAY_ACTIVITIES: ActivityType[] = [
-  'MEMORY_CARDS',
-  'WHAT_DAY_IS_IT',
-  'WHO_IS_THIS',
-  'FIND_OBJECT',
-  'SERIES_PATTERNS',
-  'WORD_SEARCH',
-  'COMPLETE_SONG',
-  'ORDER_STORY',
-  'SIMPLE_PUZZLE',
-  'COLORING',
-  'WHAT_IS_MISSING',
-  'PROVERBS',
-  'ODD_ONE_OUT',
-  'SIMPLE_MATH',
-  'SUDOKU',
+const ALL_ACTIVITIES: ActivityType[] = [
+  'MEMORY_CARDS', 'WHAT_DAY_IS_IT', 'WHO_IS_THIS', 'FIND_OBJECT',
+  'SERIES_PATTERNS', 'WORD_SEARCH', 'COMPLETE_SONG', 'ORDER_STORY',
+  'SIMPLE_PUZZLE', 'COLORING', 'WHAT_IS_MISSING', 'PROVERBS',
+  'ODD_ONE_OUT', 'SIMPLE_MATH', 'SUDOKU',
 ]
 
 export function PatientHome() {
@@ -31,6 +21,22 @@ export function PatientHome() {
   const { setSession, clearSession } = useSessionStore()
   const { speak } = useTTS()
   const navigate = useNavigate()
+  const [enabledActivities, setEnabledActivities] = useState<ActivityType[]>(ALL_ACTIVITIES)
+
+  // Load enabled activities from patient-scoped endpoint
+  useEffect(() => {
+    if (!patient?.id) return
+    apiClient.get('/patient/activity-settings')
+      .then((r) => {
+        const settings = r.data as { activityType: ActivityType; enabled: boolean }[]
+        const enabled = settings
+          .filter((s) => s.enabled)
+          .map((s) => s.activityType)
+          .filter((t) => ALL_ACTIVITIES.includes(t))
+        if (enabled.length > 0) setEnabledActivities(enabled)
+      })
+      .catch(() => {}) // fallback: show all
+  }, [patient?.id])
 
   // Session lifecycle
   useEffect(() => {
@@ -78,7 +84,7 @@ export function PatientHome() {
 
       {/* Actividades */}
       <div className="grid grid-cols-2 gap-4">
-        {TODAY_ACTIVITIES.map((type, i) => {
+        {enabledActivities.map((type, i) => {
           const meta = ACTIVITY_META[type]
           return (
             <motion.button
