@@ -2,7 +2,9 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '../../store/auth.store'
+import { useSessionStore } from '../../store/session.store'
 import { useTTS } from '../../hooks/useTTS'
+import { sessionsApi } from '../../api/sessions.api'
 import { ACTIVITY_META } from '../../types'
 import type { ActivityType } from '../../types'
 
@@ -17,23 +19,52 @@ const TODAY_ACTIVITIES: ActivityType[] = [
 
 export function PatientHome() {
   const patient = useAuthStore((s) => s.patient)
+  const { setSession, clearSession } = useSessionStore()
   const { speak } = useTTS()
   const navigate = useNavigate()
 
+  // Session lifecycle
+  useEffect(() => {
+    if (!patient?.id) return
+
+    let sid: string | null = null
+
+    sessionsApi.startSession(patient.id)
+      .then((r) => {
+        sid = r.data.sessionId
+        setSession(sid)
+      })
+      .catch(() => {})
+
+    return () => {
+      if (sid) {
+        sessionsApi.endSession(sid).catch(() => {})
+        clearSession()
+      }
+    }
+  }, [patient?.id])
+
+  // Greeting TTS
   useEffect(() => {
     const hour = new Date().getHours()
     const greeting = hour < 12 ? 'buenos días' : hour < 18 ? 'buenas tardes' : 'buenas noches'
     speak(`¡${greeting}, ${patient?.name}! ¿Qué actividad querés hacer hoy?`)
   }, [])
 
+  const hour = new Date().getHours()
+  const greetingText =
+    hour < 12 ? '¡Buenos días' : hour < 18 ? '¡Buenas tardes' : '¡Buenas noches'
+
   return (
     <div className="px-5 py-6 space-y-6">
-      {/* Saludo */}
+      {/* Saludo cálido */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
         <h2 className="text-3xl font-black text-[#5C4033]">
-          ¡Hola, {patient?.name}! 👋
+          {greetingText}, {patient?.name}! 👋
         </h2>
-        <p className="text-lg text-[#8D7061] font-semibold mt-1">¿Qué querés hacer hoy?</p>
+        <p className="text-lg text-[#8D7061] font-semibold mt-1">
+          Estamos felices de verte. ¿Qué actividad querés hacer hoy?
+        </p>
       </motion.div>
 
       {/* Actividades */}

@@ -1,7 +1,33 @@
 import { Request, Response, NextFunction } from 'express'
-import { ActivityType, Difficulty } from '@prisma/client'
+import { ActivityType, Difficulty, Session, ActivityLog } from '@prisma/client'
 import { prisma } from '../config/database'
 import { createError } from '../middleware/errorHandler'
+
+async function evaluateAchievements(
+  patientId: string,
+  session: Session & { activityLogs: ActivityLog[] }
+) {
+  const toUnlock: string[] = []
+
+  // Primera actividad completada por el paciente
+  const totalLogs = await prisma.activityLog.count({
+    where: { session: { patientId } },
+  })
+  if (totalLogs >= 1) toUnlock.push('FIRST_ACTIVITY')
+
+  // 3 estrellas en alguna actividad de la sesión
+  if (session.activityLogs.some((l) => l.starsEarned === 3)) toUnlock.push('ALL_STARS')
+
+  for (const key of toUnlock) {
+    const ach = await prisma.achievement.findUnique({ where: { key } })
+    if (!ach) continue
+    await prisma.patientAchievement.upsert({
+      where: { patientId_achievementId: { patientId, achievementId: ach.id } },
+      update: {},
+      create: { patientId, achievementId: ach.id, seen: false },
+    })
+  }
+}
 
 export async function createSession(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -97,6 +123,9 @@ export async function endSession(req: Request, res: Response, next: NextFunction
       data: { endedAt, durationSecs, totalStars },
       include: { activityLogs: true },
     })
+
+    // Evaluate and unlock achievements
+    await evaluateAchievements(session.patientId, updated)
 
     res.json({ session: updated })
   } catch (err) {

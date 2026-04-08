@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { StarReward } from '../../components/ui/StarReward'
 import { BigButton } from '../../components/ui/BigButton'
 import { useTTS } from '../../hooks/useTTS'
+import { ConfettiEffect } from '../../components/patient/ConfettiEffect'
 
 interface ResultState {
   starsEarned: 1 | 2 | 3
@@ -47,6 +48,7 @@ export function ActivityResult() {
         background: 'linear-gradient(160deg, #FFF8F0 0%, #FFCBA4 50%, #D8B4FE 100%)',
       }}
     >
+      <ConfettiEffect active={stars === 3} />
       <motion.div
         initial={{ scale: 0.7, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

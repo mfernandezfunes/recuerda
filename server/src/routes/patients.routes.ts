@@ -33,10 +33,34 @@ import {
   getAlerts,
 } from '../controllers/progress.controller'
 import { getMoodEntries } from '../controllers/mood.controller'
+import { prisma } from '../config/database'
 
 const router = Router()
 
-// All patient routes require caregiver auth
+// GET /api/patients/:id/achievements — accessible by caregiver or patient
+router.get('/:id/achievements', authenticate, async (req, res, next) => {
+  try {
+    const achievements = await prisma.patientAchievement.findMany({
+      where: { patientId: req.params.id },
+      include: { achievement: true },
+      orderBy: { unlockedAt: 'desc' },
+    })
+    res.json(
+      achievements.map((pa) => ({
+        id: pa.id,
+        title: pa.achievement.title,
+        iconUrl: pa.achievement.iconUrl,
+        description: pa.achievement.description,
+        seen: pa.seen,
+        unlockedAt: pa.unlockedAt,
+      }))
+    )
+  } catch (e) {
+    next(e)
+  }
+})
+
+// All remaining patient routes require caregiver auth
 router.use(authenticate, authorizeCaregiver)
 
 // CRUD patients

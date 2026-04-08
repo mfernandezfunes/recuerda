@@ -8,6 +8,10 @@ import { WordSearch } from './WordSearch'
 import { MemoryGallery } from './MemoryGallery'
 import { BreathingExercise } from './BreathingExercise'
 import { MoodCheckIn } from './MoodCheckIn'
+import { OrderStory } from './OrderStory'
+import { SimplePuzzle } from './SimplePuzzle'
+import { Coloring } from './Coloring'
+import { CompleteSong } from './CompleteSong'
 
 const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   who_is_this: WhoIsThis,
@@ -19,6 +23,10 @@ const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   memory_gallery: MemoryGallery,
   breathing: BreathingExercise,
   mood_checkin: MoodCheckIn,
+  order_story: OrderStory,
+  simple_puzzle: SimplePuzzle,
+  coloring: Coloring,
+  complete_song: CompleteSong,
 }
 
 export function ActivityRouter() {

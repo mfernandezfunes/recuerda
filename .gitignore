@@ -21,3 +21,4 @@ Thumbs.db
 
 # Prisma
 server/src/prisma/migrations/*.sql
+.claude/
