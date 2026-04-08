@@ -17,6 +17,7 @@ import {
   generateSimpleMathContent,
   generateSimplePuzzleContent,
   generateSudokuContent,
+  generateColorMatchContent,
 } from '../services/activityContent.service'
 
 export async function listActivitySettings(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -182,6 +183,9 @@ export async function getActivityContent(req: Request, res: Response, next: Next
         break
       case ActivityType.SUDOKU:
         content = generateSudokuContent(diff)
+        break
+      case ActivityType.COLOR_MATCH:
+        content = generateColorMatchContent(diff)
         break
       default:
         content = { message: 'Actividad sin generador de contenido dinámico' }

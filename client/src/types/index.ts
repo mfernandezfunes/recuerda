@@ -26,7 +26,7 @@ export type ActivityType =
   | 'SIMPLE_PUZZLE' | 'COLORING' | 'WORD_SEARCH'
   | 'MEMORY_GALLERY' | 'DAY_AGENDA' | 'BREATHING'
   | 'SERIES_PATTERNS' | 'MOOD_CHECKIN'
-  | 'WHAT_IS_MISSING' | 'PROVERBS' | 'ODD_ONE_OUT' | 'SIMPLE_MATH' | 'SUDOKU'
+  | 'WHAT_IS_MISSING' | 'PROVERBS' | 'ODD_ONE_OUT' | 'SIMPLE_MATH' | 'SUDOKU' | 'COLOR_MATCH'
 
 export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD'
 
@@ -67,4 +67,5 @@ export const ACTIVITY_META: Record<ActivityType, ActivityMeta> = {
   ODD_ONE_OUT:    { type: 'ODD_ONE_OUT',     label: '¿Cuál no va?',         icon: '🤔', color: '#FFCBA4', description: '¿Cuál no pertenece al grupo?',         trains: 'Desarrolla el pensamiento categorial, la lógica y la atención' },
   SIMPLE_MATH:    { type: 'SIMPLE_MATH',     label: 'Calculá',              icon: '🔢', color: '#C8E6C8', description: 'Operaciones matemáticas simples',      trains: 'Mantiene activo el razonamiento numérico y la concentración' },
   SUDOKU:         { type: 'SUDOKU',          label: 'Sudoku',               icon: '🔢', color: '#FFF3A3', description: 'Completá la grilla sin repetir números', trains: 'Ejercita la lógica, la atención sostenida y la memoria de trabajo' },
+  COLOR_MATCH:    { type: 'COLOR_MATCH',     label: '¿Qué color es?',       icon: '🎨', color: '#FFCBA4', description: 'Identificá el nombre del color',           trains: 'Refuerza el reconocimiento visual, el vocabulario y la atención' },
 }

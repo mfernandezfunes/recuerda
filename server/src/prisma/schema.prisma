@@ -136,6 +136,7 @@ enum ActivityType {
   ODD_ONE_OUT
   SIMPLE_MATH
   SUDOKU
+  COLOR_MATCH
 }
 
 enum Difficulty {

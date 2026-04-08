@@ -697,3 +697,51 @@ export function generateSudokuContent(difficulty: Difficulty): SudokuPuzzle {
                                        SUDOKU_HARD
   return pool[Math.floor(Math.random() * pool.length)]
 }
+
+// ─── COLOR_MATCH ──────────────────────────────────────────────────────────────
+
+const COLORS_EASY = [
+  { name: 'Rojo',     hex: '#E53E3E' },
+  { name: 'Azul',     hex: '#3B82F6' },
+  { name: 'Verde',    hex: '#22C55E' },
+  { name: 'Amarillo', hex: '#EAB308' },
+  { name: 'Naranja',  hex: '#F97316' },
+  { name: 'Rosa',     hex: '#EC4899' },
+]
+
+const COLORS_MEDIUM = [
+  ...COLORS_EASY,
+  { name: 'Violeta',  hex: '#8B5CF6' },
+  { name: 'Celeste',  hex: '#38BDF8' },
+  { name: 'Marrón',   hex: '#92400E' },
+  { name: 'Gris',     hex: '#6B7280' },
+]
+
+const COLORS_HARD = [
+  ...COLORS_MEDIUM,
+  { name: 'Negro',    hex: '#1F2937' },
+  { name: 'Blanco',   hex: '#F3F4F6' },
+  { name: 'Turquesa', hex: '#14B8A6' },
+  { name: 'Dorado',   hex: '#D97706' },
+]
+
+export function generateColorMatchContent(difficulty: Difficulty): {
+  targetColor: { name: string; hex: string }
+  options: string[]
+  correct: string
+} {
+  const pool =
+    difficulty === Difficulty.EASY   ? COLORS_EASY   :
+    difficulty === Difficulty.MEDIUM ? COLORS_MEDIUM  :
+                                       COLORS_HARD
+
+  const target = randomFrom(pool)
+  const distractors = shuffle(pool.filter((c) => c.name !== target.name))
+    .slice(0, difficulty === Difficulty.EASY ? 2 : 3)
+
+  return {
+    targetColor: { name: target.name, hex: target.hex },
+    options: shuffle([target.name, ...distractors.map((c) => c.name)]),
+    correct: target.name,
+  }
+}
