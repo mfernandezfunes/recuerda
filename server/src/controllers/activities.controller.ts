@@ -134,7 +134,7 @@ export async function getActivityContent(req: Request, res: Response, next: Next
       return next(createError('No hay contenido disponible para esta actividad', 404))
     }
 
-    res.json({ content })
+    res.json(content)
   } catch (err) {
     next(err)
   }
