@@ -11,6 +11,10 @@ import {
   generateWordSearchContent,
   generateOrderStoryContent,
   generateCompleteSongContent,
+  generateWhatIsMissingContent,
+  generateProverbsContent,
+  generateOddOneOutContent,
+  generateSimpleMathContent,
 } from '../services/activityContent.service'
 
 export async function listActivitySettings(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -124,6 +128,18 @@ export async function getActivityContent(req: Request, res: Response, next: Next
         break
       case ActivityType.COMPLETE_SONG:
         content = await generateCompleteSongContent(patientId)
+        break
+      case ActivityType.WHAT_IS_MISSING:
+        content = await generateWhatIsMissingContent(diff)
+        break
+      case ActivityType.PROVERBS:
+        content = await generateProverbsContent(diff)
+        break
+      case ActivityType.ODD_ONE_OUT:
+        content = await generateOddOneOutContent(diff)
+        break
+      case ActivityType.SIMPLE_MATH:
+        content = await generateSimpleMathContent(diff)
         break
       default:
         content = { message: 'Actividad sin generador de contenido dinámico' }

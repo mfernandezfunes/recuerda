@@ -131,6 +131,10 @@ enum ActivityType {
   BREATHING
   SERIES_PATTERNS
   MOOD_CHECKIN
+  WHAT_IS_MISSING
+  PROVERBS
+  ODD_ONE_OUT
+  SIMPLE_MATH
 }
 
 enum Difficulty {

@@ -294,6 +294,210 @@ export async function generateOrderStoryContent(
   return { images: shuffle(images), title: story.title }
 }
 
+// ─── WHAT_IS_MISSING ─────────────────────────────────────────────────────────
+
+const WHAT_IS_MISSING_POOL: Array<{ emoji: string; label: string }> = [
+  { emoji: '🍎', label: 'Manzana' },
+  { emoji: '🍊', label: 'Naranja' },
+  { emoji: '🍇', label: 'Uvas' },
+  { emoji: '🍓', label: 'Frutilla' },
+  { emoji: '🍋', label: 'Limón' },
+  { emoji: '🥝', label: 'Kiwi' },
+  { emoji: '🍑', label: 'Durazno' },
+  { emoji: '🍉', label: 'Sandía' },
+  { emoji: '🌽', label: 'Choclo' },
+  { emoji: '🥕', label: 'Zanahoria' },
+  { emoji: '🍄', label: 'Hongo' },
+  { emoji: '🥑', label: 'Palta' },
+  { emoji: '🐶', label: 'Perro' },
+  { emoji: '🐱', label: 'Gato' },
+  { emoji: '🐦', label: 'Pájaro' },
+  { emoji: '🐠', label: 'Pez' },
+]
+
+export async function generateWhatIsMissingContent(difficulty: Difficulty): Promise<{
+  shownItems: Array<{ id: string; emoji: string; label: string }>
+  correct: string
+  options: string[]
+}> {
+  const shownCount = difficulty === 'EASY' ? 4 : difficulty === 'MEDIUM' ? 5 : 6
+  const totalNeeded = shownCount + 1
+
+  const selected = shuffle(WHAT_IS_MISSING_POOL).slice(0, totalNeeded)
+  const missingItem = selected[selected.length - 1]
+  const shownItems = selected.slice(0, shownCount).map((item) => ({
+    id: uuidv4(),
+    emoji: item.emoji,
+    label: item.label,
+  }))
+
+  const distractors = shuffle(
+    WHAT_IS_MISSING_POOL
+      .filter((i) => i.label !== missingItem.label && !shownItems.some((s) => s.label === i.label))
+  ).slice(0, 3)
+
+  const options = shuffle([missingItem.label, ...distractors.map((d) => d.label)])
+
+  return { shownItems, correct: missingItem.label, options }
+}
+
+// ─── PROVERBS ─────────────────────────────────────────────────────────────────
+
+const PROVERBS_POOL = [
+  { first: 'Camarón que se duerme...', correct: 'se lo lleva la corriente' },
+  { first: 'A mal tiempo...', correct: 'buena cara' },
+  { first: 'No hay mal que por bien...', correct: 'no venga' },
+  { first: 'En boca cerrada...', correct: 'no entran moscas' },
+  { first: 'Más vale tarde...', correct: 'que nunca' },
+  { first: 'Al que madruga...', correct: 'Dios lo ayuda' },
+  { first: 'Dime con quién andás...', correct: 'y te diré quién sos' },
+  { first: 'No hay rosa sin...', correct: 'espinas' },
+  { first: 'Ojos que no ven...', correct: 'corazón que no siente' },
+  { first: 'Querer es...', correct: 'poder' },
+  { first: 'A caballo regalado...', correct: 'no se le miran los dientes' },
+  { first: 'El que ríe último...', correct: 'ríe mejor' },
+  { first: 'Más vale pájaro en mano...', correct: 'que cien volando' },
+  { first: 'Perro que ladra...', correct: 'no muerde' },
+]
+
+export async function generateProverbsContent(difficulty: Difficulty): Promise<{
+  firstPart: string
+  correct: string
+  options: string[]
+}> {
+  const shuffledPool = shuffle(PROVERBS_POOL)
+  const chosen = shuffledPool[0]
+
+  const distractors = shuffledPool
+    .slice(1)
+    .filter((p) => p.correct !== chosen.correct)
+    .slice(0, 3)
+    .map((p) => p.correct)
+
+  const options = shuffle([chosen.correct, ...distractors])
+
+  return { firstPart: chosen.first, correct: chosen.correct, options }
+}
+
+// ─── ODD_ONE_OUT ──────────────────────────────────────────────────────────────
+
+const ODD_SETS = [
+  {
+    category: 'Frutas',
+    members: [{ emoji: '🍎', label: 'Manzana' }, { emoji: '🍊', label: 'Naranja' }, { emoji: '🍇', label: 'Uvas' }],
+    odd: { emoji: '🥕', label: 'Zanahoria' },
+  },
+  {
+    category: 'Animales',
+    members: [{ emoji: '🐶', label: 'Perro' }, { emoji: '🐱', label: 'Gato' }, { emoji: '🐦', label: 'Pájaro' }],
+    odd: { emoji: '🚗', label: 'Auto' },
+  },
+  {
+    category: 'Verduras',
+    members: [{ emoji: '🥕', label: 'Zanahoria' }, { emoji: '🌽', label: 'Choclo' }, { emoji: '🥦', label: 'Brócoli' }],
+    odd: { emoji: '🍓', label: 'Frutilla' },
+  },
+  {
+    category: 'Medios de transporte',
+    members: [{ emoji: '🚗', label: 'Auto' }, { emoji: '🚌', label: 'Colectivo' }, { emoji: '✈️', label: 'Avión' }],
+    odd: { emoji: '🐶', label: 'Perro' },
+  },
+  {
+    category: 'Colores',
+    members: [{ emoji: '🔴', label: 'Rojo' }, { emoji: '🔵', label: 'Azul' }, { emoji: '🟢', label: 'Verde' }],
+    odd: { emoji: '🔨', label: 'Martillo' },
+  },
+  {
+    category: 'Instrumentos musicales',
+    members: [{ emoji: '🎸', label: 'Guitarra' }, { emoji: '🎹', label: 'Piano' }, { emoji: '🥁', label: 'Batería' }],
+    odd: { emoji: '🍕', label: 'Pizza' },
+  },
+  {
+    category: 'Cosas del hogar',
+    members: [{ emoji: '🛋️', label: 'Sillón' }, { emoji: '🛏️', label: 'Cama' }, { emoji: '🚿', label: 'Ducha' }],
+    odd: { emoji: '🦁', label: 'León' },
+  },
+  {
+    category: 'Flores',
+    members: [{ emoji: '🌹', label: 'Rosa' }, { emoji: '🌷', label: 'Tulipán' }, { emoji: '🌸', label: 'Flor de cerezo' }],
+    odd: { emoji: '🍺', label: 'Cerveza' },
+  },
+]
+
+export async function generateOddOneOutContent(difficulty: Difficulty): Promise<{
+  items: Array<{ emoji: string; label: string }>
+  correct: string
+  categoryName: string
+}> {
+  const availableSets = difficulty === 'EASY' ? ODD_SETS.slice(0, 4) : ODD_SETS
+  const chosen = randomFrom(availableSets)
+
+  const items = shuffle([...chosen.members, chosen.odd])
+
+  return {
+    items,
+    correct: chosen.odd.label,
+    categoryName: chosen.category,
+  }
+}
+
+// ─── SIMPLE_MATH ──────────────────────────────────────────────────────────────
+
+export async function generateSimpleMathContent(difficulty: Difficulty): Promise<{
+  questionText: string
+  a: number
+  b: number
+  operation: '+' | '-'
+  correct: number
+  options: number[]
+}> {
+  let a: number
+  let b: number
+  let operation: '+' | '-'
+
+  if (difficulty === 'EASY') {
+    a = Math.floor(Math.random() * 5) + 1
+    b = Math.floor(Math.random() * 5) + 1
+    operation = '+'
+  } else if (difficulty === 'MEDIUM') {
+    a = Math.floor(Math.random() * 10) + 1
+    b = Math.floor(Math.random() * 10) + 1
+    operation = Math.random() < 0.5 ? '+' : '-'
+    if (operation === '-' && b > a) {
+      ;[a, b] = [b, a]
+    }
+  } else {
+    a = Math.floor(Math.random() * 20) + 1
+    b = Math.floor(Math.random() * 20) + 1
+    operation = Math.random() < 0.5 ? '+' : '-'
+    if (operation === '-' && b > a) {
+      ;[a, b] = [b, a]
+    }
+  }
+
+  const correct = operation === '+' ? a + b : a - b
+
+  const distractorCandidates = [
+    correct + 1,
+    correct - 1,
+    correct + 2,
+    correct - 2,
+    correct + 3,
+  ].filter((n) => n !== correct && n >= 0)
+
+  const distractors = shuffle([...new Set(distractorCandidates)]).slice(0, 3)
+  const options = shuffle([correct, ...distractors])
+
+  return {
+    questionText: `${a} ${operation} ${b} = ?`,
+    a,
+    b,
+    operation,
+    correct,
+    options,
+  }
+}
+
 // ─── COMPLETE_SONG ────────────────────────────────────────────────────────────
 
 export async function generateCompleteSongContent(
