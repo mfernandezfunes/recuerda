@@ -42,6 +42,16 @@ export function PatientList() {
     loadPatients()
   }, [])
 
+  async function handleDelete(id: string, name: string) {
+    if (!confirm(`¿Eliminar a ${name}? Esta acción no se puede deshacer.`)) return
+    try {
+      await patientsApi.delete(id)
+      await loadPatients()
+    } catch {
+      // ignore
+    }
+  }
+
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
     setError('')
@@ -203,12 +213,20 @@ export function PatientList() {
                   </p>
                 )}
               </div>
-              <button
-                onClick={() => navigate(`/caregiver/patients/${patient.id}`)}
-                className="bg-[#8FBC8F] text-white font-bold rounded-xl px-4 py-2 text-sm shrink-0"
-              >
-                Gestionar
-              </button>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => navigate(`/caregiver/patients/${patient.id}`)}
+                  className="bg-[#8FBC8F] text-white font-bold rounded-xl px-4 py-2 text-sm"
+                >
+                  Gestionar
+                </button>
+                <button
+                  onClick={() => handleDelete(patient.id, patient.name)}
+                  className="bg-red-100 text-red-600 font-bold rounded-xl px-3 py-2 text-sm"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           ))}
         </div>

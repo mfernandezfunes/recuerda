@@ -13,12 +13,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: client/package-lock.json
+
+      - name: Bump client version
+        run: cd client && npm version patch --no-git-tag-version
+
+      - name: Bump server version
+        run: cd server && npm version patch --no-git-tag-version
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          CLIENT_VER=$(node -p "require('./client/package.json').version")
+          SERVER_VER=$(node -p "require('./server/package.json').version")
+          git add client/package.json server/package.json
+          git diff --cached --quiet || git commit -m "chore: bump client v${CLIENT_VER}, server v${SERVER_VER} [skip ci]"
+          git push
 
       - name: Install client dependencies
         run: cd client && npm install

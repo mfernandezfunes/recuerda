@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuthStore } from '../../store/auth.store'
 import apiClient from '../../api/client'
+import pkg from '../../../package.json'
 
 export function CaregiverSettings() {
   const caregiver = useAuthStore((s) => s.caregiver)
@@ -121,7 +122,7 @@ export function CaregiverSettings() {
         <h3 className="font-black text-[#5C4033]">Sobre la aplicación</h3>
         <div className="space-y-2">
           {[
-            { label: 'Versión', value: '1.0.0' },
+            { label: 'Versión', value: pkg.version },
             { label: 'Autor', value: 'Martín Fernández Funes' },
             { label: 'Actividades disponibles', value: '14' },
             { label: 'Plataforma', value: 'Web PWA' },
