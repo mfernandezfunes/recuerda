@@ -122,6 +122,7 @@ export function CaregiverSettings() {
         <div className="space-y-2">
           {[
             { label: 'Versión', value: '1.0.0' },
+            { label: 'Autor', value: 'Martín Fernández Funes' },
             { label: 'Actividades disponibles', value: '14' },
             { label: 'Plataforma', value: 'Web PWA' },
           ].map((row) => (

@@ -31,7 +31,7 @@ interface ProgressSummary {
   streak: number
   totalSessions: number
   favoriteActivity: string
-  moodHistory: MoodType[]
+  moodHistory: { mood: MoodType; createdAt: string }[]
 }
 
 const MOOD_EMOJI: Record<MoodType, string> = {
@@ -85,7 +85,7 @@ export function PatientProgress() {
           streak?: number
           totalSessions?: number
           favoriteActivity?: string
-          moodHistory?: MoodType[]
+          moodHistory?: { mood: MoodType; createdAt: string }[]
         }
         setSessions(Array.isArray(progress.sessions) ? progress.sessions : [])
         setSummary(
@@ -241,11 +241,11 @@ export function PatientProgress() {
                 Últimos estados de ánimo
               </h3>
               <div className="flex gap-3 overflow-x-auto pb-1">
-                {summary.moodHistory.slice(0, 7).map((mood, i) => (
+                {summary.moodHistory.slice(0, 7).map((entry, i) => (
                   <div key={i} className="flex flex-col items-center shrink-0">
-                    <span className="text-3xl">{MOOD_EMOJI[mood]}</span>
+                    <span className="text-3xl">{MOOD_EMOJI[entry.mood]}</span>
                     <span className="text-xs text-[#8D7061] font-semibold mt-1 text-center whitespace-nowrap">
-                      {MOOD_LABEL[mood]}
+                      {MOOD_LABEL[entry.mood]}
                     </span>
                   </div>
                 ))}

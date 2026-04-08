@@ -68,7 +68,7 @@ export async function getMoodEntries(req: Request, res: Response, next: NextFunc
       orderBy: { createdAt: 'desc' },
     })
 
-    res.json({ entries })
+    res.json(entries)
   } catch (err) {
     next(err)
   }

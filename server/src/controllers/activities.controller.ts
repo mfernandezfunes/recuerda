@@ -30,7 +30,7 @@ export async function listActivitySettings(req: Request, res: Response, next: Ne
       where: { patientId: req.params.id },
     })
 
-    res.json({ settings })
+    res.json(settings)
   } catch (err) {
     next(err)
   }
@@ -77,7 +77,7 @@ export async function updateActivitySetting(req: Request, res: Response, next: N
       },
     })
 
-    res.json({ setting })
+    res.json(setting)
   } catch (err) {
     next(err)
   }

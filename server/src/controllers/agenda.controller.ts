@@ -46,7 +46,7 @@ export async function listAgendaItems(req: Request, res: Response, next: NextFun
       orderBy: [{ date: 'asc' }, { time: 'asc' }],
     })
 
-    res.json({ items })
+    res.json(items)
   } catch (err) {
     next(err)
   }
@@ -79,7 +79,7 @@ export async function createAgendaItem(req: Request, res: Response, next: NextFu
       },
     })
 
-    res.status(201).json({ item })
+    res.status(201).json(item)
   } catch (err) {
     next(err)
   }
@@ -113,7 +113,7 @@ export async function updateAgendaItem(req: Request, res: Response, next: NextFu
       },
     })
 
-    res.json({ item })
+    res.json(item)
   } catch (err) {
     next(err)
   }

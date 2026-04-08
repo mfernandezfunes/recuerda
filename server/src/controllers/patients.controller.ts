@@ -16,7 +16,7 @@ export async function listPatients(req: Request, res: Response, next: NextFuncti
       orderBy: { createdAt: 'desc' },
     })
 
-    res.json({ patients })
+    res.json(patients)
   } catch (err) {
     next(err)
   }
@@ -52,7 +52,7 @@ export async function createPatient(req: Request, res: Response, next: NextFunct
       },
     })
 
-    res.status(201).json({ patient })
+    res.status(201).json(patient)
   } catch (err) {
     next(err)
   }
@@ -72,7 +72,7 @@ export async function getPatient(req: Request, res: Response, next: NextFunction
 
     if (!patient) return next(createError('Paciente no encontrado', 404))
 
-    res.json({ patient })
+    res.json(patient)
   } catch (err) {
     next(err)
   }
@@ -97,7 +97,7 @@ export async function updatePatient(req: Request, res: Response, next: NextFunct
       },
     })
 
-    res.json({ patient })
+    res.json(patient)
   } catch (err) {
     next(err)
   }
@@ -136,7 +136,7 @@ export async function listFamilyMembers(req: Request, res: Response, next: NextF
       where: { patientId: req.params.id },
     })
 
-    res.json({ familyMembers })
+    res.json(familyMembers)
   } catch (err) {
     next(err)
   }
@@ -166,7 +166,7 @@ export async function createFamilyMember(req: Request, res: Response, next: Next
       },
     })
 
-    res.status(201).json({ member })
+    res.status(201).json(member)
   } catch (err) {
     next(err)
   }
@@ -196,7 +196,7 @@ export async function updateFamilyMember(req: Request, res: Response, next: Next
       },
     })
 
-    res.json({ member })
+    res.json(member)
   } catch (err) {
     next(err)
   }

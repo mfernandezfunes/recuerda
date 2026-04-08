@@ -85,7 +85,7 @@ export async function listMedia(req: Request, res: Response, next: NextFunction)
       orderBy: { createdAt: 'desc' },
     })
 
-    res.json({ mediaFiles })
+    res.json(mediaFiles)
   } catch (err) {
     next(err)
   }

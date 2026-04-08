@@ -143,7 +143,7 @@ export async function getSession(req: Request, res: Response, next: NextFunction
     })
     if (!session) return next(createError('Sesión no encontrada', 404))
 
-    res.json({ session })
+    res.json(session)
   } catch (err) {
     next(err)
   }

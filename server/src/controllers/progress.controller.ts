@@ -192,7 +192,7 @@ export async function getAlerts(req: Request, res: Response, next: NextFunction)
       })
     }
 
-    res.json({ alerts })
+    res.json(alerts)
   } catch (err) {
     next(err)
   }

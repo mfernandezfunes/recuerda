@@ -18,7 +18,7 @@ export async function listMedications(req: Request, res: Response, next: NextFun
       orderBy: { createdAt: 'asc' },
     })
 
-    res.json({ medications })
+    res.json(medications)
   } catch (err) {
     next(err)
   }
@@ -52,7 +52,7 @@ export async function createMedication(req: Request, res: Response, next: NextFu
       },
     })
 
-    res.status(201).json({ medication })
+    res.status(201).json(medication)
   } catch (err) {
     next(err)
   }
@@ -84,7 +84,7 @@ export async function updateMedication(req: Request, res: Response, next: NextFu
       },
     })
 
-    res.json({ medication })
+    res.json(medication)
   } catch (err) {
     next(err)
   }
