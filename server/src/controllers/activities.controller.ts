@@ -84,11 +84,10 @@ export async function getActivityContent(req: Request, res: Response, next: Next
     if (!req.user) return next(createError('No autenticado', 401))
 
     const { type } = req.params
-    const { patientId, difficulty } = req.query
+    const { patientId: qPatientId, difficulty } = req.query
 
-    if (!patientId || typeof patientId !== 'string') {
-      return next(createError('patientId es requerido', 400))
-    }
+    // If not provided as query param, fall back to the authenticated user's own ID
+    const patientId = (typeof qPatientId === 'string' && qPatientId) ? qPatientId : req.user!.id
 
     const diff = (difficulty as Difficulty) ?? Difficulty.EASY
     if (!Object.values(Difficulty).includes(diff)) {
