@@ -24,30 +24,23 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
   const [selecting, setSelecting] = useState<CellPos[]>([])
   const [foundCells, setFoundCells] = useState<Set<string>>(new Set())
   const [foundWords, setFoundWords] = useState<Set<string>>(new Set())
-  const tableRef = useRef<HTMLTableElement>(null)
-  const touchActiveRef = useRef(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  const getCellFromPoint = useCallback(
-    (x: number, y: number): CellPos | null => {
-      if (!tableRef.current) return null
-      const cells = tableRef.current.querySelectorAll('td')
-      for (const cell of cells) {
-        const rect = cell.getBoundingClientRect()
-        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-          const row = Number(cell.dataset.row)
-          const col = Number(cell.dataset.col)
-          return { row, col }
-        }
+  const getCellFromPoint = useCallback((x: number, y: number): CellPos | null => {
+    if (!containerRef.current) return null
+    const cells = containerRef.current.querySelectorAll<HTMLElement>('[data-row]')
+    for (const cell of cells) {
+      const rect = cell.getBoundingClientRect()
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        return { row: Number(cell.dataset.row), col: Number(cell.dataset.col) }
       }
-      return null
-    },
-    []
-  )
+    }
+    return null
+  }, [])
 
   const commitSelection = useCallback(
     (sel: CellPos[]) => {
       const candidate = getWordFromSelection(grid, sel)
-      let found = false
       for (const word of words) {
         if (!foundWords.has(word) && checkWordMatch(word.toUpperCase(), candidate.toUpperCase())) {
           const newFoundCells = new Set(foundCells)
@@ -57,38 +50,30 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
           newFoundWords.add(word)
           setFoundWords(newFoundWords)
           onWordFound(word)
-          if (newFoundWords.size === words.length) {
-            onComplete()
-          }
-          found = true
+          if (newFoundWords.size === words.length) onComplete()
           break
         }
-      }
-      if (!found) {
-        // no match — just clear
       }
       setSelecting([])
     },
     [grid, words, foundWords, foundCells, onWordFound, onComplete]
   )
 
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      e.preventDefault()
-      touchActiveRef.current = true
-      const touch = e.touches[0]
-      const pos = getCellFromPoint(touch.clientX, touch.clientY)
+  // Pointer events work on both mouse and touch; touch-action:none prevents
+  // the browser from scrolling while the user is selecting letters.
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.currentTarget.setPointerCapture(e.pointerId)
+      const pos = getCellFromPoint(e.clientX, e.clientY)
       if (pos) setSelecting([pos])
     },
     [getCellFromPoint]
   )
 
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent) => {
-      if (!touchActiveRef.current) return
-      e.preventDefault()
-      const touch = e.touches[0]
-      const pos = getCellFromPoint(touch.clientX, touch.clientY)
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.buttons === 0) return
+      const pos = getCellFromPoint(e.clientX, e.clientY)
       if (!pos) return
       setSelecting((prev) => {
         const last = prev[prev.length - 1]
@@ -99,32 +84,7 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
     [getCellFromPoint]
   )
 
-  const handleTouchEnd = useCallback(
-    (e: React.TouchEvent) => {
-      e.preventDefault()
-      touchActiveRef.current = false
-      setSelecting((sel) => {
-        if (sel.length > 0) commitSelection(sel)
-        return []
-      })
-    },
-    [commitSelection]
-  )
-
-  const handleMouseDown = useCallback((row: number, col: number) => {
-    setSelecting([{ row, col }])
-  }, [])
-
-  const handleMouseEnter = useCallback((row: number, col: number) => {
-    setSelecting((prev) => {
-      if (prev.length === 0) return prev
-      const last = prev[prev.length - 1]
-      if (last.row === row && last.col === col) return prev
-      return [...prev, { row, col }]
-    })
-  }, [])
-
-  const handleMouseUp = useCallback(() => {
+  const handlePointerUp = useCallback(() => {
     setSelecting((sel) => {
       if (sel.length > 0) commitSelection(sel)
       return []
@@ -135,20 +95,14 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'flex-start' }}>
       {/* Grid */}
       <div
-        style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
-        onMouseUp={handleMouseUp}
+        ref={containerRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        style={{ touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }}
       >
         <table
-          ref={tableRef}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          style={{
-            borderCollapse: 'separate',
-            borderSpacing: '3px',
-            userSelect: 'none',
-            WebkitUserSelect: 'none',
-          }}
+          style={{ borderCollapse: 'separate', borderSpacing: '3px' }}
         >
           <tbody>
             {grid.map((row, rIdx) => (
@@ -162,19 +116,13 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
                       key={cIdx}
                       data-row={rIdx}
                       data-col={cIdx}
-                      onMouseDown={() => handleMouseDown(rIdx, cIdx)}
-                      onMouseEnter={() => handleMouseEnter(rIdx, cIdx)}
                       style={{
                         width: '44px',
                         height: '44px',
                         textAlign: 'center',
                         verticalAlign: 'middle',
                         borderRadius: '8px',
-                        backgroundColor: isFound
-                          ? '#8FBC8F'
-                          : isSelected
-                          ? '#FFF3A3'
-                          : '#FFF8F0',
+                        backgroundColor: isFound ? '#8FBC8F' : isSelected ? '#FFF3A3' : '#FFF8F0',
                         border: isFound
                           ? '2px solid #5C8F5C'
                           : isSelected
@@ -186,6 +134,7 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
                         fontFamily: 'Nunito, sans-serif',
                         cursor: 'default',
                         transition: 'background-color 0.15s',
+                        pointerEvents: 'none', // let the container handle all pointer events
                       }}
                     >
                       {letter}
