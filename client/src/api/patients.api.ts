@@ -29,7 +29,7 @@ export const patientsApi = {
   get: (id: string) => apiClient.get<PatientDetail>('/patients/' + id),
   create: (data: { name: string; pin: string; birthDate: string }) =>
     apiClient.post<Patient>('/patients', data),
-  update: (id: string, data: Partial<{ name: string; photoUrl: string }>) =>
+  update: (id: string, data: Partial<{ name: string; photoUrl: string; birthDate: string; pin: string }>) =>
     apiClient.put<Patient>('/patients/' + id, data),
   delete: (id: string) => apiClient.delete('/patients/' + id),
 

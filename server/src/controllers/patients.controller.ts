@@ -91,12 +91,23 @@ export async function updatePatient(req: Request, res: Response, next: NextFunct
 
     if (!existing) return next(createError('Paciente no encontrado', 404))
 
-    const { name, photoUrl } = req.body
+    const { name, photoUrl, birthDate, pin } = req.body
+
+    let pinHash: string | undefined
+    if (pin) {
+      if (!/^\d{4}$/.test(String(pin))) {
+        return next(createError('El PIN debe ser exactamente 4 dígitos numéricos', 400))
+      }
+      pinHash = await bcrypt.hash(String(pin), 10)
+    }
+
     const patient = await prisma.patient.update({
       where: { id: req.params.id },
       data: {
         ...(name !== undefined && { name }),
         ...(photoUrl !== undefined && { photoUrl }),
+        ...(birthDate !== undefined && { birthDate: new Date(birthDate) }),
+        ...(pinHash !== undefined && { pin: pinHash }),
       },
     })
 

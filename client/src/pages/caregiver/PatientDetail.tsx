@@ -151,6 +151,11 @@ export function PatientDetail() {
   // Patient photo
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
 
+  // Edit patient
+  const [editingPatient, setEditingPatient] = useState(false)
+  const [patientEditForm, setPatientEditForm] = useState({ name: '', birthDate: '', pin: '' })
+  const [savingPatient, setSavingPatient] = useState(false)
+
   // Family members
   const [showFamilyForm, setShowFamilyForm] = useState(false)
   const [familyForm, setFamilyForm] = useState({ name: '', relation: '' })
@@ -234,6 +239,34 @@ export function PatientDetail() {
     if (activeTab === 'agenda') loadAgenda()
     if (activeTab === 'medicacion') loadMedications()
   }, [activeTab])
+
+  function startEditPatient() {
+    setPatientEditForm({
+      name: patient?.name ?? '',
+      birthDate: patient?.birthDate ? patient.birthDate.split('T')[0] : '',
+      pin: '',
+    })
+    setEditingPatient(true)
+  }
+
+  async function handleSavePatient(e: React.FormEvent) {
+    e.preventDefault()
+    if (!patientId) return
+    setSavingPatient(true)
+    try {
+      const payload: Record<string, string> = {}
+      if (patientEditForm.name.trim()) payload.name = patientEditForm.name.trim()
+      if (patientEditForm.birthDate) payload.birthDate = patientEditForm.birthDate
+      if (patientEditForm.pin) payload.pin = patientEditForm.pin
+      await patientsApi.update(patientId, payload)
+      setEditingPatient(false)
+      await loadPatient()
+    } catch {
+      // ignore
+    } finally {
+      setSavingPatient(false)
+    }
+  }
 
   async function handlePatientPhoto(file: File) {
     if (!patientId) return
@@ -474,48 +507,90 @@ export function PatientDetail() {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-        <label className="relative shrink-0 cursor-pointer group">
-          {patient.photoUrl ? (
-            <img
-              src={resolveMediaUrl(patient.photoUrl)}
-              alt={patient.name}
-              className="w-16 h-16 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-[#FFCBA4] flex items-center justify-center text-2xl">
-              👤
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        {!editingPatient ? (
+          <div className="flex items-center gap-4">
+            {/* Avatar clickeable para cambiar foto */}
+            <label className="relative shrink-0 cursor-pointer group">
+              {patient.photoUrl ? (
+                <img src={resolveMediaUrl(patient.photoUrl)} alt={patient.name} className="w-16 h-16 rounded-full object-cover" />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-[#FFCBA4] flex items-center justify-center text-2xl">👤</div>
+              )}
+              <div className="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-white text-xs font-bold">{uploadingPhoto ? '…' : '📷'}</span>
+              </div>
+              <input type="file" accept="image/*" className="hidden" disabled={uploadingPhoto}
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePatientPhoto(f); e.target.value = '' }}
+              />
+            </label>
+            <div className="flex-1 min-w-0">
+              <h2 className="text-xl font-black text-[#5C4033]">{patient.name}</h2>
+              {patient.birthDate && (
+                <p className="text-sm text-[#8D7061] font-semibold">
+                  Nacido/a el {new Date(patient.birthDate).toLocaleDateString('es-AR')}
+                </p>
+              )}
             </div>
-          )}
-          <div className="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-white text-xs font-bold">{uploadingPhoto ? '…' : '📷'}</span>
+            <div className="flex flex-col gap-2 shrink-0">
+              <button
+                onClick={startEditPatient}
+                className="text-xs font-bold text-[#8D4E00] bg-[#FFF3A3] border border-[#F5A623] rounded-xl px-3 py-2"
+              >
+                ✏️ Editar
+              </button>
+              <button
+                onClick={() => navigate(`/caregiver/patients/${patientId}/progress`)}
+                className="text-xs font-bold text-[#8FBC8F] bg-green-50 border border-green-200 rounded-xl px-3 py-2"
+              >
+                📊 Progreso
+              </button>
+            </div>
           </div>
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            disabled={uploadingPhoto}
-            onChange={(e) => {
-              const file = e.target.files?.[0]
-              if (file) handlePatientPhoto(file)
-              e.target.value = ''
-            }}
-          />
-        </label>
-        <div className="flex-1 min-w-0">
-          <h2 className="text-xl font-black text-[#5C4033]">{patient.name}</h2>
-          {patient.birthDate && (
-            <p className="text-sm text-[#8D7061] font-semibold">
-              Nacido/a el {new Date(patient.birthDate).toLocaleDateString('es-AR')}
-            </p>
-          )}
-        </div>
-        <button
-          onClick={() => navigate(`/caregiver/patients/${patientId}/progress`)}
-          className="text-xs font-bold text-[#8FBC8F] bg-green-50 border border-green-200 rounded-xl px-3 py-2"
-        >
-          📊 Progreso
-        </button>
+        ) : (
+          <form onSubmit={handleSavePatient} className="space-y-3">
+            <p className="font-black text-[#5C4033]">Editar paciente</p>
+            <div>
+              <label className="block text-xs font-bold text-[#5C4033] mb-1">Nombre</label>
+              <input
+                type="text"
+                value={patientEditForm.name}
+                onChange={(e) => setPatientEditForm((f) => ({ ...f, name: e.target.value }))}
+                className="w-full border-2 border-[#FFCBA4] rounded-xl px-3 py-2 text-sm focus:border-[#8FBC8F] outline-none font-semibold text-[#5C4033]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[#5C4033] mb-1">Fecha de nacimiento</label>
+              <input
+                type="date"
+                value={patientEditForm.birthDate}
+                onChange={(e) => setPatientEditForm((f) => ({ ...f, birthDate: e.target.value }))}
+                className="w-full border-2 border-[#FFCBA4] rounded-xl px-3 py-2 text-sm focus:border-[#8FBC8F] outline-none font-semibold text-[#5C4033]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[#5C4033] mb-1">Nuevo PIN (dejar vacío para no cambiar)</label>
+              <input
+                type="text"
+                value={patientEditForm.pin}
+                onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 4); setPatientEditForm((f) => ({ ...f, pin: v })) }}
+                placeholder="4 dígitos"
+                maxLength={4}
+                className="w-full border-2 border-[#FFCBA4] rounded-xl px-3 py-2 text-sm focus:border-[#8FBC8F] outline-none font-semibold text-[#5C4033] tracking-widest"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => setEditingPatient(false)}
+                className="flex-1 border-2 border-gray-200 text-[#8D7061] font-bold rounded-xl py-2 text-sm">
+                Cancelar
+              </button>
+              <button type="submit" disabled={savingPatient}
+                className="flex-1 bg-[#8FBC8F] text-white font-bold rounded-xl py-2 text-sm disabled:opacity-60">
+                {savingPatient ? 'Guardando…' : 'Guardar'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
 
       {/* Tabs */}
