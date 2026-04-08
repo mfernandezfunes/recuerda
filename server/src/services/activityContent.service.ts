@@ -158,21 +158,21 @@ const FIND_OBJECT_POOL: Array<{ emoji: string; name: string }> = [
 export async function generateFindObjectContent(
   _difficulty: Difficulty
 ): Promise<{
-  target: { name: string; emoji: string }
-  options: Array<{ name: string; emoji: string; isCorrect: boolean }>
+  target: { label: string; emoji: string }
+  options: Array<{ label: string; emoji: string; isCorrect: boolean }>
 }> {
   const shuffled = shuffle(FIND_OBJECT_POOL).slice(0, 3)
   const target = shuffled[0]
 
   const options = shuffle(
     shuffled.map((item) => ({
-      name: item.name,
+      label: item.name,
       emoji: item.emoji,
       isCorrect: item.name === target.name,
     }))
   )
 
-  return { target: { name: target.name, emoji: target.emoji }, options }
+  return { target: { label: target.name, emoji: target.emoji }, options }
 }
 
 // ─── SERIES_PATTERNS ─────────────────────────────────────────────────────────
