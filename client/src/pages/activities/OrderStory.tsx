@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   DndContext,
   closestCenter,
-  TouchSensor,
-  MouseSensor,
+  PointerSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -42,23 +41,22 @@ function SortableItem({ id, emoji, label }: { id: string; emoji: string; label: 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
   })
-  const style = { transform: CSS.Transform.toString(transform), transition }
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    touchAction: 'none' as const,
+  }
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border-2 ${
+      {...attributes}
+      {...listeners}
+      className={`bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border-2 cursor-grab active:cursor-grabbing select-none ${
         isDragging ? 'border-[#8FBC8F] shadow-lg opacity-80' : 'border-transparent'
       }`}
     >
-      <span
-        {...attributes}
-        {...listeners}
-        className="text-2xl cursor-grab active:cursor-grabbing text-[#FFCBA4] select-none"
-        style={{ touchAction: 'none' }}
-      >
-        ≡
-      </span>
+      <span className="text-2xl text-[#FFCBA4]">≡</span>
       <span className="text-5xl">{emoji}</span>
       <span className="text-xl font-bold text-[#5C4033]" style={{ fontFamily: 'Nunito, sans-serif' }}>
         {label}
@@ -91,8 +89,7 @@ export function OrderStory() {
   const [feedback, setFeedback] = useState<'correct' | 'try-again' | null>(null)
 
   const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 100, tolerance: 5 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
 
   useEffect(() => {
