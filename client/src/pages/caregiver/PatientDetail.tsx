@@ -70,6 +70,9 @@ export function PatientDetail() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<Tab>('familiares')
 
+  // Patient photo
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+
   // Family members
   const [showFamilyForm, setShowFamilyForm] = useState(false)
   const [familyForm, setFamilyForm] = useState({ name: '', relation: '' })
@@ -144,6 +147,26 @@ export function PatientDetail() {
     if (activeTab === 'agenda') loadAgenda()
     if (activeTab === 'medicacion') loadMedications()
   }, [activeTab])
+
+  async function handlePatientPhoto(file: File) {
+    if (!patientId) return
+    setUploadingPhoto(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('patientId', patientId)
+      const uploadRes = await mediaApi.upload(fd)
+      const photoUrl = (uploadRes.data as { url?: string }).url
+      if (photoUrl) {
+        await patientsApi.update(patientId, { photoUrl })
+        await loadPatient()
+      }
+    } catch {
+      // ignore
+    } finally {
+      setUploadingPhoto(false)
+    }
+  }
 
   async function handleAddFamilyMember(e: React.FormEvent) {
     e.preventDefault()
@@ -313,17 +336,33 @@ export function PatientDetail() {
       </div>
 
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-        {patient.photoUrl ? (
-          <img
-            src={resolveMediaUrl(patient.photoUrl)}
-            alt={patient.name}
-            className="w-16 h-16 rounded-full object-cover shrink-0"
-          />
-        ) : (
-          <div className="w-16 h-16 rounded-full bg-[#FFCBA4] flex items-center justify-center text-2xl shrink-0">
-            👤
+        <label className="relative shrink-0 cursor-pointer group">
+          {patient.photoUrl ? (
+            <img
+              src={resolveMediaUrl(patient.photoUrl)}
+              alt={patient.name}
+              className="w-16 h-16 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-[#FFCBA4] flex items-center justify-center text-2xl">
+              👤
+            </div>
+          )}
+          <div className="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-white text-xs font-bold">{uploadingPhoto ? '…' : '📷'}</span>
           </div>
-        )}
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            disabled={uploadingPhoto}
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) handlePatientPhoto(file)
+              e.target.value = ''
+            }}
+          />
+        </label>
         <div className="flex-1 min-w-0">
           <h2 className="text-xl font-black text-[#5C4033]">{patient.name}</h2>
           {patient.birthDate && (

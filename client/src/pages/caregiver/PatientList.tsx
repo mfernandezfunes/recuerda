@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { patientsApi } from '../../api/patients.api'
+import { mediaApi } from '../../api/media.api'
 import { resolveMediaUrl } from '../../api/client'
 import type { Patient } from '../../types'
 
@@ -25,6 +26,7 @@ export function PatientList() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState<CreateForm>({ name: '', pin: '', birthDate: '' })
+  const [photo, setPhoto] = useState<File | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -66,8 +68,18 @@ export function PatientList() {
     }
     setSaving(true)
     try {
-      await patientsApi.create(form)
+      const res = await patientsApi.create(form)
+      const newId = res.data.id
+      if (photo) {
+        const fd = new FormData()
+        fd.append('file', photo)
+        fd.append('patientId', newId)
+        const uploadRes = await mediaApi.upload(fd)
+        const photoUrl = (uploadRes.data as { url?: string }).url
+        if (photoUrl) await patientsApi.update(newId, { photoUrl })
+      }
       setForm({ name: '', pin: '', birthDate: '' })
+      setPhoto(null)
       setShowForm(false)
       await loadPatients()
     } catch {
@@ -152,6 +164,17 @@ export function PatientList() {
                 className="w-full border-2 border-[#FFCBA4] rounded-xl px-3 py-2 text-sm focus:border-[#8FBC8F] outline-none font-semibold text-[#5C4033]"
               />
             </div>
+            <div>
+              <label className="block text-sm font-bold text-[#5C4033] mb-1">
+                Foto (opcional)
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+                className="text-sm text-[#8D7061]"
+              />
+            </div>
           </div>
 
           <div className="flex gap-3">
@@ -161,6 +184,7 @@ export function PatientList() {
                 setShowForm(false)
                 setError('')
                 setForm({ name: '', pin: '', birthDate: '' })
+                setPhoto(null)
               }}
               className="flex-1 border-2 border-gray-200 text-[#8D7061] font-bold rounded-xl px-4 py-2 text-sm"
             >
