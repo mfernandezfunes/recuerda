@@ -39,11 +39,11 @@ jobs:
           git diff --cached --quiet || git commit -m "chore: bump client v${CLIENT_VER}, server v${SERVER_VER} [skip ci]"
           git push
 
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
+      - name: Install client dependencies
+        run: cd client && npm install --ignore-scripts
 
       - name: Build client
-        run: npm run build:ci --workspace=client
+        run: cd client && npm run build:ci
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
