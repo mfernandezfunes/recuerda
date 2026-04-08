@@ -1,6 +1,6 @@
 {
   "name": "recuerda-server",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
