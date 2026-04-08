@@ -47,7 +47,7 @@ export function OddOneOut() {
   useEffect(() => {
     if (!loading && content) {
       startTimer()
-      speak('¿Cuál no pertenece al grupo?')
+      speak(`¿Cuál no pertenece al grupo ${content.categoryName}?`)
     }
   }, [loading, content, startTimer, speak])
 
@@ -123,10 +123,10 @@ export function OddOneOut() {
             textAlign: 'center',
           }}
         >
-          ¿Cuál no pertenece al grupo?
+          ¿Cuál no pertenece al grupo <span style={{ color: '#8D4E00' }}>{content.categoryName}</span>?
         </p>
         <button
-          onClick={() => speak('¿Cuál no pertenece al grupo?')}
+          onClick={() => speak(`¿Cuál no pertenece al grupo ${content.categoryName}?`)}
           style={{ fontSize: '1.8rem', background: 'none', border: 'none', cursor: 'pointer' }}
           aria-label="Escuchar instrucción"
         >
