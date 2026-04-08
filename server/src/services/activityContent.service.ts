@@ -142,23 +142,23 @@ export async function generateMemoryCardsContent(
 
 // ─── FIND_OBJECT ──────────────────────────────────────────────────────────────
 
-const FIND_OBJECT_POOL: Array<{ emoji: string; name: string }> = [
-  { emoji: '🍎', name: 'Manzana' },
-  { emoji: '🐱', name: 'Gato' },
-  { emoji: '🌷', name: 'Flor' },
-  { emoji: '🍓', name: 'Fresa' },
-  { emoji: '🚗', name: 'Auto' },
-  { emoji: '🏠', name: 'Casa' },
-  { emoji: '☀️', name: 'Sol' },
-  { emoji: '🍦', name: 'Helado' },
-  { emoji: '🎈', name: 'Globo' },
-  { emoji: '🐶', name: 'Perro' },
+const FIND_OBJECT_POOL: Array<{ emoji: string; name: string; article: string }> = [
+  { emoji: '🍎', name: 'Manzana', article: 'la' },
+  { emoji: '🐱', name: 'Gato', article: 'el' },
+  { emoji: '🌷', name: 'Flor', article: 'la' },
+  { emoji: '🍓', name: 'Fresa', article: 'la' },
+  { emoji: '🚗', name: 'Auto', article: 'el' },
+  { emoji: '🏠', name: 'Casa', article: 'la' },
+  { emoji: '☀️', name: 'Sol', article: 'el' },
+  { emoji: '🍦', name: 'Helado', article: 'el' },
+  { emoji: '🎈', name: 'Globo', article: 'el' },
+  { emoji: '🐶', name: 'Perro', article: 'el' },
 ]
 
 export async function generateFindObjectContent(
   _difficulty: Difficulty
 ): Promise<{
-  target: { label: string; emoji: string }
+  target: { label: string; emoji: string; article: string }
   options: Array<{ label: string; emoji: string; isCorrect: boolean }>
 }> {
   const shuffled = shuffle(FIND_OBJECT_POOL).slice(0, 3)
@@ -172,7 +172,7 @@ export async function generateFindObjectContent(
     }))
   )
 
-  return { target: { label: target.name, emoji: target.emoji }, options }
+  return { target: { label: target.name, emoji: target.emoji, article: target.article }, options }
 }
 
 // ─── SERIES_PATTERNS ─────────────────────────────────────────────────────────

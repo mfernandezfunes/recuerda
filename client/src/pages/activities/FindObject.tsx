@@ -17,7 +17,7 @@ interface Option {
 }
 
 interface FindObjectContent {
-  target: { emoji: string; label: string }
+  target: { emoji: string; label: string; article: string }
   options: Option[]
 }
 
@@ -46,7 +46,7 @@ export function FindObject() {
   useEffect(() => {
     if (!loading && content) {
       startTimer()
-      const instruction = `¿Dónde está el ${content.target.label}?`
+      const instruction = `¿Dónde está ${content.target.article} ${content.target.label}?`
       speak(instruction)
     }
   }, [loading, content, startTimer, speak])
@@ -71,7 +71,7 @@ export function FindObject() {
           })
           .catch(() => {})
       }
-      speak(`¡Muy bien! Ese es el ${content?.target.label}`)
+      speak(`¡Muy bien! Esa es ${content?.target.article} ${content?.target.label}`)
       setTimeout(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'FIND_OBJECT', patientName: patient?.name ?? '' },
@@ -108,11 +108,11 @@ export function FindObject() {
             textAlign: 'center',
           }}
         >
-          ¿Dónde está el{' '}
+          ¿Dónde está {content.target.article}{' '}
           <span style={{ color: '#8D4E00' }}>{content.target.label}</span>?
         </p>
         <button
-          onClick={() => speak(`¿Dónde está el ${content.target.label}?`)}
+          onClick={() => speak(`¿Dónde está ${content.target.article} ${content.target.label}?`)}
           style={{ fontSize: '1.8rem', background: 'none', border: 'none', cursor: 'pointer' }}
           aria-label="Escuchar instrucción"
         >
