@@ -523,8 +523,8 @@ export function PatientDetail() {
                   <div className="flex items-center gap-3">
                     <span className="text-2xl shrink-0">{meta.icon}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-black text-[#5C4033] text-sm">{meta.label}</p>
-                      <p className="text-xs text-[#8D7061]">{meta.description}</p>
+                      <p className="font-black text-[#5C4033] text-sm">{meta.label} — {meta.description}</p>
+                      <p className="text-xs text-[#8FBC8F] font-semibold mt-0.5">🧠 {meta.trains}</p>
                     </div>
                     {/* Toggle */}
                     <button
