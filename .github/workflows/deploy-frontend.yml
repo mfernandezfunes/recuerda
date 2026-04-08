@@ -40,12 +40,10 @@ jobs:
           git push
 
       - name: Install client dependencies
-        run: |
-          rm -rf node_modules client/node_modules
-          cd client && npm install --ignore-scripts
+        run: npm install --ignore-scripts --workspace=client
 
       - name: Build client
-        run: cd client && npm run build:ci
+        run: npm run build:ci --workspace=client
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
