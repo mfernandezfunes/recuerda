@@ -316,16 +316,18 @@ const WHAT_IS_MISSING_POOL: Array<{ emoji: string; label: string }> = [
 ]
 
 export async function generateWhatIsMissingContent(difficulty: Difficulty): Promise<{
-  shownItems: Array<{ id: string; emoji: string; label: string }>
+  allItems: Array<{ id: string; emoji: string; label: string }>
   correct: string
   options: string[]
 }> {
-  const shownCount = difficulty === 'EASY' ? 4 : difficulty === 'MEDIUM' ? 5 : 6
-  const totalNeeded = shownCount + 1
+  const totalCount = difficulty === 'EASY' ? 5 : difficulty === 'MEDIUM' ? 6 : 7
 
-  const selected = shuffle(WHAT_IS_MISSING_POOL).slice(0, totalNeeded)
-  const missingItem = selected[selected.length - 1]
-  const shownItems = selected.slice(0, shownCount).map((item) => ({
+  const selected = shuffle(WHAT_IS_MISSING_POOL).slice(0, totalCount)
+  // Pick a random item to be "the missing one"
+  const missingIndex = Math.floor(Math.random() * totalCount)
+  const missingItem = selected[missingIndex]
+
+  const allItems = selected.map((item) => ({
     id: uuidv4(),
     emoji: item.emoji,
     label: item.label,
@@ -333,12 +335,12 @@ export async function generateWhatIsMissingContent(difficulty: Difficulty): Prom
 
   const distractors = shuffle(
     WHAT_IS_MISSING_POOL
-      .filter((i) => i.label !== missingItem.label && !shownItems.some((s) => s.label === i.label))
+      .filter((i) => !selected.some((s) => s.label === i.label))
   ).slice(0, 3)
 
   const options = shuffle([missingItem.label, ...distractors.map((d) => d.label)])
 
-  return { shownItems, correct: missingItem.label, options }
+  return { allItems, correct: missingItem.label, options }
 }
 
 // ─── PROVERBS ─────────────────────────────────────────────────────────────────

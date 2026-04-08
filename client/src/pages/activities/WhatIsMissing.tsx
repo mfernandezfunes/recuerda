@@ -12,7 +12,7 @@ import { ErrorScreen } from '../../components/shared/ErrorScreen'
 import { BigButton } from '../../components/ui/BigButton'
 
 interface WhatIsMissingContent {
-  shownItems: Array<{ id: string; emoji: string; label: string }>
+  allItems: Array<{ id: string; emoji: string; label: string }>
   correct: string
   options: string[]
 }
@@ -116,10 +116,10 @@ export function WhatIsMissing() {
   if (loading) return <LoadingScreen />
   if (!content) return <ErrorScreen message="No se pudo cargar la actividad" />
 
-  // Build grid items: in memorize phase show all, in guess phase replace missing with ?
+  // Memorize: show all items. Guess: replace the missing one with a ? placeholder.
   const gridItems = phase === 'memorize'
-    ? content.shownItems
-    : content.shownItems.map((item) =>
+    ? content.allItems
+    : content.allItems.map((item) =>
         item.label === content.correct
           ? { ...item, emoji: '❓', label: '?' }
           : item
