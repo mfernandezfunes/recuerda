@@ -40,10 +40,14 @@ jobs:
           git push
 
       - name: Install client dependencies
-        run: npm install --ignore-scripts --workspace=client
+        run: |
+          npm cache clean --force
+          node -e "const fs=require('fs'),pkg=JSON.parse(fs.readFileSync('package.json','utf8'));delete pkg.workspaces;fs.writeFileSync('package.json',JSON.stringify(pkg,null,2));"
+          npm install --ignore-scripts --prefix client
+          git checkout package.json
 
       - name: Build client
-        run: npm run build:ci --workspace=client
+        run: cd client && npm run build:ci
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
