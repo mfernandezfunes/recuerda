@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm run build --workspace=client",
+  "buildCommand": "cd client && npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install",
+  "installCommand": "cd client && npm install",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
