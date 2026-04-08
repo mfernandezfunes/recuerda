@@ -71,12 +71,11 @@ export function FindObject() {
           })
           .catch(() => {})
       }
-      speak(`¡Muy bien! Esa es ${content?.target.article} ${content?.target.label}`)
-      setTimeout(() => {
+      speak(`¡Muy bien! Esa es ${content?.target.article} ${content?.target.label}`).then(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'FIND_OBJECT', patientName: patient?.name ?? '' },
         })
-      }, 1800)
+      })
     } else {
       setShakeOption(option.label)
       setTimeout(() => {

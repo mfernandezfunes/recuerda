@@ -144,8 +144,7 @@ export function OrderStory() {
           })
           .catch(() => {})
       }
-      speak('¡Muy bien! ¡Pusiste todo en orden!')
-      setTimeout(() => {
+      speak('¡Muy bien! ¡Pusiste todo en orden!').then(() => {
         navigate('/patient/activity-result', {
           state: {
             starsEarned: stars,
@@ -153,7 +152,7 @@ export function OrderStory() {
             patientName: patient?.name ?? '',
           },
         })
-      }, 1500)
+      })
     } else {
       setFeedback('try-again')
       speak('Casi... intentá de nuevo')

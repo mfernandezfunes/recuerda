@@ -41,7 +41,7 @@ jobs:
           git push
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         env:
           PRISMA_SKIP_POSTINSTALL_GENERATE: "true"
 

@@ -70,12 +70,11 @@ export function SimpleMath() {
           })
           .catch(() => {})
       }
-      speak(`¡Exacto! ${content.questionText.replace('?', String(content.correct))}`)
-      setTimeout(() => {
+      speak(`¡Exacto! ${content.questionText.replace('?', String(content.correct))}`).then(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'SIMPLE_MATH', patientName: patient?.name ?? '' },
         })
-      }, 1500)
+      })
     } else {
       setShakeOption(option)
       setTimeout(() => setShakeOption(null), 600)
@@ -92,12 +91,11 @@ export function SimpleMath() {
             })
             .catch(() => {})
         }
-        speak(`¡Lo intentaste! La respuesta es ${content?.correct}`)
-        setTimeout(() => {
+        speak(`¡Lo intentaste! La respuesta es ${content?.correct}`).then(() => {
           navigate('/patient/activity-result', {
             state: { starsEarned: 1, activityType: 'SIMPLE_MATH', patientName: patient?.name ?? '' },
           })
-        }, 2000)
+        })
       } else {
         speak('Pensá de nuevo. ¿Cuánto es?')
       }

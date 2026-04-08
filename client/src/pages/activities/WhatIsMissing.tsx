@@ -79,12 +79,11 @@ export function WhatIsMissing() {
           })
           .catch(() => {})
       }
-      speak(`¡Muy bien! Faltaba la ${content.correct}`)
-      setTimeout(() => {
+      speak(`¡Muy bien! Faltaba la ${content.correct}`).then(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'WHAT_IS_MISSING', patientName: patient?.name ?? '' },
         })
-      }, 1500)
+      })
     } else {
       setShakeOption(option)
       setTimeout(() => setShakeOption(null), 600)
@@ -101,12 +100,11 @@ export function WhatIsMissing() {
             })
             .catch(() => {})
         }
-        speak(`¡Lo intentaste bien! Faltaba ${content?.correct}`)
-        setTimeout(() => {
+        speak(`¡Lo intentaste bien! Faltaba ${content?.correct}`).then(() => {
           navigate('/patient/activity-result', {
             state: { starsEarned: 1, activityType: 'WHAT_IS_MISSING', patientName: patient?.name ?? '' },
           })
-        }, 2000)
+        })
       } else {
         speak('Pensá bien. ¿Qué objeto no está?')
       }

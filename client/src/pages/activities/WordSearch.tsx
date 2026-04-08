@@ -56,12 +56,11 @@ export function WordSearch() {
         })
         .catch(() => {})
     }
-    speak('¡Encontraste todas las palabras! ¡Excelente!')
-    setTimeout(() => {
+    speak('¡Encontraste todas las palabras! ¡Excelente!').then(() => {
       navigate('/patient/activity-result', {
         state: { starsEarned: stars, activityType: 'WORD_SEARCH', patientName: patient?.name ?? '' },
       })
-    }, 1000)
+    })
   }
 
   if (loading) return <LoadingScreen />

@@ -1091,13 +1091,14 @@ export function Coloring() {
         })
         .catch(() => {})
     }
-    speak('¡Qué bonito quedó! ¡Muy bien!')
-    navigate('/patient/activity-result', {
-      state: {
-        starsEarned: 3,
-        activityType: 'COLORING',
-        patientName: patient?.name ?? '',
-      },
+    speak('¡Qué bonito quedó! ¡Muy bien!').then(() => {
+      navigate('/patient/activity-result', {
+        state: {
+          starsEarned: 3,
+          activityType: 'COLORING',
+          patientName: patient?.name ?? '',
+        },
+      })
     })
   }
 

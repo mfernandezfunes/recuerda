@@ -86,12 +86,11 @@ export function WhoIsThis() {
           })
           .catch(() => {})
       }
-      speak(`¡Muy bien! Es ${content?.member.name}`)
-      setTimeout(() => {
+      speak(`¡Muy bien! Es ${content?.member.name}`).then(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'WHO_IS_THIS', patientName: patient?.name ?? '' },
         })
-      }, 1500)
+      })
     } else {
       setShakePhoto(true)
       setTimeout(() => setShakePhoto(false), 600)
@@ -109,12 +108,11 @@ export function WhoIsThis() {
             })
             .catch(() => {})
         }
-        speak(`¡Igual lo intentaste muy bien! Es ${content?.member.name}`)
-        setTimeout(() => {
+        speak(`¡Igual lo intentaste muy bien! Es ${content?.member.name}`).then(() => {
           navigate('/patient/activity-result', {
             state: { starsEarned: 1, activityType: 'WHO_IS_THIS', patientName: patient?.name ?? '' },
           })
-        }, 2000)
+        })
       } else {
         speak('Mirá bien la foto. ¿Quién será?')
       }

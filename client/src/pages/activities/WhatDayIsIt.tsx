@@ -74,12 +74,11 @@ export function WhatDayIsIt() {
           })
           .catch(() => {})
       }
-      speak(`¡Correcto! Hoy es ${option}`)
-      setTimeout(() => {
+      speak(`¡Correcto! Hoy es ${option}`).then(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'WHAT_DAY_IS_IT', patientName: patient?.name ?? '' },
         })
-      }, 1500)
+      })
     } else {
       setSelectedWrong(option)
       setTimeout(() => setSelectedWrong(null), 600)
@@ -96,12 +95,11 @@ export function WhatDayIsIt() {
             })
             .catch(() => {})
         }
-        speak(`¡Igual lo intentaste bien! Hoy es ${content?.correct}`)
-        setTimeout(() => {
+        speak(`¡Igual lo intentaste bien! Hoy es ${content?.correct}`).then(() => {
           navigate('/patient/activity-result', {
             state: { starsEarned: 1, activityType: 'WHAT_DAY_IS_IT', patientName: patient?.name ?? '' },
           })
-        }, 2000)
+        })
       } else {
         speak('Pensá bien. ¿Qué día es hoy?')
       }

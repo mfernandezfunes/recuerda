@@ -114,8 +114,7 @@ export function CompleteSong() {
           })
           .catch(() => {})
       }
-      speak('¡Muy bien! ¡Eso es!')
-      setTimeout(() => {
+      speak('¡Muy bien! ¡Eso es!').then(() => {
         navigate('/patient/activity-result', {
           state: {
             starsEarned: stars,
@@ -123,7 +122,7 @@ export function CompleteSong() {
             patientName: patient?.name ?? '',
           },
         })
-      }, 1800)
+      })
     } else {
       setFeedback('try-again')
       speak('Casi... probá de nuevo')

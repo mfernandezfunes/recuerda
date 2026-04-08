@@ -137,12 +137,11 @@ export function SeriesPatterns() {
           })
           .catch(() => {})
       }
-      speak(`¡Muy bien! El número que sigue es ${option}`)
-      setTimeout(() => {
+      speak(`¡Muy bien! El número que sigue es ${option}`).then(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'SERIES_PATTERNS', patientName: patient?.name ?? '' },
         })
-      }, 1500)
+      })
     } else {
       setShakeOption(String(option))
       setTimeout(() => setShakeOption(null), 500)
@@ -159,12 +158,11 @@ export function SeriesPatterns() {
             })
             .catch(() => {})
         }
-        speak(`¡Lo intentaste! La respuesta era ${content?.correct}`)
-        setTimeout(() => {
+        speak(`¡Lo intentaste! La respuesta era ${content?.correct}`).then(() => {
           navigate('/patient/activity-result', {
             state: { starsEarned: 1, activityType: 'SERIES_PATTERNS', patientName: patient?.name ?? '' },
           })
-        }, 2000)
+        })
       } else {
         speak('Mirá bien la serie. ¿Qué patrón ves?')
       }

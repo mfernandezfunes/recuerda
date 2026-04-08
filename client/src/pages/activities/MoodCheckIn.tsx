@@ -48,11 +48,9 @@ export function MoodCheckIn() {
     }
 
     setSaved(true)
-    speak(`Gracias. Me alegra saber que estás ${mood.label.toLowerCase()}.`)
-
-    setTimeout(() => {
+    speak(`Gracias. Me alegra saber que estás ${mood.label.toLowerCase()}.`).then(() => {
       navigate('/patient')
-    }, 2500)
+    })
   }
 
   return (

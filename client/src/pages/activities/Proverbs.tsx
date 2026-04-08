@@ -65,12 +65,11 @@ export function Proverbs() {
           })
           .catch(() => {})
       }
-      speak(`¡Muy bien! '${content.firstPart} ${content.correct}'`)
-      setTimeout(() => {
+      speak(`¡Muy bien! '${content.firstPart} ${content.correct}'`).then(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'PROVERBS', patientName: patient?.name ?? '' },
         })
-      }, 1500)
+      })
     } else {
       setShakeOption(option)
       setTimeout(() => setShakeOption(null), 600)
@@ -87,12 +86,11 @@ export function Proverbs() {
             })
             .catch(() => {})
         }
-        speak(`¡Lo intentaste! El refrán dice: ${content?.firstPart} ${content?.correct}`)
-        setTimeout(() => {
+        speak(`¡Lo intentaste! El refrán dice: ${content?.firstPart} ${content?.correct}`).then(() => {
           navigate('/patient/activity-result', {
             state: { starsEarned: 1, activityType: 'PROVERBS', patientName: patient?.name ?? '' },
           })
-        }, 2000)
+        })
       } else {
         speak('Pensá un momento. ¿Cómo suena el refrán?')
       }

@@ -247,8 +247,7 @@ export function SimplePuzzle() {
             })
             .catch(() => {})
         }
-        speak('¡Excelente! ¡Armaste el rompecabezas!')
-        setTimeout(() => {
+        speak('¡Excelente! ¡Armaste el rompecabezas!').then(() => {
           navigate('/patient/activity-result', {
             state: {
               starsEarned: stars,
@@ -256,7 +255,7 @@ export function SimplePuzzle() {
               patientName: patient?.name ?? '',
             },
           })
-        }, 1500)
+        })
       }
     }
     // If incorrect: piece just returns to pool (stays in pool, no action needed)

@@ -66,12 +66,11 @@ export function OddOneOut() {
           })
           .catch(() => {})
       }
-      speak(`¡Correcto! ${content.correct} no es ${content.categoryName}`)
-      setTimeout(() => {
+      speak(`¡Correcto! ${content.correct} no es ${content.categoryName}`).then(() => {
         navigate('/patient/activity-result', {
           state: { starsEarned: stars, activityType: 'ODD_ONE_OUT', patientName: patient?.name ?? '' },
         })
-      }, 1500)
+      })
     } else {
       setShakeOption(label)
       setTimeout(() => setShakeOption(null), 600)
@@ -88,12 +87,11 @@ export function OddOneOut() {
             })
             .catch(() => {})
         }
-        speak(`¡Lo intentaste! El que no pertenece es ${content?.correct}`)
-        setTimeout(() => {
+        speak(`¡Lo intentaste! El que no pertenece es ${content?.correct}`).then(() => {
           navigate('/patient/activity-result', {
             state: { starsEarned: 1, activityType: 'ODD_ONE_OUT', patientName: patient?.name ?? '' },
           })
-        }, 2000)
+        })
       } else {
         speak('Mirá bien los grupos')
       }

@@ -114,12 +114,11 @@ export function MemoryCards() {
                   })
                   .catch(() => {})
               }
-              speak('¡Encontraste todos los pares! ¡Qué memoria!')
-              setTimeout(() => {
+              speak('¡Encontraste todos los pares! ¡Qué memoria!').then(() => {
                 navigate('/patient/activity-result', {
                   state: { starsEarned: stars, activityType: 'MEMORY_CARDS', patientName: patient?.name ?? '' },
                 })
-              }, 1200)
+              })
             }
           } else {
             setFlippedIds([])

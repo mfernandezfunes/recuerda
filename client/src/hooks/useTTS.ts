@@ -5,8 +5,8 @@ export function useTTS() {
   const { ttsEnabled } = useSettingsStore()
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
 
-  const speak = useCallback((text: string) => {
-    if (!ttsEnabled || !window.speechSynthesis) return
+  const speak = useCallback((text: string): Promise<void> => {
+    if (!ttsEnabled || !window.speechSynthesis) return Promise.resolve()
 
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(text)
@@ -21,7 +21,12 @@ export function useTTS() {
 
     if (spanishVoice) utterance.voice = spanishVoice
     utteranceRef.current = utterance
-    window.speechSynthesis.speak(utterance)
+
+    return new Promise<void>((resolve) => {
+      utterance.onend = () => resolve()
+      utterance.onerror = () => resolve()
+      window.speechSynthesis.speak(utterance)
+    })
   }, [ttsEnabled])
 
   const stop = useCallback(() => {
