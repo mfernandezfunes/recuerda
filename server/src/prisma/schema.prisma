@@ -1,0 +1,247 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── USUARIOS ────────────────────────────────────────────
+
+model Caregiver {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  phone        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  patients     Patient[]
+
+  @@map("caregivers")
+}
+
+model Patient {
+  id          String   @id @default(cuid())
+  name        String
+  pin         String
+  birthDate   DateTime
+  photoUrl    String?
+  caregiverId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  caregiver        Caregiver          @relation(fields: [caregiverId], references: [id])
+  sessions         Session[]
+  familyMembers    FamilyMember[]
+  agendaItems      AgendaItem[]
+  medications      Medication[]
+  activitySettings ActivitySetting[]
+  achievements     PatientAchievement[]
+  mediaFiles       MediaFile[]
+  moodEntries      MoodEntry[]
+
+  @@map("patients")
+}
+
+// ─── FAMILIARES ──────────────────────────────────────────
+
+model FamilyMember {
+  id        String  @id @default(cuid())
+  patientId String
+  name      String
+  relation  String
+  photoUrl  String
+
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("family_members")
+}
+
+// ─── MEDIA FILES ─────────────────────────────────────────
+
+model MediaFile {
+  id             String        @id @default(cuid())
+  patientId      String
+  type           MediaType
+  url            String
+  label          String?
+  usedInActivity ActivityType?
+  createdAt      DateTime      @default(now())
+
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("media_files")
+}
+
+enum MediaType {
+  IMAGE
+  AUDIO
+}
+
+// ─── SESIONES ────────────────────────────────────────────
+
+model Session {
+  id           String        @id @default(cuid())
+  patientId    String
+  startedAt    DateTime      @default(now())
+  endedAt      DateTime?
+  durationSecs Int?
+  totalStars   Int           @default(0)
+
+  patient      Patient       @relation(fields: [patientId], references: [id])
+  activityLogs ActivityLog[]
+  moodEntry    MoodEntry?
+
+  @@map("sessions")
+}
+
+model ActivityLog {
+  id           String       @id @default(cuid())
+  sessionId    String
+  activityType ActivityType
+  difficulty   Difficulty
+  startedAt    DateTime     @default(now())
+  completedAt  DateTime?
+  durationSecs Int?
+  starsEarned  Int          @default(0)
+  score        Float?
+  attempts     Int          @default(1)
+  metadata     Json?
+
+  session      Session      @relation(fields: [sessionId], references: [id])
+
+  @@map("activity_logs")
+}
+
+enum ActivityType {
+  MEMORY_CARDS
+  WHAT_DAY_IS_IT
+  WHO_IS_THIS
+  COMPLETE_SONG
+  ORDER_STORY
+  FIND_OBJECT
+  SIMPLE_PUZZLE
+  COLORING
+  WORD_SEARCH
+  MEMORY_GALLERY
+  DAY_AGENDA
+  BREATHING
+  SERIES_PATTERNS
+  MOOD_CHECKIN
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+// ─── CONFIGURACIÓN DE ACTIVIDADES ────────────────────────
+
+model ActivitySetting {
+  id           String       @id @default(cuid())
+  patientId    String
+  activityType ActivityType
+  difficulty   Difficulty   @default(EASY)
+  enabled      Boolean      @default(true)
+  extraConfig  Json?
+
+  patient      Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, activityType])
+  @@map("activity_settings")
+}
+
+// ─── AGENDA ──────────────────────────────────────────────
+
+model AgendaItem {
+  id            String   @id @default(cuid())
+  patientId     String
+  date          DateTime @db.Date
+  title         String
+  description   String?
+  time          String?
+  iconUrl       String?
+  visitorName   String?
+  visitorPhoto  String?
+  recurring     Boolean  @default(false)
+  recurringDays Int[]
+
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("agenda_items")
+}
+
+// ─── MEDICACIÓN ──────────────────────────────────────────
+
+model Medication {
+  id        String   @id @default(cuid())
+  patientId String
+  name      String
+  dosage    String
+  times     String[]
+  days      Int[]
+  color     String   @default("#FF9999")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("medications")
+}
+
+// ─── ESTADO DE ÁNIMO ─────────────────────────────────────
+
+model MoodEntry {
+  id        String   @id @default(cuid())
+  patientId String
+  sessionId String?  @unique
+  mood      MoodType
+  createdAt DateTime @default(now())
+
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  session   Session? @relation(fields: [sessionId], references: [id])
+
+  @@map("mood_entries")
+}
+
+enum MoodType {
+  VERY_HAPPY
+  HAPPY
+  NEUTRAL
+  SAD
+  ANXIOUS
+  TIRED
+}
+
+// ─── LOGROS ──────────────────────────────────────────────
+
+model Achievement {
+  id          String @id @default(cuid())
+  key         String @unique
+  title       String
+  description String
+  iconUrl     String
+  category    String
+
+  patients    PatientAchievement[]
+
+  @@map("achievements")
+}
+
+model PatientAchievement {
+  id            String      @id @default(cuid())
+  patientId     String
+  achievementId String
+  unlockedAt    DateTime    @default(now())
+  seen          Boolean     @default(false)
+
+  patient       Patient     @relation(fields: [patientId], references: [id])
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([patientId, achievementId])
+  @@map("patient_achievements")
+}

@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-nunito: 'Nunito', sans-serif;
+
+  /* Paleta Recuerda — tonos cálidos y suaves */
+  --color-cream: #FFF8F0;
+  --color-peach: #FFCBA4;
+  --color-peach-light: #FFE4CC;
+  --color-sage: #8FBC8F;
+  --color-sage-light: #C8E6C8;
+  --color-sky: #87CEEB;
+  --color-sky-light: #C8E8F8;
+  --color-butter: #FFF3A3;
+  --color-lavender: #D8B4FE;
+  --color-coral: #FF8A80;
+
+  /* Modo noche */
+  --color-night-bg: #1C1A2E;
+  --color-night-text: #F5E6C8;
+  --color-night-card: #2A2840;
+
+  /* Texto */
+  --color-warm-gray: #5C4033;
+  --color-warm-gray-light: #8D7061;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-family: 'Nunito', sans-serif;
+  background-color: #FFF8F0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+/* Área segura para iPhone con notch */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* Estilos base para el paciente */
+.patient-text {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: #5C4033;
+}
+
+/* Botón base del paciente */
+.patient-btn {
+  min-height: 80px;
+  min-width: 80px;
+  border-radius: 20px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.patient-btn:active {
+  transform: scale(0.95);
+}
+
+/* Scrollbar suave */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #FFCBA4; border-radius: 3px; }
