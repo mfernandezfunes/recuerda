@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '../../store/auth.store'
 import { useTTS } from '../../hooks/useTTS'
-import { ACTIVITY_META, ActivityType } from '../../types'
+import { ACTIVITY_META } from '../../types'
+import type { ActivityType } from '../../types'
 
 const TODAY_ACTIVITIES: ActivityType[] = [
   'MEMORY_CARDS',

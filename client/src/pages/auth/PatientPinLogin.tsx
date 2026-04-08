@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { authApi } from '../../api/auth.api'
 import { useAuthStore } from '../../store/auth.store'
-import { Patient } from '../../types'
+import type { Patient } from '../../types'
 
 const PIN_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', '✓']
 

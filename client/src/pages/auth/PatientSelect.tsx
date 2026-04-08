@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { authApi } from '../../api/auth.api'
-import { Patient } from '../../types'
+import type { Patient } from '../../types'
 
 export function PatientSelect() {
   const navigate = useNavigate()

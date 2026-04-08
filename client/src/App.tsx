@@ -12,7 +12,13 @@ import { CaregiverLayout } from './layouts/CaregiverLayout'
 import { ProtectedRoute } from './components/shared/ProtectedRoute'
 
 import { PatientHome } from './pages/patient/PatientHome'
+import { ActivityRouter } from './pages/activities/ActivityRouter'
+import { ActivityResult } from './pages/activities/ActivityResult'
 import { CaregiverDashboard } from './pages/caregiver/CaregiverDashboard'
+import { PatientList } from './pages/caregiver/PatientList'
+import { PatientDetail } from './pages/caregiver/PatientDetail'
+import { PatientProgress } from './pages/caregiver/PatientProgress'
+import { ManageMedia } from './pages/caregiver/ManageMedia'
 
 function RootRedirect() {
   const { isAuthenticated, role } = useAuthStore()
@@ -45,7 +51,8 @@ export default function App() {
           }
         >
           <Route index element={<PatientHome />} />
-          <Route path="activity/:type" element={<div className="p-8 text-center text-2xl font-black text-[#5C4033]">Actividad en construcción 🚧</div>} />
+          <Route path="activity/:type" element={<ActivityRouter />} />
+          <Route path="activity-result" element={<ActivityResult />} />
           <Route path="agenda" element={<div className="p-8 text-center text-2xl font-black text-[#5C4033]">Mi Agenda 🗓️</div>} />
           <Route path="gallery" element={<div className="p-8 text-center text-2xl font-black text-[#5C4033]">Mis Recuerdos 📷</div>} />
           <Route path="breathing" element={<div className="p-8 text-center text-2xl font-black text-[#5C4033]">Respiración 🌸</div>} />
@@ -61,7 +68,10 @@ export default function App() {
           }
         >
           <Route index element={<CaregiverDashboard />} />
-          <Route path="patients" element={<div className="text-center p-8">Pacientes — próximamente</div>} />
+          <Route path="patients" element={<PatientList />} />
+          <Route path="patients/:patientId" element={<PatientDetail />} />
+          <Route path="patients/:patientId/progress" element={<PatientProgress />} />
+          <Route path="patients/:patientId/media" element={<ManageMedia />} />
           <Route path="progress" element={<div className="text-center p-8">Progreso — próximamente</div>} />
           <Route path="settings" element={<div className="text-center p-8">Configuración — próximamente</div>} />
         </Route>

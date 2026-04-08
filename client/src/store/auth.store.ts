@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Caregiver, Patient, UserRole } from '../types'
+import type { Caregiver, Patient, UserRole } from '../types'
 
 interface AuthState {
   token: string | null
@@ -32,15 +32,6 @@ export const useAuthStore = create<AuthState>()(
       logout: () =>
         set({ token: null, role: null, caregiver: null, patient: null, isAuthenticated: false }),
     }),
-    {
-      name: 'recuerda-auth',
-      partialState: (state) => ({
-        token: state.token,
-        role: state.role,
-        caregiver: state.caregiver,
-        patient: state.patient,
-        isAuthenticated: state.isAuthenticated,
-      }),
-    }
+    { name: 'recuerda-auth' }
   )
 )

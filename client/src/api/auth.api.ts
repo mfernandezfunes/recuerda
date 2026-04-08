@@ -1,5 +1,5 @@
 import apiClient from './client'
-import { Caregiver, Patient } from '../types'
+import type { Caregiver, Patient } from '../types'
 
 export interface CaregiverLoginResponse {
   token: string
