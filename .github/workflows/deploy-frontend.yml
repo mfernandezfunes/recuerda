@@ -46,7 +46,7 @@ jobs:
           PRISMA_SKIP_POSTINSTALL_GENERATE: "true"
 
       - name: Build client
-        run: cd client && npx vite build
+        run: npm run build:ci --workspace=client
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
