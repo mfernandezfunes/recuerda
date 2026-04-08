@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { patientsApi } from '../../api/patients.api'
 import { mediaApi } from '../../api/media.api'
+import { resolveMediaUrl } from '../../api/client'
 import { ACTIVITY_META } from '../../types'
 import type { ActivityType } from '../../types'
 
@@ -314,7 +315,7 @@ export function PatientDetail() {
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
         {patient.photoUrl ? (
           <img
-            src={patient.photoUrl}
+            src={resolveMediaUrl(patient.photoUrl)}
             alt={patient.name}
             className="w-16 h-16 rounded-full object-cover shrink-0"
           />
@@ -437,7 +438,7 @@ export function PatientDetail() {
                 >
                   {fm.photoUrl ? (
                     <img
-                      src={fm.photoUrl}
+                      src={resolveMediaUrl(fm.photoUrl)}
                       alt={fm.name}
                       className="w-12 h-12 rounded-full object-cover shrink-0"
                     />

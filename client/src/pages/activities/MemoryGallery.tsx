@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import apiClient from '../../api/client'
+import apiClient, { resolveMediaUrl } from '../../api/client'
 import { useAuthStore } from '../../store/auth.store'
 import { useTTS } from '../../hooks/useTTS'
 import { BigButton } from '../../components/ui/BigButton'
@@ -123,7 +123,7 @@ export function MemoryGallery() {
             style={{ position: 'absolute', inset: 0 }}
           >
             <img
-              src={current.url}
+              src={resolveMediaUrl(current.url)}
               alt={current.label ?? 'Recuerdo'}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />

@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { authApi } from '../../api/auth.api'
 import { useAuthStore } from '../../store/auth.store'
+import { resolveMediaUrl } from '../../api/client'
 import type { Patient } from '../../types'
 
 const PIN_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', '✓']
@@ -67,7 +68,7 @@ export function PatientPinLogin() {
         {/* Avatar y nombre */}
         <div className="text-center mb-8">
           {patient?.photoUrl ? (
-            <img src={patient.photoUrl} alt={patient.name} className="w-24 h-24 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-lg" />
+            <img src={resolveMediaUrl(patient.photoUrl)} alt={patient.name} className="w-24 h-24 rounded-full object-cover mx-auto mb-3 border-4 border-white shadow-lg" />
           ) : (
             <div className="w-24 h-24 rounded-full bg-[#FFCBA4] flex items-center justify-center text-5xl mx-auto mb-3">👤</div>
           )}

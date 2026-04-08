@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { patientsApi } from '../../api/patients.api'
+import { resolveMediaUrl } from '../../api/client'
 import type { Patient } from '../../types'
 
 interface CreateForm {
@@ -196,7 +197,7 @@ export function PatientList() {
             >
               {patient.photoUrl ? (
                 <img
-                  src={patient.photoUrl}
+                  src={resolveMediaUrl(patient.photoUrl)}
                   alt={patient.name}
                   className="w-14 h-14 rounded-full object-cover shrink-0"
                 />

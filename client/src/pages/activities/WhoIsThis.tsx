@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import apiClient from '../../api/client'
+import apiClient, { resolveMediaUrl } from '../../api/client'
 import { useAuthStore } from '../../store/auth.store'
 import { useSessionStore } from '../../store/session.store'
 import { useTTS } from '../../hooks/useTTS'
@@ -181,7 +181,7 @@ export function WhoIsThis() {
       >
         {content.member.photoUrl ? (
           <img
-            src={content.member.photoUrl}
+            src={resolveMediaUrl(content.member.photoUrl)}
             alt="Familiar"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />

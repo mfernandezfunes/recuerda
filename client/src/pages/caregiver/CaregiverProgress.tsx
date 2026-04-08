@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import { patientsApi } from '../../api/patients.api'
+import { resolveMediaUrl } from '../../api/client'
 import type { Patient } from '../../types'
 
 interface PatientSummary {
@@ -141,7 +142,7 @@ export function CaregiverProgress() {
               >
                 <div className="flex items-center gap-3 mb-3">
                   {patient.photoUrl ? (
-                    <img src={patient.photoUrl} alt={patient.name} className="w-10 h-10 rounded-full object-cover" />
+                    <img src={resolveMediaUrl(patient.photoUrl)} alt={patient.name} className="w-10 h-10 rounded-full object-cover" />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-[#FFCBA4] flex items-center justify-center text-lg">👤</div>
                   )}

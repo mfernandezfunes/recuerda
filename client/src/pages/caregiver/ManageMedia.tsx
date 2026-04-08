@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
 import { mediaApi } from '../../api/media.api'
+import { resolveMediaUrl } from '../../api/client'
 import { ACTIVITY_META } from '../../types'
 import type { ActivityType } from '../../types'
 
@@ -197,7 +198,7 @@ function MediaCard({
       <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
         <div className="aspect-square relative">
           <img
-            src={file.url}
+            src={resolveMediaUrl(file.url)}
             alt={file.filename}
             className="w-full h-full object-cover"
           />
@@ -240,7 +241,7 @@ function MediaCard({
             Sin asignar
           </span>
         )}
-        <audio controls src={file.url} className="w-full mt-1 h-8" />
+        <audio controls src={resolveMediaUrl(file.url)} className="w-full mt-1 h-8" />
       </div>
       <button
         onClick={() => onDelete(file.id)}

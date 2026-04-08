@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcryptjs'
+import fs from 'fs'
+import path from 'path'
 import { ActivityType, Difficulty } from '@prisma/client'
 import { prisma } from '../config/database'
 import { createError } from '../middleware/errorHandler'
+import { UPLOADS_DIR } from '../config/storage'
 
 // ─── Patients ─────────────────────────────────────────────────────────────────
 
@@ -217,6 +220,25 @@ export async function deleteFamilyMember(req: Request, res: Response, next: Next
     if (!existing) return next(createError('Familiar no encontrado', 404))
 
     await prisma.familyMember.delete({ where: { id: req.params.fmId } })
+
+    // Delete photo file from volume if one exists
+    if (existing.photoUrl) {
+      try {
+        // Support both "/uploads/..." (new) and absolute URLs (legacy)
+        const uploadsIdx = existing.photoUrl.indexOf('/uploads/')
+        if (uploadsIdx !== -1) {
+          const relativePath = existing.photoUrl.substring(uploadsIdx + '/uploads/'.length)
+          const filePath = path.join(UPLOADS_DIR, relativePath)
+          if (fs.existsSync(filePath)) fs.unlinkSync(filePath)
+        }
+        // Also remove the MediaFile record if it matches this URL
+        await prisma.mediaFile.deleteMany({
+          where: { patientId: existing.patientId, url: existing.photoUrl },
+        })
+      } catch {
+        // Non-fatal: file may already be gone
+      }
+    }
 
     res.json({ message: 'Familiar eliminado' })
   } catch (err) {

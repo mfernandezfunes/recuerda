@@ -12,6 +12,7 @@ export function ensureUploadDir(subPath: string): string {
 }
 
 export function getPublicUrl(relativePath: string): string {
-  const baseUrl = process.env.API_URL || `http://localhost:${process.env.PORT || 3001}`
-  return `${baseUrl}/uploads/${relativePath}`
+  // Store as a root-relative path so the frontend can prepend the correct API base URL.
+  // e.g. "/uploads/patientId/images/file.jpg"
+  return `/uploads/${relativePath}`
 }

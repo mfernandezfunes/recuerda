@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { authApi } from '../../api/auth.api'
+import { resolveMediaUrl } from '../../api/client'
 import type { Patient } from '../../types'
 
 export function PatientSelect() {
@@ -72,7 +73,7 @@ export function PatientSelect() {
                 className="w-full bg-white rounded-3xl shadow-lg p-6 flex items-center gap-4 active:scale-95 transition-all"
               >
                 {p.photoUrl ? (
-                  <img src={p.photoUrl} alt={p.name} className="w-16 h-16 rounded-full object-cover" />
+                  <img src={resolveMediaUrl(p.photoUrl)} alt={p.name} className="w-16 h-16 rounded-full object-cover" />
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-[#FFCBA4] flex items-center justify-center text-3xl">
                     👤

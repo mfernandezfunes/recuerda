@@ -4,6 +4,7 @@ import { useSettingsStore } from '../store/settings.store'
 import { useTTS } from '../hooks/useTTS'
 import { useMedicationAlarm } from '../hooks/useMedicationAlarm'
 import { MedicationAlarmModal } from '../components/patient/MedicationAlarmModal'
+import { resolveMediaUrl } from '../api/client'
 
 const NAV_ITEMS = [
   { path: '/patient', icon: '🏠', label: 'Inicio' },
@@ -61,7 +62,7 @@ export function PatientLayout() {
             🚪
           </button>
           {patient?.photoUrl ? (
-            <img src={patient.photoUrl} alt={patient.name} className="w-10 h-10 rounded-full object-cover border-2 border-[#FFCBA4]" />
+            <img src={resolveMediaUrl(patient.photoUrl)} alt={patient.name} className="w-10 h-10 rounded-full object-cover border-2 border-[#FFCBA4]" />
           ) : (
             <div className="w-10 h-10 rounded-full bg-[#FFCBA4] flex items-center justify-center text-xl">👤</div>
           )}

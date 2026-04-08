@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/auth.store'
 import { patientsApi } from '../../api/patients.api'
+import { resolveMediaUrl } from '../../api/client'
 import type { Patient } from '../../types'
 
 interface Alert {
@@ -174,7 +175,7 @@ export function CaregiverDashboard() {
                 >
                   {patient.photoUrl ? (
                     <img
-                      src={patient.photoUrl}
+                      src={resolveMediaUrl(patient.photoUrl)}
                       alt={patient.name}
                       className="w-12 h-12 rounded-full object-cover shrink-0"
                     />
