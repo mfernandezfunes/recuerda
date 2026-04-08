@@ -35,6 +35,7 @@ interface StoryImage {
 interface StoryContent {
   images: StoryImage[]
   title: string
+  difficulty?: string
 }
 
 function SortableItem({ id, emoji, label }: { id: string; emoji: string; label: string }) {
@@ -82,6 +83,7 @@ export function OrderStory() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<StoryContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [items, setItems] = useState<StoryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -95,11 +97,12 @@ export function OrderStory() {
   useEffect(() => {
     apiClient
       .get('/activities/ORDER_STORY/content', {
-        params: { patientId: patient?.id, difficulty: 'EASY' },
+        params: { patientId: patient?.id },
       })
       .then((r) => {
         const data = r.data as StoryContent
         setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
         setItems(shuffleArray(data.images))
       })
       .catch(() => setError(true))
@@ -138,7 +141,7 @@ export function OrderStory() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'ORDER_STORY',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })

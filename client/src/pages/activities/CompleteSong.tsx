@@ -16,6 +16,7 @@ interface SongContent {
   lyricFragment: string
   correct: string
   options: string[]
+  difficulty?: string
 }
 
 export function CompleteSong() {
@@ -27,6 +28,7 @@ export function CompleteSong() {
 
   const audioRef = useRef<HTMLAudioElement>(null)
   const [content, setContent] = useState<SongContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [audioError, setAudioError] = useState(false)
@@ -41,10 +43,12 @@ export function CompleteSong() {
   useEffect(() => {
     apiClient
       .get('/activities/COMPLETE_SONG/content', {
-        params: { patientId: patient?.id, difficulty: 'EASY' },
+        params: { patientId: patient?.id },
       })
       .then((r) => {
-        setContent(r.data as SongContent)
+        const data = r.data as SongContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
@@ -108,7 +112,7 @@ export function CompleteSong() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'COMPLETE_SONG',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })

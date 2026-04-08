@@ -14,6 +14,7 @@ interface WhatDayContent {
   question: string
   correct: string
   options: string[]
+  difficulty?: string
 }
 
 const DAY_ICONS: Record<string, string> = {
@@ -34,6 +35,7 @@ export function WhatDayIsIt() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<WhatDayContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [attempts, setAttempts] = useState(0)
   const [selectedWrong, setSelectedWrong] = useState<string | null>(null)
@@ -41,8 +43,12 @@ export function WhatDayIsIt() {
 
   useEffect(() => {
     apiClient
-      .get('/activities/WHAT_DAY_IS_IT/content', { params: { difficulty: 'EASY' } })
-      .then((r) => setContent(r.data as WhatDayContent))
+      .get('/activities/WHAT_DAY_IS_IT/content')
+      .then((r) => {
+        const data = r.data as WhatDayContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [])
@@ -68,7 +74,7 @@ export function WhatDayIsIt() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'WHAT_DAY_IS_IT',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })
@@ -89,7 +95,7 @@ export function WhatDayIsIt() {
           sessionsApi
             .logActivity(sessionId, {
               activityType: 'WHAT_DAY_IS_IT',
-              difficulty: 'EASY',
+              difficulty,
               starsEarned: 1,
               durationSecs,
             })

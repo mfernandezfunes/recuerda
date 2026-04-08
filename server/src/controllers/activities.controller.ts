@@ -93,13 +93,19 @@ export async function getActivityContent(req: Request, res: Response, next: Next
     // If not provided as query param, fall back to the authenticated user's own ID
     const patientId = (typeof qPatientId === 'string' && qPatientId) ? qPatientId : req.user!.id
 
-    const diff = (difficulty as Difficulty) ?? Difficulty.EASY
-    if (!Object.values(Difficulty).includes(diff)) {
-      return next(createError('difficulty inválido', 400))
-    }
-
     if (!Object.values(ActivityType).includes(type as ActivityType)) {
       return next(createError('Tipo de actividad inválido', 400))
+    }
+
+    // Look up patient's configured difficulty if not explicitly passed
+    let diff: Difficulty
+    if (typeof difficulty === 'string' && Object.values(Difficulty).includes(difficulty as Difficulty)) {
+      diff = difficulty as Difficulty
+    } else {
+      const setting = await prisma.activitySetting.findUnique({
+        where: { patientId_activityType: { patientId, activityType: type as ActivityType } },
+      })
+      diff = setting?.difficulty ?? Difficulty.EASY
     }
 
     let content: unknown = null
@@ -149,7 +155,7 @@ export async function getActivityContent(req: Request, res: Response, next: Next
       return next(createError('No hay contenido disponible para esta actividad', 404))
     }
 
-    res.json(content)
+    res.json({ ...content as Record<string, unknown>, difficulty: diff })
   } catch (err) {
     next(err)
   }

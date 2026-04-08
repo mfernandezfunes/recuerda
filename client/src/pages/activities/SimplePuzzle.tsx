@@ -26,6 +26,7 @@ interface PuzzleContent {
   emoji: string
   label: string
   gridSize: number
+  difficulty?: string
 }
 
 interface Piece {
@@ -150,6 +151,7 @@ export function SimplePuzzle() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<PuzzleContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [pieces, setPieces] = useState<Piece[]>([])
   const [poolPieces, setPoolPieces] = useState<Piece[]>([])
   const [slotMap, setSlotMap] = useState<Record<number, Piece | null>>({})
@@ -167,11 +169,12 @@ export function SimplePuzzle() {
   useEffect(() => {
     apiClient
       .get('/activities/SIMPLE_PUZZLE/content', {
-        params: { patientId: patient?.id, difficulty: 'EASY' },
+        params: { patientId: patient?.id },
       })
       .then((r) => {
         const data = r.data as PuzzleContent
         setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
         const n = data.gridSize * data.gridSize
         const allPieces: Piece[] = Array.from({ length: n }, (_, i) => ({
           id: `piece-${i}`,
@@ -241,7 +244,7 @@ export function SimplePuzzle() {
           sessionsApi
             .logActivity(sessionId, {
               activityType: 'SIMPLE_PUZZLE',
-              difficulty: 'EASY',
+              difficulty,
               starsEarned: stars,
               durationSecs,
             })

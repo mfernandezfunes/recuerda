@@ -1002,6 +1002,7 @@ export function Coloring() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [difficulty] = useState<string>('EASY')
   const [selectedColor, setSelectedColor] = useState(PALETTE[0])
   const [drawingIndex, setDrawingIndex] = useState(0)
 
@@ -1085,7 +1086,7 @@ export function Coloring() {
       sessionsApi
         .logActivity(sessionId, {
           activityType: 'COLORING',
-          difficulty: 'EASY',
+          difficulty,
           starsEarned: 3,
           durationSecs,
         })

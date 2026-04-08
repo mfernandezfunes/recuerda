@@ -41,6 +41,7 @@ export function MemoryCards() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [cards, setCards] = useState<MemoryCard[]>([])
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [flippedIds, setFlippedIds] = useState<string[]>([])
@@ -52,10 +53,12 @@ export function MemoryCards() {
   useEffect(() => {
     apiClient
       .get('/activities/MEMORY_CARDS/content', {
-        params: { patientId: patient?.id, difficulty: 'EASY' },
+        params: { patientId: patient?.id },
       })
       .then((r) => {
-        const pairs: Pair[] = (r.data as { pairs: Pair[] }).pairs
+        const responseData = r.data as { pairs: Pair[]; difficulty?: string }
+        setDifficulty(responseData.difficulty ?? 'EASY')
+        const pairs: Pair[] = responseData.pairs
         setNumPairs(pairs.length)
         const doubled: MemoryCard[] = pairs.flatMap((p) => [
           { uid: `${p.id}-a`, pairId: p.id, emoji: p.emoji, label: p.label },
@@ -108,7 +111,7 @@ export function MemoryCards() {
                 sessionsApi
                   .logActivity(sessionId, {
                     activityType: 'MEMORY_CARDS',
-                    difficulty: 'EASY',
+                    difficulty,
                     starsEarned: stars,
                     durationSecs,
                   })
@@ -134,6 +137,7 @@ export function MemoryCards() {
       cards,
       attempts,
       numPairs,
+      difficulty,
       addStars,
       stopTimer,
       sessionId,

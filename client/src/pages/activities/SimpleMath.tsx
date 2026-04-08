@@ -18,6 +18,7 @@ interface SimpleMathContent {
   operation: '+' | '-'
   correct: number
   options: number[]
+  difficulty?: string
 }
 
 const APPLE_EMOJI = '🍎'
@@ -30,6 +31,7 @@ export function SimpleMath() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<SimpleMathContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [attempts, setAttempts] = useState(0)
   const [shakeOption, setShakeOption] = useState<number | null>(null)
@@ -37,8 +39,12 @@ export function SimpleMath() {
 
   useEffect(() => {
     apiClient
-      .get('/activities/SIMPLE_MATH/content', { params: { difficulty: 'EASY' } })
-      .then((r) => setContent(r.data as SimpleMathContent))
+      .get('/activities/SIMPLE_MATH/content')
+      .then((r) => {
+        const data = r.data as SimpleMathContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [])
@@ -64,7 +70,7 @@ export function SimpleMath() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'SIMPLE_MATH',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })
@@ -85,7 +91,7 @@ export function SimpleMath() {
           sessionsApi
             .logActivity(sessionId, {
               activityType: 'SIMPLE_MATH',
-              difficulty: 'EASY',
+              difficulty,
               starsEarned: 1,
               durationSecs,
             })

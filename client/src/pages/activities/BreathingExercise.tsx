@@ -26,6 +26,7 @@ export function BreathingExercise() {
   const { speak } = useTTS()
   const { startTimer, stopTimer } = useActivityTimer()
 
+  const [difficulty] = useState<string>('EASY')
   const [phase, setPhase] = useState<Phase>('inhala')
   const [cycle, setCycle] = useState(0)
   const [paused, setPaused] = useState(false)
@@ -56,7 +57,7 @@ export function BreathingExercise() {
       sessionsApi
         .logActivity(sessionIdRef.current, {
           activityType: 'BREATHING',
-          difficulty: 'EASY',
+          difficulty,
           starsEarned: 3,
           durationSecs,
         })

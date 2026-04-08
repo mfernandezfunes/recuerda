@@ -14,6 +14,7 @@ import { BigButton } from '../../components/ui/BigButton'
 interface WhoIsThisContent {
   member: { name: string; relation: string; photoUrl?: string }
   options: string[]
+  difficulty?: string
 }
 
 function playSuccessSound() {
@@ -43,6 +44,7 @@ export function WhoIsThis() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<WhoIsThisContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [attempts, setAttempts] = useState(0)
   const [success, setSuccess] = useState(false)
@@ -51,9 +53,13 @@ export function WhoIsThis() {
   useEffect(() => {
     apiClient
       .get('/activities/WHO_IS_THIS/content', {
-        params: { patientId: patient?.id, difficulty: 'EASY' },
+        params: { patientId: patient?.id },
       })
-      .then((r) => setContent(r.data as WhoIsThisContent))
+      .then((r) => {
+        const data = r.data as WhoIsThisContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [patient?.id])
@@ -80,7 +86,7 @@ export function WhoIsThis() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'WHO_IS_THIS',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })
@@ -102,7 +108,7 @@ export function WhoIsThis() {
           sessionsApi
             .logActivity(sessionId, {
               activityType: 'WHO_IS_THIS',
-              difficulty: 'EASY',
+              difficulty,
               starsEarned: 1,
               durationSecs,
             })

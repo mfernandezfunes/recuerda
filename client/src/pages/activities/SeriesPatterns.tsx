@@ -16,6 +16,7 @@ interface SeriesContent {
   correct: number | string
   options: (number | string)[]
   type?: 'numbers' | 'colors' | 'shapes'
+  difficulty?: string
 }
 
 const COLOR_MAP: Record<string, string> = {
@@ -97,6 +98,7 @@ export function SeriesPatterns() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<SeriesContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [attempts, setAttempts] = useState(0)
   const [shakeOption, setShakeOption] = useState<string | null>(null)
@@ -104,8 +106,12 @@ export function SeriesPatterns() {
 
   useEffect(() => {
     apiClient
-      .get('/activities/SERIES_PATTERNS/content', { params: { difficulty: 'EASY' } })
-      .then((r) => setContent(r.data as SeriesContent))
+      .get('/activities/SERIES_PATTERNS/content')
+      .then((r) => {
+        const data = r.data as SeriesContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [])
@@ -131,7 +137,7 @@ export function SeriesPatterns() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'SERIES_PATTERNS',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })
@@ -152,7 +158,7 @@ export function SeriesPatterns() {
           sessionsApi
             .logActivity(sessionId, {
               activityType: 'SERIES_PATTERNS',
-              difficulty: 'EASY',
+              difficulty,
               starsEarned: 1,
               durationSecs,
             })

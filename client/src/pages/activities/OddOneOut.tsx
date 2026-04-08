@@ -14,6 +14,7 @@ interface OddOneOutContent {
   items: Array<{ emoji: string; label: string }>
   correct: string
   categoryName: string
+  difficulty?: string
 }
 
 export function OddOneOut() {
@@ -24,6 +25,7 @@ export function OddOneOut() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<OddOneOutContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [attempts, setAttempts] = useState(0)
   const [shakeOption, setShakeOption] = useState<string | null>(null)
@@ -32,8 +34,12 @@ export function OddOneOut() {
 
   useEffect(() => {
     apiClient
-      .get('/activities/ODD_ONE_OUT/content', { params: { difficulty: 'EASY' } })
-      .then((r) => setContent(r.data as OddOneOutContent))
+      .get('/activities/ODD_ONE_OUT/content')
+      .then((r) => {
+        const data = r.data as OddOneOutContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [])
@@ -60,7 +66,7 @@ export function OddOneOut() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'ODD_ONE_OUT',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })
@@ -81,7 +87,7 @@ export function OddOneOut() {
           sessionsApi
             .logActivity(sessionId, {
               activityType: 'ODD_ONE_OUT',
-              difficulty: 'EASY',
+              difficulty,
               starsEarned: 1,
               durationSecs,
             })

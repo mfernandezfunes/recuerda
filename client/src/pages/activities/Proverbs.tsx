@@ -15,6 +15,7 @@ interface ProverbsContent {
   firstPart: string
   correct: string
   options: string[]
+  difficulty?: string
 }
 
 export function Proverbs() {
@@ -25,6 +26,7 @@ export function Proverbs() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<ProverbsContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [attempts, setAttempts] = useState(0)
   const [shakeOption, setShakeOption] = useState<string | null>(null)
@@ -32,8 +34,12 @@ export function Proverbs() {
 
   useEffect(() => {
     apiClient
-      .get('/activities/PROVERBS/content', { params: { difficulty: 'EASY' } })
-      .then((r) => setContent(r.data as ProverbsContent))
+      .get('/activities/PROVERBS/content')
+      .then((r) => {
+        const data = r.data as ProverbsContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [])
@@ -59,7 +65,7 @@ export function Proverbs() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'PROVERBS',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })
@@ -80,7 +86,7 @@ export function Proverbs() {
           sessionsApi
             .logActivity(sessionId, {
               activityType: 'PROVERBS',
-              difficulty: 'EASY',
+              difficulty,
               starsEarned: 1,
               durationSecs,
             })

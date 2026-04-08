@@ -19,6 +19,7 @@ interface Option {
 interface FindObjectContent {
   target: { emoji: string; label: string; article: string }
   options: Option[]
+  difficulty?: string
 }
 
 export function FindObject() {
@@ -29,6 +30,7 @@ export function FindObject() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<FindObjectContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [removedOptions, setRemovedOptions] = useState<string[]>([])
   const [shakeOption, setShakeOption] = useState<string | null>(null)
@@ -37,8 +39,12 @@ export function FindObject() {
 
   useEffect(() => {
     apiClient
-      .get('/activities/FIND_OBJECT/content', { params: { difficulty: 'EASY' } })
-      .then((r) => setContent(r.data as FindObjectContent))
+      .get('/activities/FIND_OBJECT/content')
+      .then((r) => {
+        const data = r.data as FindObjectContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [])
@@ -65,7 +71,7 @@ export function FindObject() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'FIND_OBJECT',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })

@@ -14,6 +14,7 @@ interface WordSearchContent {
   grid: string[][]
   words: string[]
   theme: string
+  difficulty?: string
 }
 
 export function WordSearch() {
@@ -24,12 +25,17 @@ export function WordSearch() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<WordSearchContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     apiClient
-      .get('/activities/WORD_SEARCH/content', { params: { difficulty: 'EASY' } })
-      .then((r) => setContent(r.data as WordSearchContent))
+      .get('/activities/WORD_SEARCH/content')
+      .then((r) => {
+        const data = r.data as WordSearchContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [])
@@ -50,7 +56,7 @@ export function WordSearch() {
       sessionsApi
         .logActivity(sessionId, {
           activityType: 'WORD_SEARCH',
-          difficulty: 'EASY',
+          difficulty,
           starsEarned: stars,
           durationSecs: elapsed,
         })

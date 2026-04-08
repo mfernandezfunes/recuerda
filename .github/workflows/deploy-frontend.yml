@@ -41,12 +41,12 @@ jobs:
           git push
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
         env:
           PRISMA_SKIP_POSTINSTALL_GENERATE: "true"
 
       - name: Build client
-        run: npm run build --workspace=client
+        run: cd client && npx vite build
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 

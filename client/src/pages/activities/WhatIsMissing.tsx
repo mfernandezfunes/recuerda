@@ -15,6 +15,7 @@ interface WhatIsMissingContent {
   allItems: Array<{ id: string; emoji: string; label: string }>
   correct: string
   options: string[]
+  difficulty?: string
 }
 
 export function WhatIsMissing() {
@@ -25,6 +26,7 @@ export function WhatIsMissing() {
   const { startTimer, stopTimer } = useActivityTimer()
 
   const [content, setContent] = useState<WhatIsMissingContent | null>(null)
+  const [difficulty, setDifficulty] = useState<string>('EASY')
   const [loading, setLoading] = useState(true)
   const [phase, setPhase] = useState<'memorize' | 'guess'>('memorize')
   const [attempts, setAttempts] = useState(0)
@@ -33,8 +35,12 @@ export function WhatIsMissing() {
 
   useEffect(() => {
     apiClient
-      .get('/activities/WHAT_IS_MISSING/content', { params: { difficulty: 'EASY' } })
-      .then((r) => setContent(r.data as WhatIsMissingContent))
+      .get('/activities/WHAT_IS_MISSING/content')
+      .then((r) => {
+        const data = r.data as WhatIsMissingContent
+        setContent(data)
+        setDifficulty(data.difficulty ?? 'EASY')
+      })
       .catch(() => setContent(null))
       .finally(() => setLoading(false))
   }, [])
@@ -73,7 +79,7 @@ export function WhatIsMissing() {
         sessionsApi
           .logActivity(sessionId, {
             activityType: 'WHAT_IS_MISSING',
-            difficulty: 'EASY',
+            difficulty,
             starsEarned: stars,
             durationSecs,
           })
@@ -94,7 +100,7 @@ export function WhatIsMissing() {
           sessionsApi
             .logActivity(sessionId, {
               activityType: 'WHAT_IS_MISSING',
-              difficulty: 'EASY',
+              difficulty,
               starsEarned: 1,
               durationSecs,
             })
