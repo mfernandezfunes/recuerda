@@ -20,11 +20,61 @@ function checkWordMatch(word: string, candidate: string): boolean {
   return candidate === word || candidate === word.split('').reverse().join('')
 }
 
+/**
+ * Snap direction vector to nearest of 8 compass directions.
+ * Returns [rowStep, colStep] each ∈ {-1, 0, 1}.
+ */
+function snapDirection(dr: number, dc: number): [number, number] {
+  if (dr === 0 && dc === 0) return [0, 0]
+  const angle = Math.atan2(dr, dc)
+  const snapped = Math.round(angle / (Math.PI / 4)) * (Math.PI / 4)
+  return [Math.round(Math.sin(snapped)), Math.round(Math.cos(snapped))]
+}
+
+/**
+ * Build a straight line of cells from anchor toward current,
+ * snapped to the nearest of 8 directions.
+ */
+function buildLine(
+  anchor: CellPos,
+  current: CellPos,
+  rows: number,
+  cols: number,
+): CellPos[] {
+  const dr = current.row - anchor.row
+  const dc = current.col - anchor.col
+  if (dr === 0 && dc === 0) return [anchor]
+
+  const [sr, sc] = snapDirection(dr, dc)
+
+  // Steps: for diagonal use min(|dr|,|dc|), otherwise the appropriate axis
+  const dist =
+    sr !== 0 && sc !== 0
+      ? Math.min(Math.abs(dr), Math.abs(dc))
+      : sr !== 0
+      ? Math.abs(dr)
+      : Math.abs(dc)
+
+  const cells: CellPos[] = []
+  for (let i = 0; i <= dist; i++) {
+    const r = anchor.row + sr * i
+    const c = anchor.col + sc * i
+    if (r >= 0 && r < rows && c >= 0 && c < cols) {
+      cells.push({ row: r, col: c })
+    }
+  }
+  return cells
+}
+
 export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps) {
   const [selecting, setSelecting] = useState<CellPos[]>([])
   const [foundCells, setFoundCells] = useState<Set<string>>(new Set())
   const [foundWords, setFoundWords] = useState<Set<string>>(new Set())
   const containerRef = useRef<HTMLDivElement>(null)
+  const anchorRef = useRef<CellPos | null>(null)
+
+  const rows = grid.length
+  const cols = grid[0]?.length ?? 0
 
   const getCellFromPoint = useCallback((x: number, y: number): CellPos | null => {
     if (!containerRef.current) return null
@@ -59,32 +109,30 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
     [grid, words, foundWords, foundCells, onWordFound, onComplete]
   )
 
-  // Pointer events work on both mouse and touch; touch-action:none prevents
-  // the browser from scrolling while the user is selecting letters.
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       e.currentTarget.setPointerCapture(e.pointerId)
       const pos = getCellFromPoint(e.clientX, e.clientY)
-      if (pos) setSelecting([pos])
+      if (pos) {
+        anchorRef.current = pos
+        setSelecting([pos])
+      }
     },
     [getCellFromPoint]
   )
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      if (e.buttons === 0) return
+      if (e.buttons === 0 || !anchorRef.current) return
       const pos = getCellFromPoint(e.clientX, e.clientY)
       if (!pos) return
-      setSelecting((prev) => {
-        const last = prev[prev.length - 1]
-        if (last && last.row === pos.row && last.col === pos.col) return prev
-        return [...prev, pos]
-      })
+      setSelecting(buildLine(anchorRef.current, pos, rows, cols))
     },
-    [getCellFromPoint]
+    [getCellFromPoint, rows, cols]
   )
 
   const handlePointerUp = useCallback(() => {
+    anchorRef.current = null
     setSelecting((sel) => {
       if (sel.length > 0) commitSelection(sel)
       return []
@@ -101,9 +149,7 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
         onPointerUp={handlePointerUp}
         style={{ touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }}
       >
-        <table
-          style={{ borderCollapse: 'separate', borderSpacing: '3px' }}
-        >
+        <table style={{ borderCollapse: 'separate', borderSpacing: '3px' }}>
           <tbody>
             {grid.map((row, rIdx) => (
               <tr key={rIdx}>
@@ -122,7 +168,11 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
                         textAlign: 'center',
                         verticalAlign: 'middle',
                         borderRadius: '8px',
-                        backgroundColor: isFound ? '#8FBC8F' : isSelected ? '#FFF3A3' : '#FFF8F0',
+                        backgroundColor: isFound
+                          ? '#8FBC8F'
+                          : isSelected
+                          ? '#FFF3A3'
+                          : '#FFF8F0',
                         border: isFound
                           ? '2px solid #5C8F5C'
                           : isSelected
@@ -134,7 +184,7 @@ export function WordGrid({ grid, words, onWordFound, onComplete }: WordGridProps
                         fontFamily: 'Nunito, sans-serif',
                         cursor: 'default',
                         transition: 'background-color 0.15s',
-                        pointerEvents: 'none', // let the container handle all pointer events
+                        pointerEvents: 'none',
                       }}
                     >
                       {letter}
