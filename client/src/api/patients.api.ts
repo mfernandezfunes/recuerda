@@ -37,6 +37,8 @@ export const patientsApi = {
     apiClient.get('/patients/' + patientId + '/family-members'),
   createFamilyMember: (patientId: string, data: { name: string; relation: string }) =>
     apiClient.post('/patients/' + patientId + '/family-members', data),
+  updateFamilyMember: (patientId: string, fmId: string, data: { name?: string; relation?: string; photoUrl?: string }) =>
+    apiClient.put('/patients/' + patientId + '/family-members/' + fmId, data),
   deleteFamilyMember: (patientId: string, fmId: string) =>
     apiClient.delete('/patients/' + patientId + '/family-members/' + fmId),
 

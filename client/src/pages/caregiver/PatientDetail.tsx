@@ -78,6 +78,10 @@ export function PatientDetail() {
   const [familyForm, setFamilyForm] = useState({ name: '', relation: '' })
   const [familyPhoto, setFamilyPhoto] = useState<File | null>(null)
   const [savingFamily, setSavingFamily] = useState(false)
+  const [editingFmId, setEditingFmId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState({ name: '', relation: '' })
+  const [editPhoto, setEditPhoto] = useState<File | null>(null)
+  const [savingEdit, setSavingEdit] = useState(false)
 
   // Activity settings
   const [activitySettings, setActivitySettings] = useState<ActivitySetting[]>([])
@@ -193,6 +197,39 @@ export function PatientDetail() {
       // ignore
     } finally {
       setSavingFamily(false)
+    }
+  }
+
+  function startEditFamilyMember(fm: { id: string; name: string; relation: string }) {
+    setEditingFmId(fm.id)
+    setEditForm({ name: fm.name, relation: fm.relation })
+    setEditPhoto(null)
+  }
+
+  async function handleUpdateFamilyMember(e: React.FormEvent) {
+    e.preventDefault()
+    if (!patientId || !editingFmId) return
+    setSavingEdit(true)
+    try {
+      let photoUrl: string | undefined
+      if (editPhoto) {
+        const fd = new FormData()
+        fd.append('file', editPhoto)
+        fd.append('patientId', patientId)
+        const uploadRes = await mediaApi.upload(fd)
+        photoUrl = (uploadRes.data as { url?: string }).url
+      }
+      await patientsApi.updateFamilyMember(patientId, editingFmId, {
+        ...editForm,
+        ...(photoUrl ? { photoUrl } : {}),
+      })
+      setEditingFmId(null)
+      setEditPhoto(null)
+      await loadPatient()
+    } catch {
+      // ignore
+    } finally {
+      setSavingEdit(false)
     }
   }
 
@@ -471,31 +508,85 @@ export function PatientDetail() {
           ) : (
             <div className="space-y-2">
               {patient.familyMembers.map((fm) => (
-                <div
-                  key={fm.id}
-                  className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100 flex items-center gap-3"
-                >
-                  {fm.photoUrl ? (
-                    <img
-                      src={resolveMediaUrl(fm.photoUrl)}
-                      alt={fm.name}
-                      className="w-12 h-12 rounded-full object-cover shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-[#87CEEB] flex items-center justify-center text-xl shrink-0">
-                      👤
+                <div key={fm.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                  {/* Card normal */}
+                  {editingFmId !== fm.id ? (
+                    <div className="px-4 py-3 flex items-center gap-3">
+                      {fm.photoUrl ? (
+                        <img
+                          src={resolveMediaUrl(fm.photoUrl)}
+                          alt={fm.name}
+                          className="w-12 h-12 rounded-full object-cover shrink-0"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-[#87CEEB] flex items-center justify-center text-xl shrink-0">
+                          👤
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-black text-[#5C4033]">{fm.name}</p>
+                        <p className="text-xs text-[#8D7061] font-semibold">{fm.relation}</p>
+                      </div>
+                      <button
+                        onClick={() => startEditFamilyMember(fm)}
+                        className="bg-[#FFF3A3] text-[#8D4E00] font-bold rounded-xl px-3 py-1.5 text-xs"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDeleteFamilyMember(fm.id)}
+                        className="bg-red-100 text-red-600 font-bold rounded-xl px-3 py-1.5 text-xs"
+                      >
+                        Eliminar
+                      </button>
                     </div>
+                  ) : (
+                    /* Formulario de edición inline */
+                    <form onSubmit={handleUpdateFamilyMember} className="px-4 py-3 space-y-3">
+                      <p className="font-black text-[#5C4033] text-sm">Editar familiar</p>
+                      <input
+                        type="text"
+                        value={editForm.name}
+                        onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
+                        placeholder="Nombre"
+                        className="w-full border-2 border-[#FFCBA4] rounded-xl px-3 py-2 text-sm focus:border-[#8FBC8F] outline-none font-semibold text-[#5C4033]"
+                      />
+                      <input
+                        type="text"
+                        value={editForm.relation}
+                        onChange={(e) => setEditForm((f) => ({ ...f, relation: e.target.value }))}
+                        placeholder="Relación"
+                        className="w-full border-2 border-[#FFCBA4] rounded-xl px-3 py-2 text-sm focus:border-[#8FBC8F] outline-none font-semibold text-[#5C4033]"
+                      />
+                      <div>
+                        <label className="block text-xs font-bold text-[#5C4033] mb-1">
+                          Cambiar foto (opcional)
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setEditPhoto(e.target.files?.[0] ?? null)}
+                          className="text-sm text-[#8D7061]"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => { setEditingFmId(null); setEditPhoto(null) }}
+                          className="flex-1 border-2 border-gray-200 text-[#8D7061] font-bold rounded-xl py-2 text-sm"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={savingEdit}
+                          className="flex-1 bg-[#8FBC8F] text-white font-bold rounded-xl py-2 text-sm disabled:opacity-60"
+                        >
+                          {savingEdit ? 'Guardando…' : 'Guardar'}
+                        </button>
+                      </div>
+                    </form>
                   )}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-black text-[#5C4033]">{fm.name}</p>
-                    <p className="text-xs text-[#8D7061] font-semibold">{fm.relation}</p>
-                  </div>
-                  <button
-                    onClick={() => handleDeleteFamilyMember(fm.id)}
-                    className="bg-red-100 text-red-600 font-bold rounded-xl px-3 py-1.5 text-xs"
-                  >
-                    Eliminar
-                  </button>
                 </div>
               ))}
             </div>
