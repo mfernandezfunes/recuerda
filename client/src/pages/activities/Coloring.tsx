@@ -711,7 +711,7 @@ function drawTree(ctx: CanvasRenderingContext2D) {
 
   // Roots
   ctx.lineWidth = 3
-  for (const [rx, ry] of [[-30, 60], [-15, 70], [15, 70], [30, 60]] as const) {
+  for (const [rx] of [[-30, 60], [-15, 70], [15, 70], [30, 60]] as const) {
     ctx.beginPath()
     ctx.moveTo(200 + rx * 0.3, 320)
     ctx.bezierCurveTo(200 + rx * 0.5, 340, 200 + rx * 0.8, 355, 200 + rx, 360)
