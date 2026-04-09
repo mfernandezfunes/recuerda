@@ -138,6 +138,7 @@ enum ActivityType {
   SUDOKU
   COLOR_MATCH
   WHAT_IS_THIS_OBJECT
+  WORD_BUILDER
 }
 
 enum Difficulty {

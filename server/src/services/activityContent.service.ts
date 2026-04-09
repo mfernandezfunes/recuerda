@@ -849,3 +849,105 @@ export function generateWhatIsThisObjectContent(difficulty: Difficulty): {
     options: shuffle([item.label, ...distractors]),
   }
 }
+
+// ─── WORD_BUILDER ─────────────────────────────────────────────────────────────
+
+interface WordPair {
+  mother: string
+  hidden: string
+}
+
+const WORD_BUILDER_EASY: WordPair[] = [
+  { mother: 'COCINA',   hidden: 'CON' },
+  { mother: 'VERANO',   hidden: 'VER' },
+  { mother: 'FLORES',   hidden: 'SOL' },
+  { mother: 'PALOMA',   hidden: 'MAL' },
+  { mother: 'MADERA',   hidden: 'MAR' },
+  { mother: 'SILLA',    hidden: 'SAL' },
+  { mother: 'BARCOS',   hidden: 'BAR' },
+  { mother: 'PUERTA',   hidden: 'PAR' },
+  { mother: 'HELADO',   hidden: 'OLA' },
+  { mother: 'ZAPATO',   hidden: 'PAZ' },
+  { mother: 'CAMINO',   hidden: 'OCA' },
+  { mother: 'REGALO',   hidden: 'ROL' },
+  { mother: 'CABALLO',  hidden: 'CAL' },
+  { mother: 'PELOTA',   hidden: 'OLE' },
+  { mother: 'BODEGA',   hidden: 'BOA' },
+]
+
+const WORD_BUILDER_MEDIUM: WordPair[] = [
+  { mother: 'PESCADO',   hidden: 'PASE' },
+  { mother: 'FAMILIA',   hidden: 'ALMA' },
+  { mother: 'VENTANA',   hidden: 'NAVE' },
+  { mother: 'CAMINOS',   hidden: 'MANO' },
+  { mother: 'PELOTA',    hidden: 'LOTE' },
+  { mother: 'MARIPOSA',  hidden: 'PISO' },
+  { mother: 'CANASTA',   hidden: 'CANA' },
+  { mother: 'CARAMELO',  hidden: 'AMOR' },
+  { mother: 'MADERA',    hidden: 'RAMA' },
+  { mother: 'HELADOS',   hidden: 'HOLA' },
+  { mother: 'ROSALES',   hidden: 'ROSA' },
+  { mother: 'CUCHARA',   hidden: 'CARA' },
+  { mother: 'CABALLO',   hidden: 'BOCA' },
+  { mother: 'COLORES',   hidden: 'OLOR' },
+  { mother: 'JARDINES',  hidden: 'RISA' },
+]
+
+const WORD_BUILDER_HARD: WordPair[] = [
+  { mother: 'MARIPOSA',   hidden: 'PRIMA'  },
+  { mother: 'CHOCOLATE',  hidden: 'TECHO'  },
+  { mother: 'CARAMELO',   hidden: 'MORAL'  },
+  { mother: 'PRIMAVERA',  hidden: 'VIRAR'  },
+  { mother: 'ESCALERA',   hidden: 'CLARA'  },
+  { mother: 'TORTILLA',   hidden: 'LITRO'  },
+  { mother: 'PANTALON',   hidden: 'TALON'  },
+  { mother: 'COCINERO',   hidden: 'RECIO'  },
+  { mother: 'VENTANAL',   hidden: 'LENTA'  },
+  { mother: 'MARISCOS',   hidden: 'MARCO'  },
+  { mother: 'CALENDARIO', hidden: 'NADIE'  },
+  { mother: 'HERMANOS',   hidden: 'HONRA'  },
+  { mother: 'CAMINANDO',  hidden: 'AMANDO' },
+  { mother: 'MARIPOSAS',  hidden: 'PISAR'  },
+  { mother: 'PLATAFORMA', hidden: 'FALTA'  },
+]
+
+// Letters that look plausible as distractors but are not in the mother word
+const DISTRACTOR_LETTERS = 'BDFGJKÑQUVWXYZ'.split('')
+
+export function generateWordBuilderContent(difficulty: Difficulty): {
+  mother: string
+  hidden: string
+  tiles: string[]
+  showFirstLetter: boolean
+} {
+  const pool =
+    difficulty === Difficulty.EASY   ? WORD_BUILDER_EASY   :
+    difficulty === Difficulty.MEDIUM ? WORD_BUILDER_MEDIUM  :
+                                       WORD_BUILDER_HARD
+
+  const pair = randomFrom(pool)
+  const motherLetters = pair.mother.split('')
+
+  let tiles: string[]
+
+  if (difficulty === Difficulty.EASY) {
+    // Tiles in the same order as the mother word, no extras
+    tiles = [...motherLetters]
+  } else if (difficulty === Difficulty.MEDIUM) {
+    // Tiles shuffled
+    tiles = shuffle([...motherLetters])
+  } else {
+    // Tiles shuffled + 2 distractor letters not present in the mother word
+    const usedLetters = new Set(motherLetters)
+    const available = DISTRACTOR_LETTERS.filter((l) => !usedLetters.has(l))
+    const extras = shuffle(available).slice(0, 2)
+    tiles = shuffle([...motherLetters, ...extras])
+  }
+
+  return {
+    mother: pair.mother,
+    hidden: pair.hidden,
+    tiles,
+    showFirstLetter: difficulty === Difficulty.EASY,
+  }
+}

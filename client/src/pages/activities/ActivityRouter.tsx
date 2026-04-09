@@ -19,6 +19,7 @@ import { SimpleMath } from './SimpleMath'
 import { Sudoku } from './Sudoku'
 import { ColorMatch } from './ColorMatch'
 import { WhatIsThisObject } from './WhatIsThisObject'
+import { WordBuilder } from './WordBuilder'
 
 const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   who_is_this: WhoIsThis,
@@ -41,6 +42,7 @@ const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   sudoku: Sudoku,
   color_match: ColorMatch,
   what_is_this_object: WhatIsThisObject,
+  word_builder: WordBuilder,
 }
 
 export function ActivityRouter() {

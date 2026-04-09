@@ -27,6 +27,7 @@ export type ActivityType =
   | 'MEMORY_GALLERY' | 'DAY_AGENDA' | 'BREATHING'
   | 'SERIES_PATTERNS' | 'MOOD_CHECKIN'
   | 'WHAT_IS_MISSING' | 'PROVERBS' | 'ODD_ONE_OUT' | 'SIMPLE_MATH' | 'SUDOKU' | 'COLOR_MATCH' | 'WHAT_IS_THIS_OBJECT'
+  | 'WORD_BUILDER'
 
 export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD'
 
@@ -69,4 +70,5 @@ export const ACTIVITY_META: Record<ActivityType, ActivityMeta> = {
   SUDOKU:         { type: 'SUDOKU',          label: 'Sudoku',               icon: '🔢', color: '#FFF3A3', description: 'Completá la grilla sin repetir números', trains: 'Ejercita la lógica, la atención sostenida y la memoria de trabajo' },
   COLOR_MATCH:         { type: 'COLOR_MATCH',         label: '¿Qué color es?',  icon: '🎨', color: '#FFCBA4', description: 'Identificá el nombre del color',      trains: 'Refuerza el reconocimiento visual, el vocabulario y la atención' },
   WHAT_IS_THIS_OBJECT: { type: 'WHAT_IS_THIS_OBJECT', label: '¿Qué es?',        icon: '🔎', color: '#C8E8F8', description: 'Nombrá el objeto que ves en la imagen', trains: 'Estimula el lenguaje, el vocabulario y el reconocimiento de objetos cotidianos' },
+  WORD_BUILDER:        { type: 'WORD_BUILDER',        label: 'Armá la palabra', icon: '🔤', color: '#C8E6C8', description: 'Encontrá la palabra escondida', trains: 'Ejercita la atención, el vocabulario y la planificación al seleccionar letras' },
 }
