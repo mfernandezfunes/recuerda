@@ -120,6 +120,18 @@ const MEMORY_CARD_POOL: Array<{ emoji: string; label: string }> = [
   { emoji: '🌸', label: 'Flor' },
   { emoji: '🍓', label: 'Fresa' },
   { emoji: '🐠', label: 'Pez' },
+  { emoji: '🌻', label: 'Girasol' },
+  { emoji: '🦋', label: 'Mariposa' },
+  { emoji: '🍰', label: 'Torta' },
+  { emoji: '🎁', label: 'Regalo' },
+  { emoji: '🐘', label: 'Elefante' },
+  { emoji: '🍦', label: 'Helado' },
+  { emoji: '🌹', label: 'Rosa' },
+  { emoji: '🦜', label: 'Loro' },
+  { emoji: '🍋', label: 'Limón' },
+  { emoji: '🚲', label: 'Bicicleta' },
+  { emoji: '🎈', label: 'Globo' },
+  { emoji: '🐥', label: 'Pollito' },
 ]
 
 export async function generateMemoryCardsContent(
@@ -143,16 +155,28 @@ export async function generateMemoryCardsContent(
 // ─── FIND_OBJECT ──────────────────────────────────────────────────────────────
 
 const FIND_OBJECT_POOL: Array<{ emoji: string; name: string; article: string }> = [
-  { emoji: '🍎', name: 'Manzana', article: 'la' },
-  { emoji: '🐱', name: 'Gato', article: 'el' },
-  { emoji: '🌷', name: 'Flor', article: 'la' },
-  { emoji: '🍓', name: 'Fresa', article: 'la' },
-  { emoji: '🚗', name: 'Auto', article: 'el' },
-  { emoji: '🏠', name: 'Casa', article: 'la' },
-  { emoji: '☀️', name: 'Sol', article: 'el' },
-  { emoji: '🍦', name: 'Helado', article: 'el' },
-  { emoji: '🎈', name: 'Globo', article: 'el' },
-  { emoji: '🐶', name: 'Perro', article: 'el' },
+  { emoji: '🍎', name: 'Manzana',   article: 'la' },
+  { emoji: '🐱', name: 'Gato',      article: 'el' },
+  { emoji: '🌷', name: 'Flor',      article: 'la' },
+  { emoji: '🍓', name: 'Frutilla',  article: 'la' },
+  { emoji: '🚗', name: 'Auto',      article: 'el' },
+  { emoji: '🏠', name: 'Casa',      article: 'la' },
+  { emoji: '☀️', name: 'Sol',       article: 'el' },
+  { emoji: '🍦', name: 'Helado',    article: 'el' },
+  { emoji: '🎈', name: 'Globo',     article: 'el' },
+  { emoji: '🐶', name: 'Perro',     article: 'el' },
+  { emoji: '🌻', name: 'Girasol',   article: 'el' },
+  { emoji: '🍕', name: 'Pizza',     article: 'la' },
+  { emoji: '🎂', name: 'Torta',     article: 'la' },
+  { emoji: '🚲', name: 'Bicicleta', article: 'la' },
+  { emoji: '🌙', name: 'Luna',      article: 'la' },
+  { emoji: '🍇', name: 'Uvas',      article: 'las' },
+  { emoji: '🌹', name: 'Rosa',      article: 'la' },
+  { emoji: '🎸', name: 'Guitarra',  article: 'la' },
+  { emoji: '🐠', name: 'Pez',       article: 'el' },
+  { emoji: '🍉', name: 'Sandía',    article: 'la' },
+  { emoji: '🐓', name: 'Gallina',   article: 'la' },
+  { emoji: '⭐', name: 'Estrella',  article: 'la' },
 ]
 
 export async function generateFindObjectContent(
@@ -196,27 +220,52 @@ export async function generateSeriesPatternsContent(
   }
 
   if (difficulty === 'MEDIUM') {
-    // Colors pattern
-    const COLORS = ['🔴', '🟡', '🔵', '🟢', '🟠', '🟣']
-    const pattern = shuffle(COLORS).slice(0, 2)
-    const seq = [pattern[0], pattern[1], pattern[0], '?']
-    const correct = pattern[1]
-    const distractors = shuffle(COLORS.filter((c) => c !== correct)).slice(0, 3)
-    return {
-      sequence: seq,
-      correct,
-      options: shuffle([correct, ...distractors]),
-      type: 'colors',
+    const COLORS = ['🔴', '🟡', '🔵', '🟢', '🟠', '🟣', '🟤', '⚫']
+    const ANIMALS = ['🐶', '🐱', '🐦', '🐠', '🐘', '🐸', '🦋', '🐇']
+    // Pick randomly: ABABAB colors, ABCABC animals, or +3 numbers
+    const variant = Math.floor(Math.random() * 3)
+    if (variant === 0) {
+      // ABABAB colors
+      const pattern = shuffle(COLORS).slice(0, 2)
+      const seq = [pattern[0], pattern[1], pattern[0], '?']
+      const correct = pattern[1]
+      const distractors = shuffle(COLORS.filter((c) => c !== correct)).slice(0, 3)
+      return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' }
+    } else if (variant === 1) {
+      // ABCABC animals
+      const pattern = shuffle(ANIMALS).slice(0, 3)
+      const seq = [pattern[0], pattern[1], pattern[2], pattern[0], '?']
+      const correct = pattern[1]
+      const distractors = shuffle(ANIMALS.filter((a) => a !== correct)).slice(0, 3)
+      return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' }
+    } else {
+      // +3 number sequence
+      const start = Math.floor(Math.random() * 6) + 1
+      const step = 3
+      const seq = [start, start + step, start + step * 2, '?']
+      const correct = start + step * 3
+      const options = shuffle([correct, correct + 1, correct - 1, correct + step])
+      return { sequence: seq, correct, options, type: 'numbers' }
     }
   }
 
-  // HARD: multiply sequence
-  const start = Math.floor(Math.random() * 3) + 2
-  const factor = 2
-  const seq = [start, start * factor, start * factor * factor, '?']
-  const correct = start * factor * factor * factor
-  const options = shuffle([correct, correct + 2, correct - 2, correct * 2])
-  return { sequence: seq, correct, options, type: 'numbers' }
+  // HARD: multiply sequence or +5
+  const variant = Math.floor(Math.random() * 2)
+  if (variant === 0) {
+    const start = Math.floor(Math.random() * 3) + 2
+    const factor = 2
+    const seq = [start, start * factor, start * factor * factor, '?']
+    const correct = start * factor * factor * factor
+    const options = shuffle([correct, correct + 2, correct - 2, correct * 2])
+    return { sequence: seq, correct, options, type: 'numbers' }
+  } else {
+    const start = Math.floor(Math.random() * 4) + 1
+    const step = 5
+    const seq = [start, start + step, start + step * 2, '?']
+    const correct = start + step * 3
+    const options = shuffle([correct, correct + 1, correct - 1, correct + 5])
+    return { sequence: seq, correct, options, type: 'numbers' }
+  }
 }
 
 // ─── WORD_SEARCH ──────────────────────────────────────────────────────────────
@@ -249,8 +298,8 @@ const STORY_THEMES = [
     title: 'Un día en el parque',
     images: [
       { emoji: '🌅', description: 'Amanecer' },
-      { emoji: '🚶', description: 'Caminando' },
-      { emoji: '🌳', description: 'En el parque' },
+      { emoji: '🚶', description: 'Caminando al parque' },
+      { emoji: '🌳', description: 'Descansando bajo el árbol' },
       { emoji: '🍦', description: 'Tomando helado' },
     ],
   },
@@ -259,17 +308,80 @@ const STORY_THEMES = [
     images: [
       { emoji: '⏰', description: 'Despertarse' },
       { emoji: '🚿', description: 'Ducharse' },
-      { emoji: '🍳', description: 'Cocinar' },
-      { emoji: '☕', description: 'Tomar café' },
+      { emoji: '🍳', description: 'Cocinar los huevos' },
+      { emoji: '☕', description: 'Tomar el café' },
     ],
   },
   {
     title: 'Visita al jardín',
     images: [
-      { emoji: '🌱', description: 'Plantar semilla' },
-      { emoji: '💧', description: 'Regar' },
-      { emoji: '🌿', description: 'Crecer' },
-      { emoji: '🌺', description: 'Florecer' },
+      { emoji: '🌱', description: 'Plantar la semilla' },
+      { emoji: '💧', description: 'Regar la planta' },
+      { emoji: '🌿', description: 'Ver cómo crece' },
+      { emoji: '🌺', description: 'Disfrutar la flor' },
+    ],
+  },
+  {
+    title: 'Preparar mate',
+    images: [
+      { emoji: '🌡️', description: 'Calentar el agua' },
+      { emoji: '🧉', description: 'Llenar el mate' },
+      { emoji: '💧', description: 'Cebar el primer mate' },
+      { emoji: '😊', description: 'Tomar y disfrutar' },
+    ],
+  },
+  {
+    title: 'Hacer una torta',
+    images: [
+      { emoji: '🛒', description: 'Comprar los ingredientes' },
+      { emoji: '🥚', description: 'Mezclar todo' },
+      { emoji: '🔥', description: 'Hornear la torta' },
+      { emoji: '🎂', description: 'Decorar y comer' },
+    ],
+  },
+  {
+    title: 'Lavar la ropa',
+    images: [
+      { emoji: '👕', description: 'Juntar la ropa sucia' },
+      { emoji: '🫧', description: 'Lavar con jabón' },
+      { emoji: '☀️', description: 'Tender al sol' },
+      { emoji: '📦', description: 'Doblar y guardar' },
+    ],
+  },
+  {
+    title: 'Visita de un familiar',
+    images: [
+      { emoji: '📞', description: 'Hablar por teléfono' },
+      { emoji: '🏠', description: 'Preparar la casa' },
+      { emoji: '🤗', description: 'Recibir la visita' },
+      { emoji: '👋', description: 'Despedirse con cariño' },
+    ],
+  },
+  {
+    title: 'Ir de compras',
+    images: [
+      { emoji: '📝', description: 'Escribir la lista' },
+      { emoji: '🚶', description: 'Ir al mercado' },
+      { emoji: '🛒', description: 'Llenar el carrito' },
+      { emoji: '🏡', description: 'Volver a casa' },
+    ],
+  },
+  {
+    title: 'Una tarde de lluvia',
+    images: [
+      { emoji: '☁️', description: 'El cielo se nubla' },
+      { emoji: '⚡', description: 'Caen relámpagos' },
+      { emoji: '🌧️', description: 'Llueve fuerte' },
+      { emoji: '🌈', description: 'Sale el arcoíris' },
+    ],
+  },
+  {
+    title: 'Una tarde de pesca',
+    images: [
+      { emoji: '🎣', description: 'Preparar la caña' },
+      { emoji: '🚣', description: 'Llegar al río' },
+      { emoji: '🐟', description: 'Atrapar el pez' },
+      { emoji: '🔥', description: 'Asar el pescado' },
     ],
   },
 ]
@@ -313,6 +425,20 @@ const WHAT_IS_MISSING_POOL: Array<{ emoji: string; label: string }> = [
   { emoji: '🐱', label: 'Gato' },
   { emoji: '🐦', label: 'Pájaro' },
   { emoji: '🐠', label: 'Pez' },
+  { emoji: '🌹', label: 'Rosa' },
+  { emoji: '🌻', label: 'Girasol' },
+  { emoji: '🌷', label: 'Tulipán' },
+  { emoji: '🍕', label: 'Pizza' },
+  { emoji: '🍰', label: 'Torta' },
+  { emoji: '🍦', label: 'Helado' },
+  { emoji: '🎈', label: 'Globo' },
+  { emoji: '⭐', label: 'Estrella' },
+  { emoji: '🌙', label: 'Luna' },
+  { emoji: '☀️', label: 'Sol' },
+  { emoji: '🚗', label: 'Auto' },
+  { emoji: '🚲', label: 'Bicicleta' },
+  { emoji: '🐘', label: 'Elefante' },
+  { emoji: '🦋', label: 'Mariposa' },
 ]
 
 export async function generateWhatIsMissingContent(difficulty: Difficulty): Promise<{
@@ -436,14 +562,74 @@ const ODD_SETS = [
     odd: { emoji: '🍕', label: 'Pizza' },
   },
   {
-    category: 'Cosas del hogar',
-    members: [{ emoji: '🛋️', label: 'Sillón' }, { emoji: '🛏️', label: 'Cama' }, { emoji: '🚿', label: 'Ducha' }],
+    category: 'Muebles',
+    members: [{ emoji: '🛋️', label: 'Sillón' }, { emoji: '🛏️', label: 'Cama' }, { emoji: '🪑', label: 'Silla' }],
     odd: { emoji: '🦁', label: 'León' },
   },
   {
     category: 'Flores',
     members: [{ emoji: '🌹', label: 'Rosa' }, { emoji: '🌷', label: 'Tulipán' }, { emoji: '🌸', label: 'Flor de cerezo' }],
     odd: { emoji: '🍺', label: 'Cerveza' },
+  },
+  {
+    category: 'Aves',
+    members: [{ emoji: '🦆', label: 'Pato' }, { emoji: '🦜', label: 'Loro' }, { emoji: '🐧', label: 'Pingüino' }],
+    odd: { emoji: '🐟', label: 'Pez' },
+  },
+  {
+    category: 'Ropa',
+    members: [{ emoji: '👕', label: 'Camiseta' }, { emoji: '👗', label: 'Vestido' }, { emoji: '🧥', label: 'Abrigo' }],
+    odd: { emoji: '🍰', label: 'Torta' },
+  },
+  {
+    category: 'Herramientas',
+    members: [{ emoji: '🔨', label: 'Martillo' }, { emoji: '🪛', label: 'Destornillador' }, { emoji: '🔧', label: 'Llave' }],
+    odd: { emoji: '🌹', label: 'Rosa' },
+  },
+  {
+    category: 'Deportes',
+    members: [{ emoji: '⚽', label: 'Fútbol' }, { emoji: '🏀', label: 'Básquet' }, { emoji: '🎾', label: 'Tenis' }],
+    odd: { emoji: '📱', label: 'Celular' },
+  },
+  {
+    category: 'Animales del mar',
+    members: [{ emoji: '🐟', label: 'Pez' }, { emoji: '🐙', label: 'Pulpo' }, { emoji: '🦈', label: 'Tiburón' }],
+    odd: { emoji: '🐦', label: 'Pájaro' },
+  },
+  {
+    category: 'Cosas de cocina',
+    members: [{ emoji: '🥄', label: 'Cuchara' }, { emoji: '🍴', label: 'Tenedor' }, { emoji: '🔪', label: 'Cuchillo' }],
+    odd: { emoji: '📚', label: 'Libro' },
+  },
+  {
+    category: 'Postres',
+    members: [{ emoji: '🍰', label: 'Torta' }, { emoji: '🍮', label: 'Flan' }, { emoji: '🍦', label: 'Helado' }],
+    odd: { emoji: '🔑', label: 'Llave' },
+  },
+  {
+    category: 'Cosas de baño',
+    members: [{ emoji: '🧼', label: 'Jabón' }, { emoji: '🪥', label: 'Cepillo' }, { emoji: '🧴', label: 'Champú' }],
+    odd: { emoji: '🎸', label: 'Guitarra' },
+  },
+  {
+    category: 'Animales de granja',
+    members: [{ emoji: '🐄', label: 'Vaca' }, { emoji: '🐖', label: 'Cerdo' }, { emoji: '🐑', label: 'Oveja' }],
+    odd: { emoji: '🚂', label: 'Tren' },
+  },
+  {
+    category: 'Cosas del cielo',
+    members: [{ emoji: '☀️', label: 'Sol' }, { emoji: '🌙', label: 'Luna' }, { emoji: '⭐', label: 'Estrella' }],
+    odd: { emoji: '🐠', label: 'Pez' },
+  },
+  {
+    category: 'Frutas cítricas',
+    members: [{ emoji: '🍋', label: 'Limón' }, { emoji: '🍊', label: 'Naranja' }, { emoji: '🍈', label: 'Pomelo' }],
+    odd: { emoji: '🐶', label: 'Perro' },
+  },
+  {
+    category: 'Juguetes',
+    members: [{ emoji: '🧸', label: 'Osito' }, { emoji: '🎮', label: 'Juego' }, { emoji: '🪀', label: 'Yoyo' }],
+    odd: { emoji: '🥕', label: 'Zanahoria' },
   },
 ]
 
@@ -558,17 +744,26 @@ export function generateSimplePuzzleContent(difficulty: Difficulty): {
   gridSize: number
 } {
   const EASY_PUZZLES = [
-    { emoji: '🌈', label: 'Arco iris' },
+    { emoji: '🌈', label: 'Arcoíris' },
     { emoji: '🌻', label: 'Girasol' },
     { emoji: '🦋', label: 'Mariposa' },
     { emoji: '⭐', label: 'Estrella' },
+    { emoji: '🐸', label: 'Rana' },
+    { emoji: '🍓', label: 'Frutilla' },
+    { emoji: '🌙', label: 'Luna' },
+    { emoji: '🐥', label: 'Pollito' },
   ]
   const MEDIUM_PUZZLES = [
     { emoji: '🏡', label: 'Casa' },
     { emoji: '🌸', label: 'Flor' },
     { emoji: '🍎', label: 'Manzana' },
     { emoji: '🐶', label: 'Perro' },
-    { emoji: '🎨', label: 'Arte' },
+    { emoji: '🎨', label: 'Paleta' },
+    { emoji: '🚂', label: 'Tren' },
+    { emoji: '🐬', label: 'Delfín' },
+    { emoji: '🌺', label: 'Hibisco' },
+    { emoji: '🦁', label: 'León' },
+    { emoji: '🍕', label: 'Pizza' },
   ]
 
   const pool = difficulty === Difficulty.EASY ? EASY_PUZZLES : MEDIUM_PUZZLES
@@ -611,10 +806,29 @@ const SUDOKU_EASY: SudokuPuzzle[] = [
     solution: [[4,3,2,1],[2,1,4,3],[3,4,1,2],[1,2,3,4]],
     puzzle:   [[null,3,null,1],[2,null,4,null],[null,4,null,2],[1,null,3,null]],
   },
+  {
+    size: 4, boxRows: 2, boxCols: 2,
+    solution: [[1,3,2,4],[4,2,3,1],[2,4,1,3],[3,1,4,2]],
+    puzzle:   [[null,3,2,null],[4,null,null,1],[null,4,1,null],[3,null,null,2]],
+  },
+  {
+    size: 4, boxRows: 2, boxCols: 2,
+    solution: [[1,4,2,3],[3,2,4,1],[4,3,1,2],[2,1,3,4]],
+    puzzle:   [[1,null,null,3],[null,2,4,null],[null,3,1,null],[2,null,null,4]],
+  },
+  {
+    size: 4, boxRows: 2, boxCols: 2,
+    solution: [[2,4,1,3],[1,3,2,4],[4,2,3,1],[3,1,4,2]],
+    puzzle:   [[null,4,null,3],[1,null,2,null],[null,2,null,1],[3,null,4,null]],
+  },
+  {
+    size: 4, boxRows: 2, boxCols: 2,
+    solution: [[3,1,4,2],[2,4,1,3],[1,3,2,4],[4,2,3,1]],
+    puzzle:   [[3,null,null,2],[null,4,1,null],[null,3,2,null],[4,null,null,1]],
+  },
 ]
 
 // ── 6×6  (MEDIUM) ──
-// Solution: rows have 1-6, cols have 1-6, each 2×3 box has 1-6
 const SUDOKU_MEDIUM: SudokuPuzzle[] = [
   {
     size: 6, boxRows: 2, boxCols: 3,
@@ -652,6 +866,44 @@ const SUDOKU_MEDIUM: SudokuPuzzle[] = [
       [6,null,5,null,null,2],
       [null,2,null,1,null,null],
       [1,null,6,null,2,null],
+    ],
+  },
+  {
+    size: 6, boxRows: 2, boxCols: 3,
+    solution: [
+      [3,4,5,6,1,2],
+      [6,1,2,3,4,5],
+      [4,5,6,1,2,3],
+      [1,2,3,4,5,6],
+      [5,6,1,2,3,4],
+      [2,3,4,5,6,1],
+    ],
+    puzzle: [
+      [null,4,null,6,null,2],
+      [6,null,2,null,4,null],
+      [null,5,null,1,null,3],
+      [1,null,3,null,5,null],
+      [null,6,null,2,null,4],
+      [2,null,4,null,6,null],
+    ],
+  },
+  {
+    size: 6, boxRows: 2, boxCols: 3,
+    solution: [
+      [2,5,1,4,3,6],
+      [4,3,6,2,5,1],
+      [5,1,2,3,6,4],
+      [3,6,4,5,1,2],
+      [1,2,5,6,4,3],
+      [6,4,3,1,2,5],
+    ],
+    puzzle: [
+      [2,null,null,4,null,6],
+      [null,3,6,null,5,null],
+      [5,null,null,null,6,4],
+      [null,6,4,null,null,2],
+      [null,2,null,6,null,null],
+      [6,null,3,null,2,null],
     ],
   },
 ]
