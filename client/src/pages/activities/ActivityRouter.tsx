@@ -18,6 +18,7 @@ import { OddOneOut } from './OddOneOut'
 import { SimpleMath } from './SimpleMath'
 import { Sudoku } from './Sudoku'
 import { ColorMatch } from './ColorMatch'
+import { WhatIsThisObject } from './WhatIsThisObject'
 
 const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   who_is_this: WhoIsThis,
@@ -39,6 +40,7 @@ const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   simple_math: SimpleMath,
   sudoku: Sudoku,
   color_match: ColorMatch,
+  what_is_this_object: WhatIsThisObject,
 }
 
 export function ActivityRouter() {

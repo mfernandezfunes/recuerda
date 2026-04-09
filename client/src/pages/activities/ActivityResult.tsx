@@ -79,6 +79,15 @@ export function ActivityResult() {
         className="flex flex-col gap-4 w-full"
         style={{ maxWidth: '320px' }}
       >
+        {state?.activityType && (
+          <BigButton
+            label="Jugar de nuevo"
+            emoji="🔄"
+            color="#8FBC8F"
+            onClick={() => navigate(`/patient/activity/${state.activityType.toLowerCase()}`, { replace: true })}
+            size="lg"
+          />
+        )}
         <BigButton
           label="Otra actividad"
           emoji="🎯"

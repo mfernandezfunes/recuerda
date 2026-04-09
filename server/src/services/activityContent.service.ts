@@ -745,3 +745,56 @@ export function generateColorMatchContent(difficulty: Difficulty): {
     correct: target.name,
   }
 }
+
+// ─── WHAT_IS_THIS_OBJECT ─────────────────────────────────────────────────────
+
+const OBJECTS_EASY = [
+  { emoji: '🍎', label: 'Manzana',    options: ['Naranja', 'Pera', 'Uva'] },
+  { emoji: '🐱', label: 'Gato',       options: ['Perro', 'Pato', 'Vaca'] },
+  { emoji: '🚗', label: 'Auto',       options: ['Tren', 'Barco', 'Avión'] },
+  { emoji: '☀️', label: 'Sol',        options: ['Luna', 'Nube', 'Estrella'] },
+  { emoji: '🌸', label: 'Flor',       options: ['Árbol', 'Hoja', 'Pasto'] },
+  { emoji: '🍞', label: 'Pan',        options: ['Queso', 'Leche', 'Huevo'] },
+  { emoji: '✏️', label: 'Lápiz',      options: ['Tijera', 'Goma', 'Regla'] },
+  { emoji: '🪑', label: 'Silla',      options: ['Mesa', 'Cama', 'Puerta'] },
+  { emoji: '🐶', label: 'Perro',      options: ['Gato', 'Conejo', 'Pájaro'] },
+  { emoji: '⚽', label: 'Pelota',     options: ['Globo', 'Rueda', 'Botón'] },
+]
+
+const OBJECTS_MEDIUM = [
+  ...OBJECTS_EASY,
+  { emoji: '🎸', label: 'Guitarra',   options: ['Piano', 'Violín', 'Flauta'] },
+  { emoji: '📚', label: 'Libro',      options: ['Revista', 'Diario', 'Cuaderno'] },
+  { emoji: '🕯️', label: 'Vela',       options: ['Lámpara', 'Linterna', 'Fuego'] },
+  { emoji: '🧲', label: 'Imán',       options: ['Clavo', 'Tuerca', 'Tornillo'] },
+  { emoji: '🌂', label: 'Paraguas',   options: ['Abrigo', 'Sombrero', 'Bufanda'] },
+]
+
+const OBJECTS_HARD = [
+  ...OBJECTS_MEDIUM,
+  { emoji: '⚗️', label: 'Probeta',    options: ['Jeringa', 'Termómetro', 'Lupa'] },
+  { emoji: '🎭', label: 'Máscara',    options: ['Antifaz', 'Casco', 'Careta'] },
+  { emoji: '🧭', label: 'Brújula',    options: ['Reloj', 'Calculadora', 'Termómetro'] },
+  { emoji: '🪗', label: 'Bandoneón',  options: ['Acordeón', 'Armónica', 'Concertina'] },
+  { emoji: '🫙', label: 'Frasco',     options: ['Botella', 'Taza', 'Jarra'] },
+]
+
+export function generateWhatIsThisObjectContent(difficulty: Difficulty): {
+  emoji: string
+  correct: string
+  options: string[]
+} {
+  const pool =
+    difficulty === Difficulty.EASY   ? OBJECTS_EASY   :
+    difficulty === Difficulty.MEDIUM ? OBJECTS_MEDIUM  :
+                                       OBJECTS_HARD
+
+  const item = randomFrom(pool)
+  const distractors = shuffle(item.options).slice(0, difficulty === Difficulty.EASY ? 2 : 3)
+
+  return {
+    emoji: item.emoji,
+    correct: item.label,
+    options: shuffle([item.label, ...distractors]),
+  }
+}

@@ -268,6 +268,36 @@ export function Sudoku() {
         )}
       </AnimatePresence>
 
+      {selected && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => {
+            const [r, c] = selected
+            if (isFixed(r, c)) return
+            const newBoard = board.map((row) => [...row])
+            newBoard[r][c] = null
+            setBoard(newBoard)
+            setSelected(null)
+          }}
+          style={{
+            marginTop: 4,
+            padding: '10px 32px',
+            borderRadius: 14,
+            backgroundColor: '#F0E8DF',
+            border: '2px solid #D8C8BC',
+            fontSize: '1rem',
+            fontWeight: 800,
+            color: '#8D7061',
+            fontFamily: 'Nunito, sans-serif',
+            cursor: 'pointer',
+          }}
+        >
+          🗑️ Limpiar celda
+        </motion.button>
+      )}
+
       {!selected && (
         <p style={{ fontSize: '1rem', color: '#8D7061', fontFamily: 'Nunito, sans-serif', textAlign: 'center' }}>
           Tocá una celda vacía para completarla
