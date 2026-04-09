@@ -19,7 +19,7 @@ const ALL_ACTIVITIES: ActivityType[] = [
 
 export function PatientHome() {
   const patient = useAuthStore((s) => s.patient)
-  const { setSession, clearSession, setLifetimeStats, lifetimeStars, lifetimeActivities, streak } = useSessionStore()
+  const { setSession, clearSession, setLifetimeStats, lifetimeStars, lifetimeActivities, streak, greetingPlayed, markGreetingPlayed } = useSessionStore()
   const { speak } = useTTS()
   const navigate = useNavigate()
   const [enabledActivities, setEnabledActivities] = useState<ActivityType[]>(ALL_ACTIVITIES)
@@ -70,11 +70,13 @@ export function PatientHome() {
     }
   }, [patient?.id])
 
-  // Greeting TTS
+  // Greeting TTS — only once per session
   useEffect(() => {
+    if (greetingPlayed) return
     const hour = new Date().getHours()
     const greeting = hour < 12 ? 'buenos días' : hour < 18 ? 'buenas tardes' : 'buenas noches'
     speak(`¡${greeting}, ${patient?.name}! ¿Qué actividad querés hacer hoy?`)
+    markGreetingPlayed()
   }, [])
 
   const hour = new Date().getHours()
