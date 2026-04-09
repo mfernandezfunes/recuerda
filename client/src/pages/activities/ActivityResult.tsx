@@ -5,6 +5,8 @@ import { StarReward } from '../../components/ui/StarReward'
 import { BigButton } from '../../components/ui/BigButton'
 import { useTTS } from '../../hooks/useTTS'
 import { ConfettiEffect } from '../../components/patient/ConfettiEffect'
+import { useSessionStore } from '../../store/session.store'
+import { getLevel } from '../../utils/levels'
 
 interface ResultState {
   starsEarned: 1 | 2 | 3
@@ -25,8 +27,10 @@ export function ActivityResult() {
   const { speak } = useTTS()
   const state = location.state as ResultState | null
 
+  const { totalStars, lifetimeStars } = useSessionStore()
   const stars = (state?.starsEarned ?? 2) as 1 | 2 | 3
   const name = state?.patientName ?? ''
+  const level = getLevel(lifetimeStars)
   const msg = name
     ? `¡Muy bien, ${name}! ¡Lo lograste!`
     : MESSAGES[Math.floor(Math.random() * MESSAGES.length)]
@@ -71,6 +75,29 @@ export function ActivityResult() {
       >
         {msg}
       </motion.p>
+
+      {/* Session stars counter */}
+      {totalStars > 0 && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.5, duration: 0.4 }}
+          style={{
+            backgroundColor: '#FFF3A3',
+            border: '3px solid #F5C842',
+            borderRadius: 20,
+            padding: '12px 24px',
+            textAlign: 'center',
+          }}
+        >
+          <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#5C4033', fontFamily: 'Nunito, sans-serif' }}>
+            ⭐ {totalStars} en esta sesión
+          </p>
+          <p style={{ fontSize: '0.9rem', color: '#8D7061', fontFamily: 'Nunito, sans-serif', fontWeight: 600 }}>
+            {level.emoji} Nivel {level.number} {level.name} · {lifetimeStars} totales
+          </p>
+        </motion.div>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

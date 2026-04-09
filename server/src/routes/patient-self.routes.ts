@@ -72,6 +72,64 @@ router.get('/activity-settings', async (req, res, next) => {
   }
 })
 
+// GET /api/patient/stats — lifetime score, level, streak
+router.get('/stats', async (req, res, next) => {
+  try {
+    const patientId = req.user!.id
+
+    // Total stars across all activity logs
+    const starsAgg = await prisma.activityLog.aggregate({
+      where: { session: { patientId } },
+      _sum: { starsEarned: true },
+    })
+    const totalStars = starsAgg._sum.starsEarned ?? 0
+
+    // Total activities completed
+    const activitiesCompleted = await prisma.activityLog.count({
+      where: { session: { patientId }, completedAt: { not: null } },
+    })
+
+    // Streak: consecutive days with at least one session
+    const sessions = await prisma.session.findMany({
+      where: { patientId, endedAt: { not: null } },
+      orderBy: { startedAt: 'desc' },
+      select: { startedAt: true },
+    })
+
+    let streak = 0
+    if (sessions.length > 0) {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      let checkDate = new Date(today)
+
+      const sessionDays = new Set(
+        sessions.map((s) => {
+          const d = new Date(s.startedAt)
+          d.setHours(0, 0, 0, 0)
+          return d.getTime()
+        })
+      )
+
+      while (sessionDays.has(checkDate.getTime())) {
+        streak++
+        checkDate.setDate(checkDate.getDate() - 1)
+      }
+      if (streak === 0) {
+        checkDate = new Date(today)
+        checkDate.setDate(checkDate.getDate() - 1)
+        while (sessionDays.has(checkDate.getTime())) {
+          streak++
+          checkDate.setDate(checkDate.getDate() - 1)
+        }
+      }
+    }
+
+    res.json({ totalStars, activitiesCompleted, streak })
+  } catch (err) {
+    next(err)
+  }
+})
+
 // GET /api/patient/medications
 router.get('/medications', async (req, res, next) => {
   try {

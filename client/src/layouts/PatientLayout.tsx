@@ -1,6 +1,7 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/auth.store'
 import { useSettingsStore } from '../store/settings.store'
+import { useSessionStore } from '../store/session.store'
 import { useTTS } from '../hooks/useTTS'
 import { useMedicationAlarm } from '../hooks/useMedicationAlarm'
 import { MedicationAlarmModal } from '../components/patient/MedicationAlarmModal'
@@ -19,6 +20,7 @@ export function PatientLayout() {
   const patient = useAuthStore((s) => s.patient)
   const logout = useAuthStore((s) => s.logout)
   const { darkMode, ttsEnabled, toggleTts } = useSettingsStore()
+  const { totalStars } = useSessionStore()
   const { stop } = useTTS()
 
   const { alarmActive, currentMed, dismissAlarm } = useMedicationAlarm(patient?.id)
@@ -47,6 +49,14 @@ export function PatientLayout() {
           )}
         </div>
         <div className="flex items-center gap-2">
+          {totalStars > 0 && (
+            <div
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-xl font-black ${darkMode ? 'bg-[#3A3858] text-[#F5E6C8]' : 'bg-[#FFF3A3] text-[#5C4033]'}`}
+              style={{ fontSize: '1rem', fontFamily: 'Nunito, sans-serif' }}
+            >
+              ⭐ {totalStars}
+            </div>
+          )}
           <button
             onClick={toggleTts}
             className={`text-2xl p-2 rounded-xl transition-all ${ttsEnabled ? 'bg-[#C8E6C8]' : 'bg-gray-100'}`}

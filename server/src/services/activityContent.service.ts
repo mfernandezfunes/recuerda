@@ -360,6 +360,27 @@ const PROVERBS_POOL = [
   { first: 'El que ríe último...', correct: 'ríe mejor' },
   { first: 'Más vale pájaro en mano...', correct: 'que cien volando' },
   { first: 'Perro que ladra...', correct: 'no muerde' },
+  { first: 'No todo lo que brilla...', correct: 'es oro' },
+  { first: 'Cuando el río suena...', correct: 'piedras trae' },
+  { first: 'A Dios rogando...', correct: 'y con el mazo dando' },
+  { first: 'El hábito no hace...', correct: 'al monje' },
+  { first: 'Agua que no has de beber...', correct: 'déjala correr' },
+  { first: 'No dejes para mañana...', correct: 'lo que puedas hacer hoy' },
+  { first: 'Más sabe el diablo por viejo...', correct: 'que por diablo' },
+  { first: 'De tal palo...', correct: 'tal astilla' },
+  { first: 'Pueblo chico...', correct: 'infierno grande' },
+  { first: 'Barriga llena...', correct: 'corazón contento' },
+  { first: 'El que mucho abarca...', correct: 'poco aprieta' },
+  { first: 'A quien madruga...', correct: 'Dios lo ayuda' },
+  { first: 'Donde hay humo...', correct: 'hay fuego' },
+  { first: 'No hay peor sordo...', correct: 'que el que no quiere oír' },
+  { first: 'Más vale malo conocido...', correct: 'que bueno por conocer' },
+  { first: 'Cada oveja con...', correct: 'su pareja' },
+  { first: 'Obras son amores...', correct: 'y no buenas razones' },
+  { first: 'El que tiene boca...', correct: 'se equivoca' },
+  { first: 'A grandes males...', correct: 'grandes remedios' },
+  { first: 'Cría cuervos...', correct: 'y te sacarán los ojos' },
+  { first: 'No hay mal que dure...', correct: 'cien años' },
 ]
 
 export async function generateProverbsContent(difficulty: Difficulty): Promise<{
@@ -759,6 +780,21 @@ const OBJECTS_EASY = [
   { emoji: '🪑', label: 'Silla',      options: ['Mesa', 'Cama', 'Puerta'] },
   { emoji: '🐶', label: 'Perro',      options: ['Gato', 'Conejo', 'Pájaro'] },
   { emoji: '⚽', label: 'Pelota',     options: ['Globo', 'Rueda', 'Botón'] },
+  { emoji: '🍌', label: 'Banana',     options: ['Manzana', 'Naranja', 'Frutilla'] },
+  { emoji: '🐄', label: 'Vaca',       options: ['Caballo', 'Oveja', 'Cerdo'] },
+  { emoji: '🏠', label: 'Casa',       options: ['Edificio', 'Iglesia', 'Castillo'] },
+  { emoji: '🌙', label: 'Luna',       options: ['Sol', 'Estrella', 'Nube'] },
+  { emoji: '🍕', label: 'Pizza',      options: ['Empanada', 'Torta', 'Tarta'] },
+  { emoji: '🐟', label: 'Pez',        options: ['Gato', 'Perro', 'Pájaro'] },
+  { emoji: '🚂', label: 'Tren',       options: ['Auto', 'Barco', 'Avión'] },
+  { emoji: '🌳', label: 'Árbol',      options: ['Flor', 'Pasto', 'Hoja'] },
+  { emoji: '🍇', label: 'Uvas',       options: ['Manzana', 'Durazno', 'Sandía'] },
+  { emoji: '🎂', label: 'Torta',      options: ['Galleta', 'Pan', 'Alfajor'] },
+  { emoji: '🦋', label: 'Mariposa',   options: ['Abeja', 'Mosca', 'Gusano'] },
+  { emoji: '🍦', label: 'Helado',     options: ['Torta', 'Flan', 'Dulce'] },
+  { emoji: '🐓', label: 'Gallina',    options: ['Pato', 'Ganso', 'Pavo'] },
+  { emoji: '🌊', label: 'Mar',        options: ['Río', 'Lago', 'Laguna'] },
+  { emoji: '🎈', label: 'Globo',      options: ['Pelota', 'Burbuja', 'Pompa'] },
 ]
 
 const OBJECTS_MEDIUM = [
@@ -768,6 +804,16 @@ const OBJECTS_MEDIUM = [
   { emoji: '🕯️', label: 'Vela',       options: ['Lámpara', 'Linterna', 'Fuego'] },
   { emoji: '🧲', label: 'Imán',       options: ['Clavo', 'Tuerca', 'Tornillo'] },
   { emoji: '🌂', label: 'Paraguas',   options: ['Abrigo', 'Sombrero', 'Bufanda'] },
+  { emoji: '🎩', label: 'Sombrero',   options: ['Gorra', 'Boina', 'Casco'] },
+  { emoji: '🔑', label: 'Llave',      options: ['Candado', 'Cerradura', 'Cadena'] },
+  { emoji: '🧦', label: 'Medias',     options: ['Zapatos', 'Guantes', 'Cinturón'] },
+  { emoji: '🎻', label: 'Violín',     options: ['Guitarra', 'Cello', 'Mandolina'] },
+  { emoji: '🌵', label: 'Cactus',     options: ['Palmera', 'Pino', 'Rosal'] },
+  { emoji: '🍵', label: 'Taza de té', options: ['Taza de café', 'Mate', 'Vaso'] },
+  { emoji: '🪞', label: 'Espejo',     options: ['Cuadro', 'Ventana', 'Puerta'] },
+  { emoji: '🧸', label: 'Osito',      options: ['Muñeca', 'Pelota', 'Juguete'] },
+  { emoji: '🌻', label: 'Girasol',    options: ['Rosa', 'Margarita', 'Tulipán'] },
+  { emoji: '🍳', label: 'Sartén',     options: ['Olla', 'Cacerola', 'Cazuela'] },
 ]
 
 const OBJECTS_HARD = [
@@ -775,8 +821,13 @@ const OBJECTS_HARD = [
   { emoji: '⚗️', label: 'Probeta',    options: ['Jeringa', 'Termómetro', 'Lupa'] },
   { emoji: '🎭', label: 'Máscara',    options: ['Antifaz', 'Casco', 'Careta'] },
   { emoji: '🧭', label: 'Brújula',    options: ['Reloj', 'Calculadora', 'Termómetro'] },
-  { emoji: '🪗', label: 'Bandoneón',  options: ['Acordeón', 'Armónica', 'Concertina'] },
+  { emoji: '🪗', label: 'Acordeón',   options: ['Bandoneón', 'Armónica', 'Concertina'] },
   { emoji: '🫙', label: 'Frasco',     options: ['Botella', 'Taza', 'Jarra'] },
+  { emoji: '🔭', label: 'Telescopio', options: ['Microscopio', 'Binoculares', 'Lupa'] },
+  { emoji: '🧪', label: 'Tubo de ensayo', options: ['Pipeta', 'Matraz', 'Frasco'] },
+  { emoji: '🪬', label: 'Amuleto',    options: ['Colgante', 'Talismán', 'Medalla'] },
+  { emoji: '🗿', label: 'Estatua',    options: ['Escultura', 'Figura', 'Busto'] },
+  { emoji: '🧿', label: 'Ojo turco',  options: ['Amuleto', 'Botón', 'Medallón'] },
 ]
 
 export function generateWhatIsThisObjectContent(difficulty: Difficulty): {

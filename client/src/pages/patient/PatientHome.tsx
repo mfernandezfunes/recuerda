@@ -8,6 +8,7 @@ import { sessionsApi } from '../../api/sessions.api'
 import apiClient from '../../api/client'
 import { ACTIVITY_META } from '../../types'
 import type { ActivityType } from '../../types'
+import { getLevel } from '../../utils/levels'
 
 const ALL_ACTIVITIES: ActivityType[] = [
   'MEMORY_CARDS', 'WHAT_DAY_IS_IT', 'WHO_IS_THIS', 'FIND_OBJECT',
@@ -18,12 +19,12 @@ const ALL_ACTIVITIES: ActivityType[] = [
 
 export function PatientHome() {
   const patient = useAuthStore((s) => s.patient)
-  const { setSession, clearSession } = useSessionStore()
+  const { setSession, clearSession, setLifetimeStats, lifetimeStars, lifetimeActivities, streak } = useSessionStore()
   const { speak } = useTTS()
   const navigate = useNavigate()
   const [enabledActivities, setEnabledActivities] = useState<ActivityType[]>(ALL_ACTIVITIES)
 
-  // Load enabled activities from patient-scoped endpoint
+  // Load enabled activities
   useEffect(() => {
     if (!patient?.id) return
     apiClient.get('/patient/activity-settings')
@@ -35,7 +36,17 @@ export function PatientHome() {
           .map((s) => s.activityType)
         if (enabled.length > 0) setEnabledActivities(enabled)
       })
-      .catch(() => {}) // fallback: show all
+      .catch(() => {})
+  }, [patient?.id])
+
+  // Load lifetime stats
+  useEffect(() => {
+    if (!patient?.id) return
+    apiClient.get('/patient/stats')
+      .then((r) => {
+        setLifetimeStats(r.data as { totalStars: number; activitiesCompleted: number; streak: number })
+      })
+      .catch(() => {})
   }, [patient?.id])
 
   // Session lifecycle
@@ -70,6 +81,8 @@ export function PatientHome() {
   const greetingText =
     hour < 12 ? '¡Buenos días' : hour < 18 ? '¡Buenas tardes' : '¡Buenas noches'
 
+  const level = getLevel(lifetimeStars)
+
   return (
     <div className="px-5 py-6 space-y-6">
       {/* Saludo cálido */}
@@ -80,6 +93,83 @@ export function PatientHome() {
         <p className="text-lg text-[#8D7061] font-semibold mt-1">
           Estamos felices de verte. ¿Qué actividad querés hacer hoy?
         </p>
+      </motion.div>
+
+      {/* Tarjeta de nivel y puntuación */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        style={{
+          backgroundColor: level.color + '50',
+          border: `2px solid ${level.color}`,
+          borderRadius: 24,
+          padding: '16px 20px',
+        }}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span style={{ fontSize: '2rem' }}>{level.emoji}</span>
+            <div>
+              <p style={{ fontSize: '1rem', fontWeight: 900, color: '#5C4033', fontFamily: 'Nunito, sans-serif' }}>
+                Nivel {level.number} — {level.name}
+              </p>
+              <p style={{ fontSize: '0.85rem', color: '#8D7061', fontFamily: 'Nunito, sans-serif', fontWeight: 600 }}>
+                {lifetimeStars} ⭐ totales · {lifetimeActivities} actividades
+              </p>
+            </div>
+          </div>
+          {streak > 0 && (
+            <div
+              style={{
+                backgroundColor: '#FFCBA4',
+                borderRadius: 14,
+                padding: '6px 12px',
+                textAlign: 'center',
+              }}
+            >
+              <p style={{ fontSize: '1.2rem', fontWeight: 900, color: '#5C4033', fontFamily: 'Nunito, sans-serif', lineHeight: 1 }}>
+                🔥 {streak}
+              </p>
+              <p style={{ fontSize: '0.7rem', color: '#8D7061', fontFamily: 'Nunito, sans-serif', fontWeight: 700 }}>
+                días
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Barra de progreso al siguiente nivel */}
+        {level.number < 5 && (
+          <div>
+            <div
+              style={{
+                height: 10,
+                backgroundColor: '#E5E7EB',
+                borderRadius: 99,
+                overflow: 'hidden',
+              }}
+            >
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${level.progress}%` }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                style={{
+                  height: '100%',
+                  backgroundColor: level.color.replace('50', ''),
+                  borderRadius: 99,
+                }}
+              />
+            </div>
+            <p style={{ fontSize: '0.75rem', color: '#8D7061', fontFamily: 'Nunito, sans-serif', fontWeight: 600, marginTop: 4 }}>
+              {level.progress}% hacia Nivel {level.number + 1}
+            </p>
+          </div>
+        )}
+        {level.number === 5 && (
+          <p style={{ fontSize: '0.85rem', color: '#5C4033', fontFamily: 'Nunito, sans-serif', fontWeight: 800, textAlign: 'center' }}>
+            ¡Nivel máximo alcanzado! 👑
+          </p>
+        )}
       </motion.div>
 
       {/* Actividades */}
