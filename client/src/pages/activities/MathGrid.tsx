@@ -26,8 +26,8 @@ interface MathGridContent {
   difficulty?: string
 }
 
-const CELL_SIZE = 80
-const OP_SIZE = 32
+const CELL_SIZE = 60
+const OP_SIZE = 24
 
 export function MathGrid() {
   const navigate = useNavigate()
@@ -140,7 +140,7 @@ export function MathGrid() {
 
   return (
     <div
-      className="flex flex-col items-center gap-6 px-4 py-8 min-h-screen"
+      className="flex flex-col items-center gap-6 px-2 py-8 min-h-screen"
       style={{ backgroundColor: '#FFF8F0' }}
     >
       {/* Header */}
@@ -166,13 +166,13 @@ export function MathGrid() {
       </p>
 
       {/* Grid */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
         {board.map((row, r) => (
-          <div key={r} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div key={r} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {row.map((val, c) => {
               const state = cellState(r, c)
               return (
-                <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {/* Cell */}
                   <motion.div
                     whileTap={state !== 'fixed' ? { scale: 0.92 } : {}}
@@ -198,7 +198,7 @@ export function MathGrid() {
                           initial={{ scale: 0.5, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           style={{
-                            fontSize: '2rem',
+                            fontSize: '1.5rem',
                             fontWeight: 900,
                             color:
                               state === 'fixed'
@@ -222,7 +222,7 @@ export function MathGrid() {
                   {c < size - 1 && (
                     <span
                       style={{
-                        fontSize: '1.5rem',
+                        fontSize: '1.2rem',
                         fontWeight: 800,
                         color: '#8D7061',
                         fontFamily: 'Nunito, sans-serif',
@@ -239,7 +239,7 @@ export function MathGrid() {
                     <>
                       <span
                         style={{
-                          fontSize: '1.5rem',
+                          fontSize: '1.2rem',
                           fontWeight: 800,
                           color: '#8D7061',
                           fontFamily: 'Nunito, sans-serif',
@@ -264,7 +264,7 @@ export function MathGrid() {
                       >
                         <span
                           style={{
-                            fontSize: '1.8rem',
+                            fontSize: '1.4rem',
                             fontWeight: 900,
                             color: '#5C4033',
                             fontFamily: 'Nunito, sans-serif',
@@ -282,13 +282,13 @@ export function MathGrid() {
         ))}
 
         {/* Column operators row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: -4 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: -4 }}>
           {Array.from({ length: size }).map((_, c) => (
-            <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span
                 style={{
                   width: CELL_SIZE,
-                  fontSize: '1.5rem',
+                  fontSize: '1.2rem',
                   fontWeight: 800,
                   color: '#8D7061',
                   fontFamily: 'Nunito, sans-serif',
@@ -303,9 +303,9 @@ export function MathGrid() {
         </div>
 
         {/* Column results row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {colResults.map((result, c) => (
-            <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div
                 style={{
                   width: CELL_SIZE,
@@ -321,7 +321,7 @@ export function MathGrid() {
               >
                 <span
                   style={{
-                    fontSize: '1.8rem',
+                    fontSize: '1.4rem',
                     fontWeight: 900,
                     color: '#5C4033',
                     fontFamily: 'Nunito, sans-serif',
@@ -358,12 +358,12 @@ export function MathGrid() {
                 whileTap={{ scale: 0.88 }}
                 onClick={() => handleNumber(n)}
                 style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: 14,
+                  width: 58,
+                  height: 58,
+                  borderRadius: 12,
                   backgroundColor: '#FFCBA4',
                   border: '3px solid #E8A070',
-                  fontSize: '1.6rem',
+                  fontSize: '1.4rem',
                   fontWeight: 900,
                   color: '#5C4033',
                   fontFamily: 'Nunito, sans-serif',
