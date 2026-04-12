@@ -209,63 +209,197 @@ export async function generateSeriesPatternsContent(
   options: (string | number)[]
   type: 'numbers' | 'colors' | 'shapes'
 }> {
+  const COLORS = ['🔴', '🟡', '🔵', '🟢', '🟠', '🟣', '🟤', '⚫', '⚪', '🟨']
+  const ANIMALS = ['🐶', '🐱', '🐦', '🐠', '🐘', '🐸', '🦋', '🐇', '🐯', '🐮', '🐷', '🐼']
+  const SHAPES = ['⚪', '🔺', '⬛', '⬜', '🔶', '🔷', '🔸', '🔹', '🟥', '🟦', '🟧', '🟨', '🟩', '🟪']
+  const FRUITS = ['🍎', '🍊', '🍋', '🍌', '🍇', '🍉', '🍓', '🍑', '🍒', '🥝']
+
   if (difficulty === 'EASY') {
-    // Simple number sequence +2
-    const start = Math.floor(Math.random() * 5) + 1
-    const step = 2
-    const seq = [start, start + step, start + step * 2, '?']
-    const correct = start + step * 3
-    const options = shuffle([correct, correct + 1, correct - 1, correct + step])
-    return { sequence: seq, correct, options, type: 'numbers' }
+    const patterns = [
+      // +1 sequence
+      () => {
+        const start = Math.floor(Math.random() * 5) + 1
+        const seq = [start, start + 1, start + 2, '?']
+        const correct = start + 3
+        return { sequence: seq, correct, options: shuffle([correct, correct + 1, correct - 1, correct + 2]), type: 'numbers' as const }
+      },
+      // +2 sequence
+      () => {
+        const start = Math.floor(Math.random() * 5) + 1
+        const seq = [start, start + 2, start + 4, '?']
+        const correct = start + 6
+        return { sequence: seq, correct, options: shuffle([correct, correct + 2, correct - 2, correct + 1]), type: 'numbers' as const }
+      },
+      // -1 descending
+      () => {
+        const start = Math.floor(Math.random() * 5) + 10
+        const seq = [start, start - 1, start - 2, '?']
+        const correct = start - 3
+        return { sequence: seq, correct, options: shuffle([correct, correct + 1, correct - 1, start]), type: 'numbers' as const }
+      },
+      // AB color pattern
+      () => {
+        const pattern = shuffle(COLORS).slice(0, 2)
+        const seq = [pattern[0], pattern[1], pattern[0], '?']
+        const correct = pattern[1]
+        const distractors = shuffle(COLORS.filter((c) => c !== correct)).slice(0, 3)
+        return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' as const }
+      },
+      // AAB pattern with fruits
+      () => {
+        const pattern = shuffle(FRUITS).slice(0, 2)
+        const seq = [pattern[0], pattern[0], pattern[1], pattern[0], '?']
+        const correct = pattern[0]
+        const distractors = shuffle(FRUITS.filter((f) => f !== correct)).slice(0, 3)
+        return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' as const }
+      },
+      // +3 sequence
+      () => {
+        const start = Math.floor(Math.random() * 4) + 1
+        const seq = [start, start + 3, start + 6, '?']
+        const correct = start + 9
+        return { sequence: seq, correct, options: shuffle([correct, correct + 3, correct - 3, correct + 1]), type: 'numbers' as const }
+      },
+    ]
+    return randomFrom(patterns)()
   }
 
   if (difficulty === 'MEDIUM') {
-    const COLORS = ['🔴', '🟡', '🔵', '🟢', '🟠', '🟣', '🟤', '⚫']
-    const ANIMALS = ['🐶', '🐱', '🐦', '🐠', '🐘', '🐸', '🦋', '🐇']
-    // Pick randomly: ABABAB colors, ABCABC animals, or +3 numbers
-    const variant = Math.floor(Math.random() * 3)
-    if (variant === 0) {
+    const patterns = [
       // ABABAB colors
-      const pattern = shuffle(COLORS).slice(0, 2)
-      const seq = [pattern[0], pattern[1], pattern[0], '?']
-      const correct = pattern[1]
-      const distractors = shuffle(COLORS.filter((c) => c !== correct)).slice(0, 3)
-      return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' }
-    } else if (variant === 1) {
+      () => {
+        const pattern = shuffle(COLORS).slice(0, 2)
+        const seq = [pattern[0], pattern[1], pattern[0], '?']
+        const correct = pattern[1]
+        const distractors = shuffle(COLORS.filter((c) => c !== correct)).slice(0, 3)
+        return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' as const }
+      },
       // ABCABC animals
-      const pattern = shuffle(ANIMALS).slice(0, 3)
-      const seq = [pattern[0], pattern[1], pattern[2], pattern[0], '?']
-      const correct = pattern[1]
-      const distractors = shuffle(ANIMALS.filter((a) => a !== correct)).slice(0, 3)
-      return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' }
-    } else {
-      // +3 number sequence
-      const start = Math.floor(Math.random() * 6) + 1
-      const step = 3
-      const seq = [start, start + step, start + step * 2, '?']
-      const correct = start + step * 3
-      const options = shuffle([correct, correct + 1, correct - 1, correct + step])
-      return { sequence: seq, correct, options, type: 'numbers' }
-    }
+      () => {
+        const pattern = shuffle(ANIMALS).slice(0, 3)
+        const seq = [pattern[0], pattern[1], pattern[2], pattern[0], '?']
+        const correct = pattern[1]
+        const distractors = shuffle(ANIMALS.filter((a) => a !== correct)).slice(0, 3)
+        return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' as const }
+      },
+      // +4 sequence
+      () => {
+        const start = Math.floor(Math.random() * 5) + 1
+        const seq = [start, start + 4, start + 8, '?']
+        const correct = start + 12
+        return { sequence: seq, correct, options: shuffle([correct, correct + 4, correct - 4, correct + 1]), type: 'numbers' as const }
+      },
+      // -2 descending
+      () => {
+        const start = Math.floor(Math.random() * 5) + 15
+        const seq = [start, start - 2, start - 4, '?']
+        const correct = start - 6
+        return { sequence: seq, correct, options: shuffle([correct, correct + 2, correct - 2, start]), type: 'numbers' as const }
+      },
+      // AABBCC shapes
+      () => {
+        const pattern = shuffle(SHAPES).slice(0, 3)
+        const seq = [pattern[0], pattern[0], pattern[1], pattern[1], pattern[2], '?']
+        const correct = pattern[2]
+        const distractors = shuffle(SHAPES.filter((s) => s !== correct)).slice(0, 3)
+        return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'shapes' as const }
+      },
+      // ABBA pattern
+      () => {
+        const pattern = shuffle(FRUITS).slice(0, 2)
+        const seq = [pattern[0], pattern[1], pattern[1], pattern[0], pattern[0], '?']
+        const correct = pattern[1]
+        const distractors = shuffle(FRUITS.filter((f) => f !== correct)).slice(0, 3)
+        return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' as const }
+      },
+      // +5 sequence
+      () => {
+        const start = Math.floor(Math.random() * 4) + 1
+        const seq = [start, start + 5, start + 10, '?']
+        const correct = start + 15
+        return { sequence: seq, correct, options: shuffle([correct, correct + 5, correct - 5, correct + 1]), type: 'numbers' as const }
+      },
+      // Pares sequence (2, 4, 6, 8)
+      () => {
+        const start = Math.floor(Math.random() * 3) * 2 + 2
+        const seq = [start, start + 2, start + 4, '?']
+        const correct = start + 6
+        return { sequence: seq, correct, options: shuffle([correct, correct + 2, correct - 2, correct + 1]), type: 'numbers' as const }
+      },
+    ]
+    return randomFrom(patterns)()
   }
 
-  // HARD: multiply sequence or +5
-  const variant = Math.floor(Math.random() * 2)
-  if (variant === 0) {
-    const start = Math.floor(Math.random() * 3) + 2
-    const factor = 2
-    const seq = [start, start * factor, start * factor * factor, '?']
-    const correct = start * factor * factor * factor
-    const options = shuffle([correct, correct + 2, correct - 2, correct * 2])
-    return { sequence: seq, correct, options, type: 'numbers' }
-  } else {
-    const start = Math.floor(Math.random() * 4) + 1
-    const step = 5
-    const seq = [start, start + step, start + step * 2, '?']
-    const correct = start + step * 3
-    const options = shuffle([correct, correct + 1, correct - 1, correct + 5])
-    return { sequence: seq, correct, options, type: 'numbers' }
-  }
+  // HARD difficulty
+  const patterns = [
+    // ×2 multiply sequence
+    () => {
+      const start = Math.floor(Math.random() * 3) + 2
+      const seq = [start, start * 2, start * 4, '?']
+      const correct = start * 8
+      return { sequence: seq, correct, options: shuffle([correct, correct + 2, correct / 2, start * 6]), type: 'numbers' as const }
+    },
+    // +10 sequence
+    () => {
+      const start = Math.floor(Math.random() * 5) + 5
+      const seq = [start, start + 10, start + 20, '?']
+      const correct = start + 30
+      return { sequence: seq, correct, options: shuffle([correct, correct + 10, correct - 10, correct + 5]), type: 'numbers' as const }
+    },
+    // -5 descending
+    () => {
+      const start = Math.floor(Math.random() * 10) + 30
+      const seq = [start, start - 5, start - 10, '?']
+      const correct = start - 15
+      return { sequence: seq, correct, options: shuffle([correct, correct + 5, correct - 5, start]), type: 'numbers' as const }
+    },
+    // Fibonacci-like (simplified)
+    () => {
+      const a = Math.floor(Math.random() * 3) + 1
+      const b = Math.floor(Math.random() * 3) + 2
+      const seq = [a, b, a + b, '?']
+      const correct = b + (a + b)
+      return { sequence: seq, correct, options: shuffle([correct, correct + 1, correct - 1, a + b + 1]), type: 'numbers' as const }
+    },
+    // Squares (1, 4, 9, 16)
+    () => {
+      const start = Math.floor(Math.random() * 2) + 2
+      const seq = [start * start, (start + 1) * (start + 1), (start + 2) * (start + 2), '?']
+      const correct = (start + 3) * (start + 3)
+      return { sequence: seq, correct, options: shuffle([correct, correct + 1, correct - 1, start * start * 2]), type: 'numbers' as const }
+    },
+    // ABCDABCD pattern
+    () => {
+      const pattern = shuffle(ANIMALS).slice(0, 4)
+      const seq = [pattern[0], pattern[1], pattern[2], pattern[3], pattern[0], '?']
+      const correct = pattern[1]
+      const distractors = shuffle(ANIMALS.filter((a) => a !== correct)).slice(0, 3)
+      return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'colors' as const }
+    },
+    // AABBAABB pattern
+    () => {
+      const pattern = shuffle(SHAPES).slice(0, 2)
+      const seq = [pattern[0], pattern[0], pattern[1], pattern[1], pattern[0], '?']
+      const correct = pattern[0]
+      const distractors = shuffle(SHAPES.filter((s) => s !== correct)).slice(0, 3)
+      return { sequence: seq, correct, options: shuffle([correct, ...distractors]), type: 'shapes' as const }
+    },
+    // +7 sequence
+    () => {
+      const start = Math.floor(Math.random() * 5) + 3
+      const seq = [start, start + 7, start + 14, '?']
+      const correct = start + 21
+      return { sequence: seq, correct, options: shuffle([correct, correct + 7, correct - 7, correct + 1]), type: 'numbers' as const }
+    },
+    // Impares sequence (1, 3, 5, 7)
+    () => {
+      const start = Math.floor(Math.random() * 4) * 2 + 1
+      const seq = [start, start + 2, start + 4, '?']
+      const correct = start + 6
+      return { sequence: seq, correct, options: shuffle([correct, correct + 2, correct - 2, correct + 1]), type: 'numbers' as const }
+    },
+  ]
+  return randomFrom(patterns)()
 }
 
 // ─── WORD_SEARCH ──────────────────────────────────────────────────────────────
