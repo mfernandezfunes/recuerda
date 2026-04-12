@@ -13,6 +13,7 @@ import { ErrorScreen } from '../../components/shared/ErrorScreen'
 interface WordBuilderContent {
   mother: string
   hidden: string
+  hint: string
   tiles: string[]
   showFirstLetter: boolean
   difficulty?: string
@@ -65,7 +66,7 @@ export function WordBuilder() {
   useEffect(() => {
     if (!loading && content) {
       startTimer()
-      speak('Encontrá la palabra escondida usando las letras de arriba')
+      speak(`Encontrá la palabra que: ${content.hint}`)
     }
   }, [loading, content])
 
@@ -153,11 +154,30 @@ export function WordBuilder() {
           Encontrá la palabra escondida
         </p>
         <button
-          onClick={() => speak('Encontrá la palabra escondida usando las letras de arriba')}
+          onClick={() => speak(`Encontrá la palabra que: ${content.hint}`)}
           style={{ fontSize: '1.6rem', background: 'none', border: 'none', cursor: 'pointer' }}
         >
           🔊
         </button>
+      </div>
+
+      {/* Pista */}
+      <div
+        style={{
+          backgroundColor: '#FFF3A380',
+          border: '3px solid #F5D365',
+          borderRadius: 16,
+          padding: '12px 24px',
+          textAlign: 'center',
+          maxWidth: 380,
+        }}
+      >
+        <p style={{ fontSize: '0.85rem', color: '#8D7061', fontFamily: 'Nunito, sans-serif', fontWeight: 700, marginBottom: 4 }}>
+          💡 Pista
+        </p>
+        <p style={{ fontSize: '1.3rem', fontWeight: 800, color: '#5C4033', fontFamily: 'Nunito, sans-serif' }}>
+          {content.hint}
+        </p>
       </div>
 
       {/* Palabra madre */}
