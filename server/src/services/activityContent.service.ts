@@ -886,6 +886,18 @@ export function generateSimplePuzzleContent(difficulty: Difficulty): {
     { emoji: '🍓', label: 'Frutilla' },
     { emoji: '🌙', label: 'Luna' },
     { emoji: '🐥', label: 'Pollito' },
+    { emoji: '🌺', label: 'Hibisco' },
+    { emoji: '🐱', label: 'Gato' },
+    { emoji: '🍎', label: 'Manzana' },
+    { emoji: '🐠', label: 'Pez' },
+    { emoji: '🌸', label: 'Flor' },
+    { emoji: '☀️', label: 'Sol' },
+    { emoji: '🦊', label: 'Zorro' },
+    { emoji: '🍊', label: 'Naranja' },
+    { emoji: '🐝', label: 'Abeja' },
+    { emoji: '🌵', label: 'Cactus' },
+    { emoji: '🎈', label: 'Globo' },
+    { emoji: '🐢', label: 'Tortuga' },
   ]
   const MEDIUM_PUZZLES = [
     { emoji: '🏡', label: 'Casa' },
@@ -898,6 +910,16 @@ export function generateSimplePuzzleContent(difficulty: Difficulty): {
     { emoji: '🌺', label: 'Hibisco' },
     { emoji: '🦁', label: 'León' },
     { emoji: '🍕', label: 'Pizza' },
+    { emoji: '🚗', label: 'Auto' },
+    { emoji: '🎸', label: 'Guitarra' },
+    { emoji: '🦜', label: 'Loro' },
+    { emoji: '🍰', label: 'Torta' },
+    { emoji: '🌲', label: 'Pino' },
+    { emoji: '🐘', label: 'Elefante' },
+    { emoji: '🎭', label: 'Teatro' },
+    { emoji: '🚀', label: 'Cohete' },
+    { emoji: '🦉', label: 'Búho' },
+    { emoji: '🍉', label: 'Sandía' },
   ]
 
   const pool = difficulty === Difficulty.EASY ? EASY_PUZZLES : MEDIUM_PUZZLES
@@ -959,6 +981,26 @@ const SUDOKU_EASY: SudokuPuzzle[] = [
     size: 4, boxRows: 2, boxCols: 2,
     solution: [[3,1,4,2],[2,4,1,3],[1,3,2,4],[4,2,3,1]],
     puzzle:   [[3,null,null,2],[null,4,1,null],[null,3,2,null],[4,null,null,1]],
+  },
+  {
+    size: 4, boxRows: 2, boxCols: 2,
+    solution: [[4,2,3,1],[1,3,4,2],[3,1,2,4],[2,4,1,3]],
+    puzzle:   [[4,null,3,null],[null,3,null,2],[3,null,2,null],[null,4,null,3]],
+  },
+  {
+    size: 4, boxRows: 2, boxCols: 2,
+    solution: [[2,3,1,4],[4,1,2,3],[1,4,3,2],[3,2,4,1]],
+    puzzle:   [[null,3,1,null],[4,null,null,3],[null,4,3,null],[3,null,null,1]],
+  },
+  {
+    size: 4, boxRows: 2, boxCols: 2,
+    solution: [[3,4,2,1],[2,1,3,4],[4,2,1,3],[1,3,4,2]],
+    puzzle:   [[3,null,null,1],[null,1,3,null],[null,2,1,null],[1,null,null,2]],
+  },
+  {
+    size: 4, boxRows: 2, boxCols: 2,
+    solution: [[1,2,4,3],[3,4,1,2],[2,3,4,1],[4,1,2,3]],
+    puzzle:   [[1,null,4,null],[null,4,null,2],[2,null,4,null],[null,1,null,3]],
   },
 ]
 
@@ -1040,6 +1082,82 @@ const SUDOKU_MEDIUM: SudokuPuzzle[] = [
       [6,null,3,null,2,null],
     ],
   },
+  {
+    size: 6, boxRows: 2, boxCols: 3,
+    solution: [
+      [1,3,5,2,4,6],
+      [2,4,6,1,3,5],
+      [3,5,1,4,6,2],
+      [4,6,2,3,5,1],
+      [5,1,3,6,2,4],
+      [6,2,4,5,1,3],
+    ],
+    puzzle: [
+      [1,null,5,null,null,6],
+      [null,4,null,1,null,null],
+      [3,null,null,4,6,null],
+      [null,6,2,null,null,1],
+      [null,null,3,null,2,null],
+      [6,null,null,5,null,3],
+    ],
+  },
+  {
+    size: 6, boxRows: 2, boxCols: 3,
+    solution: [
+      [4,2,6,3,1,5],
+      [3,1,5,4,2,6],
+      [2,6,4,1,5,3],
+      [1,5,3,2,6,4],
+      [6,4,2,5,3,1],
+      [5,3,1,6,4,2],
+    ],
+    puzzle: [
+      [null,2,6,null,1,null],
+      [3,null,null,4,null,6],
+      [null,6,null,null,5,3],
+      [1,null,3,null,null,4],
+      [null,4,null,5,null,null],
+      [5,null,1,null,4,null],
+    ],
+  },
+  {
+    size: 6, boxRows: 2, boxCols: 3,
+    solution: [
+      [5,1,3,6,2,4],
+      [6,2,4,5,1,3],
+      [1,3,5,2,4,6],
+      [2,4,6,1,3,5],
+      [3,5,1,4,6,2],
+      [4,6,2,3,5,1],
+    ],
+    puzzle: [
+      [5,null,null,6,null,4],
+      [null,2,4,null,1,null],
+      [null,3,null,2,null,6],
+      [2,null,6,null,3,null],
+      [null,5,null,4,null,null],
+      [4,null,2,null,null,1],
+    ],
+  },
+  {
+    size: 6, boxRows: 2, boxCols: 3,
+    solution: [
+      [3,6,2,4,5,1],
+      [4,5,1,3,6,2],
+      [6,2,3,5,1,4],
+      [5,1,4,6,2,3],
+      [2,3,6,1,4,5],
+      [1,4,5,2,3,6],
+    ],
+    puzzle: [
+      [null,6,null,4,null,1],
+      [4,null,1,null,6,null],
+      [null,2,null,5,null,4],
+      [5,null,4,null,2,null],
+      [null,3,null,1,null,5],
+      [1,null,5,null,3,null],
+    ],
+  },
 ]
 
 // ── 9×9  (HARD) ──
@@ -1095,6 +1213,81 @@ const SUDOKU_HARD: SudokuPuzzle[] = [
       [6,null,8,null,2,null,null,null,3],
     ],
   },
+  {
+    size: 9, boxRows: 3, boxCols: 3,
+    solution: [
+      [1,2,3,4,5,6,7,8,9],
+      [4,5,6,7,8,9,1,2,3],
+      [7,8,9,1,2,3,4,5,6],
+      [2,3,4,5,6,7,8,9,1],
+      [5,6,7,8,9,1,2,3,4],
+      [8,9,1,2,3,4,5,6,7],
+      [3,4,5,6,7,8,9,1,2],
+      [6,7,8,9,1,2,3,4,5],
+      [9,1,2,3,4,5,6,7,8],
+    ],
+    puzzle: [
+      [1,null,null,null,5,null,null,null,9],
+      [null,5,6,null,null,null,1,2,null],
+      [null,null,9,1,null,3,null,null,null],
+      [2,null,null,null,6,null,null,null,1],
+      [null,6,7,null,null,null,2,3,null],
+      [null,null,1,2,null,4,null,null,null],
+      [3,null,null,null,7,null,null,null,2],
+      [null,7,8,null,null,null,3,4,null],
+      [null,null,2,3,null,5,null,null,null],
+    ],
+  },
+  {
+    size: 9, boxRows: 3, boxCols: 3,
+    solution: [
+      [2,5,8,1,6,9,4,7,3],
+      [1,6,9,2,7,3,5,8,4],
+      [7,3,4,5,8,8,9,1,6],
+      [5,8,1,6,9,2,7,3,4],
+      [6,9,2,7,3,4,8,5,1],
+      [3,4,7,8,5,1,6,9,2],
+      [8,1,5,9,2,6,3,4,7],
+      [9,2,6,3,4,7,1,6,5],
+      [4,7,3,8,1,5,2,6,9],
+    ],
+    puzzle: [
+      [null,5,null,1,null,9,null,7,null],
+      [1,null,null,null,7,null,null,null,4],
+      [null,null,4,5,null,8,9,null,null],
+      [5,null,null,null,9,null,null,null,4],
+      [null,9,2,null,null,null,8,5,null],
+      [null,null,7,8,null,1,6,null,null],
+      [8,null,null,null,2,null,null,null,7],
+      [null,2,null,3,null,7,null,6,null],
+      [null,null,3,null,1,null,2,null,null],
+    ],
+  },
+  {
+    size: 9, boxRows: 3, boxCols: 3,
+    solution: [
+      [3,6,9,2,4,7,1,5,8],
+      [2,4,7,1,5,8,3,6,9],
+      [1,5,8,3,6,9,2,4,7],
+      [6,9,2,4,7,1,5,8,3],
+      [4,7,1,5,8,3,6,9,2],
+      [5,8,3,6,9,2,4,7,1],
+      [9,2,4,7,1,5,8,3,6],
+      [7,1,5,8,3,6,9,2,4],
+      [8,3,6,9,2,4,7,1,5],
+    ],
+    puzzle: [
+      [null,6,null,null,4,null,null,5,null],
+      [2,null,null,1,null,null,3,null,null],
+      [null,null,8,null,null,9,null,null,7],
+      [null,9,null,null,7,null,null,8,null],
+      [4,null,null,5,null,null,6,null,null],
+      [null,null,3,null,null,2,null,null,1],
+      [null,2,null,null,1,null,null,3,null],
+      [7,null,null,8,null,null,9,null,null],
+      [null,null,6,null,null,4,null,null,5],
+    ],
+  },
 ]
 
 export function generateSudokuContent(difficulty: Difficulty): SudokuPuzzle {
@@ -1114,22 +1307,32 @@ const COLORS_EASY = [
   { name: 'Amarillo', hex: '#EAB308' },
   { name: 'Naranja',  hex: '#F97316' },
   { name: 'Rosa',     hex: '#EC4899' },
+  { name: 'Morado',   hex: '#A855F7' },
+  { name: 'Celeste',  hex: '#38BDF8' },
+  { name: 'Marrón',   hex: '#A16207' },
+  { name: 'Negro',    hex: '#1F2937' },
+  { name: 'Blanco',   hex: '#F5F5F5' },
+  { name: 'Gris',     hex: '#71717A' },
 ]
 
 const COLORS_MEDIUM = [
   ...COLORS_EASY,
-  { name: 'Violeta',  hex: '#8B5CF6' },
-  { name: 'Celeste',  hex: '#38BDF8' },
-  { name: 'Marrón',   hex: '#92400E' },
-  { name: 'Gris',     hex: '#6B7280' },
+  { name: 'Violeta',    hex: '#8B5CF6' },
+  { name: 'Turquesa',   hex: '#14B8A6' },
+  { name: 'Dorado',     hex: '#D97706' },
+  { name: 'Fucsia',     hex: '#D946EF' },
+  { name: 'Verde Lima', hex: '#84CC16' },
+  { name: 'Azul Marino',hex: '#1E3A8A' },
 ]
 
 const COLORS_HARD = [
   ...COLORS_MEDIUM,
-  { name: 'Negro',    hex: '#1F2937' },
-  { name: 'Blanco',   hex: '#F3F4F6' },
-  { name: 'Turquesa', hex: '#14B8A6' },
-  { name: 'Dorado',   hex: '#D97706' },
+  { name: 'Beige',      hex: '#D4C5B9' },
+  { name: 'Coral',      hex: '#FF7F50' },
+  { name: 'Lavanda',    hex: '#E6E6FA' },
+  { name: 'Oliva',      hex: '#808000' },
+  { name: 'Salmón',     hex: '#FA8072' },
+  { name: 'Índigo',     hex: '#4B0082' },
 ]
 
 export function generateColorMatchContent(difficulty: Difficulty): {
@@ -1214,6 +1417,14 @@ const OBJECTS_HARD = [
   { emoji: '🪬', label: 'Amuleto',    options: ['Colgante', 'Talismán', 'Medalla'] },
   { emoji: '🗿', label: 'Estatua',    options: ['Escultura', 'Figura', 'Busto'] },
   { emoji: '🧿', label: 'Ojo turco',  options: ['Amuleto', 'Botón', 'Medallón'] },
+  { emoji: '🎺', label: 'Trompeta',   options: ['Trombón', 'Saxofón', 'Clarinete'] },
+  { emoji: '🧮', label: 'Ábaco',      options: ['Calculadora', 'Regla', 'Compás'] },
+  { emoji: '⚖️', label: 'Balanza',    options: ['Báscula', 'Termómetro', 'Reloj'] },
+  { emoji: '🔬', label: 'Microscopio', options: ['Telescopio', 'Lupa', 'Prismáticos'] },
+  { emoji: '🪕', label: 'Banjo',      options: ['Guitarra', 'Mandolina', 'Ukelele'] },
+  { emoji: '🛎️', label: 'Campanilla', options: ['Campana', 'Timbre', 'Bocina'] },
+  { emoji: '🧰', label: 'Caja de herramientas', options: ['Maletín', 'Cofre', 'Baúl'] },
+  { emoji: '⚓', label: 'Ancla',      options: ['Timón', 'Remo', 'Salvavidas'] },
 ]
 
 export function generateWhatIsThisObjectContent(difficulty: Difficulty): {
@@ -1444,6 +1655,58 @@ const MATH_GRID_EASY: MathGridPuzzle[] = [
     rowResults: [10, 13, 6],
     colResults: [14, 7, 8],
   },
+  {
+    size: 3,
+    grid: [
+      [{ value: 7, fixed: true }, { value: null, fixed: false }, { value: 2, fixed: true }],
+      [{ value: 3, fixed: true }, { value: null, fixed: false }, { value: 4, fixed: true }],
+      [{ value: null, fixed: false }, { value: 5, fixed: true }, { value: 3, fixed: true }],
+    ],
+    solution: [[7, 4, 2], [3, 6, 4], [8, 5, 3]],
+    rowOps: ['-', '+', '-'],
+    colOps: ['+', '+', '+'],
+    rowResults: [1, 13, 0],
+    colResults: [18, 15, 9],
+  },
+  {
+    size: 3,
+    grid: [
+      [{ value: null, fixed: false }, { value: 3, fixed: true }, { value: 5, fixed: true }],
+      [{ value: 6, fixed: true }, { value: null, fixed: false }, { value: 1, fixed: true }],
+      [{ value: 4, fixed: true }, { value: 2, fixed: true }, { value: null, fixed: false }],
+    ],
+    solution: [[2, 3, 5], [6, 4, 1], [4, 2, 3]],
+    rowOps: ['+', '+', '+'],
+    colOps: ['+', '+', '+'],
+    rowResults: [10, 11, 9],
+    colResults: [12, 9, 9],
+  },
+  {
+    size: 3,
+    grid: [
+      [{ value: 9, fixed: true }, { value: 3, fixed: true }, { value: null, fixed: false }],
+      [{ value: null, fixed: false }, { value: 5, fixed: true }, { value: 2, fixed: true }],
+      [{ value: 6, fixed: true }, { value: null, fixed: false }, { value: 4, fixed: true }],
+    ],
+    solution: [[9, 3, 1], [7, 5, 2], [6, 4, 4]],
+    rowOps: ['-', '-', '-'],
+    colOps: ['-', '-', '-'],
+    rowResults: [5, 0, -2],
+    colResults: [-4, -6, -5],
+  },
+  {
+    size: 3,
+    grid: [
+      [{ value: 1, fixed: true }, { value: null, fixed: false }, { value: 4, fixed: true }],
+      [{ value: null, fixed: false }, { value: 3, fixed: true }, { value: 5, fixed: true }],
+      [{ value: 2, fixed: true }, { value: 6, fixed: true }, { value: null, fixed: false }],
+    ],
+    solution: [[1, 2, 4], [7, 3, 5], [2, 6, 1]],
+    rowOps: ['+', '+', '+'],
+    colOps: ['+', '+', '+'],
+    rowResults: [7, 15, 9],
+    colResults: [10, 11, 10],
+  },
 ]
 
 // MEDIUM: 4×4, suma/resta/multiplicación, números 1-12, 5-6 celdas vacías
@@ -1476,6 +1739,48 @@ const MATH_GRID_MEDIUM: MathGridPuzzle[] = [
     rowResults: [1, 11, -1, 16],
     colResults: [26, 24, -6, 24],
   },
+  {
+    size: 4,
+    grid: [
+      [{ value: null, fixed: false }, { value: 2, fixed: true }, { value: 3, fixed: true }, { value: 1, fixed: true }],
+      [{ value: 4, fixed: true }, { value: null, fixed: false }, { value: 2, fixed: true }, { value: null, fixed: false }],
+      [{ value: null, fixed: false }, { value: 3, fixed: true }, { value: null, fixed: false }, { value: 2, fixed: true }],
+      [{ value: 2, fixed: true }, { value: 1, fixed: true }, { value: 4, fixed: true }, { value: null, fixed: false }],
+    ],
+    solution: [[3, 2, 3, 1], [4, 3, 2, 5], [6, 3, 4, 2], [2, 1, 4, 3]],
+    rowOps: ['×', '+', '×', '+'],
+    colOps: ['+', '+', '+', '×'],
+    rowResults: [9, 14, 15, 10],
+    colResults: [15, 9, 13, 30],
+  },
+  {
+    size: 4,
+    grid: [
+      [{ value: 6, fixed: true }, { value: null, fixed: false }, { value: 2, fixed: true }, { value: 3, fixed: true }],
+      [{ value: null, fixed: false }, { value: 4, fixed: true }, { value: null, fixed: false }, { value: 1, fixed: true }],
+      [{ value: 3, fixed: true }, { value: 2, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }],
+      [{ value: 5, fixed: true }, { value: null, fixed: false }, { value: 3, fixed: true }, { value: 2, fixed: true }],
+    ],
+    solution: [[6, 3, 2, 3], [5, 4, 2, 1], [3, 2, 4, 6], [5, 1, 3, 2]],
+    rowOps: ['-', '-', '×', '-'],
+    colOps: ['+', '×', '+', '×'],
+    rowResults: [-2, -2, 12, -1],
+    colResults: [19, 24, 11, 18],
+  },
+  {
+    size: 4,
+    grid: [
+      [{ value: 3, fixed: true }, { value: 3, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }],
+      [{ value: null, fixed: false }, { value: 2, fixed: true }, { value: 4, fixed: true }, { value: 1, fixed: true }],
+      [{ value: 4, fixed: true }, { value: null, fixed: false }, { value: 3, fixed: true }, { value: null, fixed: false }],
+      [{ value: null, fixed: false }, { value: 4, fixed: true }, { value: null, fixed: false }, { value: 3, fixed: true }],
+    ],
+    solution: [[3, 3, 2, 4], [6, 2, 4, 1], [4, 5, 3, 2], [7, 4, 5, 3]],
+    rowOps: ['×', '+', '×', '+'],
+    colOps: ['+', '×', '+', '×'],
+    rowResults: [12, 13, 20, 16],
+    colResults: [20, 120, 14, 24],
+  },
 ]
 
 // HARD: 4×4, todas las operaciones, números 1-15, 6-8 celdas vacías
@@ -1507,6 +1812,34 @@ const MATH_GRID_HARD: MathGridPuzzle[] = [
     colOps: ['×', '×', '-', '×'],
     rowResults: [4, 4, 2, 21],
     colResults: [96, 72, 14, 60],
+  },
+  {
+    size: 4,
+    grid: [
+      [{ value: null, fixed: false }, { value: 4, fixed: true }, { value: null, fixed: false }, { value: 2, fixed: true }],
+      [{ value: 6, fixed: true }, { value: null, fixed: false }, { value: 3, fixed: true }, { value: null, fixed: false }],
+      [{ value: null, fixed: false }, { value: 2, fixed: true }, { value: null, fixed: false }, { value: 4, fixed: true }],
+      [{ value: 3, fixed: true }, { value: null, fixed: false }, { value: 2, fixed: true }, { value: null, fixed: false }],
+    ],
+    solution: [[8, 4, 12, 2], [6, 3, 3, 6], [4, 2, 8, 4], [3, 1, 2, 5]],
+    rowOps: ['÷', '÷', '÷', '-'],
+    colOps: ['×', '×', '×', '÷'],
+    rowResults: [2, 2, 2, 0],
+    colResults: [48, 24, 96, 2],
+  },
+  {
+    size: 4,
+    grid: [
+      [{ value: 10, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }, { value: 3, fixed: true }],
+      [{ value: null, fixed: false }, { value: 4, fixed: true }, { value: 6, fixed: true }, { value: null, fixed: false }],
+      [{ value: 12, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }, { value: 2, fixed: true }],
+      [{ value: null, fixed: false }, { value: 3, fixed: true }, { value: 4, fixed: true }, { value: null, fixed: false }],
+    ],
+    solution: [[10, 2, 6, 3], [8, 4, 6, 2], [12, 6, 3, 2], [6, 3, 4, 5]],
+    rowOps: ['÷', '×', '÷', '+'],
+    colOps: ['+', '÷', '×', '×'],
+    rowResults: [5, 24, 6, 16],
+    colResults: [36, 2, 18, 30],
   },
 ]
 
