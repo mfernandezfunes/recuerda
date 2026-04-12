@@ -23,7 +23,7 @@ export interface FamilyMember {
 export type ActivityType =
   | 'MEMORY_CARDS' | 'WHAT_DAY_IS_IT' | 'WHO_IS_THIS'
   | 'COMPLETE_SONG' | 'ORDER_STORY' | 'FIND_OBJECT'
-  | 'SIMPLE_PUZZLE' | 'COLORING' | 'WORD_SEARCH'
+  | 'COLORING' | 'WORD_SEARCH'
   | 'MEMORY_GALLERY' | 'DAY_AGENDA' | 'BREATHING'
   | 'SERIES_PATTERNS' | 'MOOD_CHECKIN'
   | 'WHAT_IS_MISSING' | 'PROVERBS' | 'ODD_ONE_OUT' | 'SIMPLE_MATH' | 'SUDOKU' | 'COLOR_MATCH' | 'WHAT_IS_THIS_OBJECT'
@@ -55,7 +55,6 @@ export const ACTIVITY_META: Record<ActivityType, ActivityMeta> = {
   COMPLETE_SONG:  { type: 'COMPLETE_SONG',   label: 'Completa la canción',  icon: '🎵', color: '#D8B4FE', description: '¿Te acordás de esta canción?',         trains: 'Estimula la memoria implícita y emocional a través de la música' },
   ORDER_STORY:    { type: 'ORDER_STORY',     label: 'Ordena el cuento',     icon: '📖', color: '#C8E6C8', description: 'Poné las imágenes en orden',           trains: 'Ejercita la memoria secuencial y el razonamiento narrativo' },
   FIND_OBJECT:    { type: 'FIND_OBJECT',     label: 'Encuentra el objeto',  icon: '🔍', color: '#87CEEB', description: 'Memorizá y encontrá el objeto',        trains: 'Desarrolla la memoria visual a corto plazo y la atención sostenida' },
-  SIMPLE_PUZZLE:  { type: 'SIMPLE_PUZZLE',   label: 'Rompecabezas',         icon: '🧩', color: '#FFCBA4', description: 'Armá el rompecabezas',                 trains: 'Estimula la coordinación visoespacial y la resolución de problemas' },
   COLORING:       { type: 'COLORING',        label: 'Colorear',             icon: '🎨', color: '#FFF3A3', description: 'Pintá el dibujo',                      trains: 'Favorece la motricidad fina, la atención y la expresión creativa' },
   WORD_SEARCH:    { type: 'WORD_SEARCH',     label: 'Sopa de letras',       icon: '🔤', color: '#C8E8F8', description: 'Encontrá las palabras escondidas',     trains: 'Trabaja la atención selectiva, el vocabulario y el reconocimiento visual' },
   MEMORY_GALLERY: { type: 'MEMORY_GALLERY',  label: 'Mis recuerdos',        icon: '📷', color: '#FFE4CC', description: 'Mirá tus fotos y recuerdos',           trains: 'Estimula la reminiscencia y el bienestar emocional a través de recuerdos personales' },

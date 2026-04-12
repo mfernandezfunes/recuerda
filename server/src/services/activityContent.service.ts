@@ -870,66 +870,6 @@ export async function generateCompleteSongContent(
   }
 }
 
-// ─── SIMPLE PUZZLE ────────────────────────────────────────────────────────────
-
-export function generateSimplePuzzleContent(difficulty: Difficulty): {
-  emoji: string
-  label: string
-  gridSize: number
-} {
-  const EASY_PUZZLES = [
-    { emoji: '🌈', label: 'Arcoíris' },
-    { emoji: '🌻', label: 'Girasol' },
-    { emoji: '🦋', label: 'Mariposa' },
-    { emoji: '⭐', label: 'Estrella' },
-    { emoji: '🐸', label: 'Rana' },
-    { emoji: '🍓', label: 'Frutilla' },
-    { emoji: '🌙', label: 'Luna' },
-    { emoji: '🐥', label: 'Pollito' },
-    { emoji: '🌺', label: 'Hibisco' },
-    { emoji: '🐱', label: 'Gato' },
-    { emoji: '🍎', label: 'Manzana' },
-    { emoji: '🐠', label: 'Pez' },
-    { emoji: '🌸', label: 'Flor' },
-    { emoji: '☀️', label: 'Sol' },
-    { emoji: '🦊', label: 'Zorro' },
-    { emoji: '🍊', label: 'Naranja' },
-    { emoji: '🐝', label: 'Abeja' },
-    { emoji: '🌵', label: 'Cactus' },
-    { emoji: '🎈', label: 'Globo' },
-    { emoji: '🐢', label: 'Tortuga' },
-  ]
-  const MEDIUM_PUZZLES = [
-    { emoji: '🏡', label: 'Casa' },
-    { emoji: '🌸', label: 'Flor' },
-    { emoji: '🍎', label: 'Manzana' },
-    { emoji: '🐶', label: 'Perro' },
-    { emoji: '🎨', label: 'Paleta' },
-    { emoji: '🚂', label: 'Tren' },
-    { emoji: '🐬', label: 'Delfín' },
-    { emoji: '🌺', label: 'Hibisco' },
-    { emoji: '🦁', label: 'León' },
-    { emoji: '🍕', label: 'Pizza' },
-    { emoji: '🚗', label: 'Auto' },
-    { emoji: '🎸', label: 'Guitarra' },
-    { emoji: '🦜', label: 'Loro' },
-    { emoji: '🍰', label: 'Torta' },
-    { emoji: '🌲', label: 'Pino' },
-    { emoji: '🐘', label: 'Elefante' },
-    { emoji: '🎭', label: 'Teatro' },
-    { emoji: '🚀', label: 'Cohete' },
-    { emoji: '🦉', label: 'Búho' },
-    { emoji: '🍉', label: 'Sandía' },
-  ]
-
-  const pool = difficulty === Difficulty.EASY ? EASY_PUZZLES : MEDIUM_PUZZLES
-  const picked = pool[Math.floor(Math.random() * pool.length)]
-  const gridSize = difficulty === Difficulty.EASY ? 2 : 3
-
-  return { ...picked, gridSize }
-}
-
-
 // ─── SUDOKU ───────────────────────────────────────────────────────────────────
 
 interface SudokuPuzzle {

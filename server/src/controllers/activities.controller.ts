@@ -15,7 +15,6 @@ import {
   generateProverbsContent,
   generateOddOneOutContent,
   generateSimpleMathContent,
-  generateSimplePuzzleContent,
   generateSudokuContent,
   generateColorMatchContent,
   generateWhatIsThisObjectContent,
@@ -194,9 +193,6 @@ export async function getActivityContent(req: Request, res: Response, next: Next
         break
       case ActivityType.SIMPLE_MATH:
         content = await generateSimpleMathContent(diff)
-        break
-      case ActivityType.SIMPLE_PUZZLE:
-        content = generateSimplePuzzleContent(diff)
         break
       case ActivityType.SUDOKU:
         content = generateSudokuContent(diff)

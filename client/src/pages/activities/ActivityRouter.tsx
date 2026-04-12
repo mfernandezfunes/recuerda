@@ -9,7 +9,6 @@ import { MemoryGallery } from './MemoryGallery'
 import { BreathingExercise } from './BreathingExercise'
 import { MoodCheckIn } from './MoodCheckIn'
 import { OrderStory } from './OrderStory'
-import { SimplePuzzle } from './SimplePuzzle'
 import { Coloring } from './Coloring'
 import { CompleteSong } from './CompleteSong'
 import { WhatIsMissing } from './WhatIsMissing'
@@ -33,7 +32,6 @@ const ACTIVITY_MAP: Record<string, React.ComponentType> = {
   breathing: BreathingExercise,
   mood_checkin: MoodCheckIn,
   order_story: OrderStory,
-  simple_puzzle: SimplePuzzle,
   coloring: Coloring,
   complete_song: CompleteSong,
   what_is_missing: WhatIsMissing,
