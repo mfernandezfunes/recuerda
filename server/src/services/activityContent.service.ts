@@ -1203,3 +1203,135 @@ export function generateWordBuilderContent(difficulty: Difficulty): {
     showFirstLetter: difficulty === Difficulty.EASY,
   }
 }
+
+// ─── MATH_GRID ────────────────────────────────────────────────────────────────
+
+interface MathGridCell {
+  value: number | null  // null = empty to fill
+  fixed: boolean        // true = pre-filled
+}
+
+interface MathGridPuzzle {
+  size: number
+  grid: MathGridCell[][]
+  solution: number[][]
+  rowOps: string[]      // Operations between cells in each row
+  colOps: string[]      // Operations between cells in each column
+  rowResults: number[]  // Expected result for each row
+  colResults: number[]  // Expected result for each column
+}
+
+// EASY: 3×3, solo suma y resta, números 1-10, 3-4 celdas vacías
+const MATH_GRID_EASY: MathGridPuzzle[] = [
+  {
+    size: 3,
+    grid: [
+      [{ value: 2, fixed: true }, { value: null, fixed: false }, { value: 6, fixed: true }],
+      [{ value: null, fixed: false }, { value: 2, fixed: true }, { value: 2, fixed: true }],
+      [{ value: 5, fixed: true }, { value: 1, fixed: true }, { value: null, fixed: false }],
+    ],
+    solution: [[2, 3, 6], [4, 2, 2], [5, 1, 3]],
+    rowOps: ['+', '+', '+'],
+    colOps: ['+', '+', '+'],
+    rowResults: [11, 8, 9],
+    colResults: [11, 6, 11],
+  },
+  {
+    size: 3,
+    grid: [
+      [{ value: 8, fixed: true }, { value: null, fixed: false }, { value: 3, fixed: true }],
+      [{ value: null, fixed: false }, { value: 3, fixed: true }, { value: 1, fixed: true }],
+      [{ value: 4, fixed: true }, { value: 2, fixed: true }, { value: null, fixed: false }],
+    ],
+    solution: [[8, 2, 3], [5, 3, 1], [4, 2, 2]],
+    rowOps: ['-', '-', '-'],
+    colOps: ['-', '-', '-'],
+    rowResults: [3, 1, 0],
+    colResults: [-1, -3, 0],
+  },
+  {
+    size: 3,
+    grid: [
+      [{ value: 5, fixed: true }, { value: 2, fixed: true }, { value: null, fixed: false }],
+      [{ value: null, fixed: false }, { value: 4, fixed: true }, { value: 3, fixed: true }],
+      [{ value: 3, fixed: true }, { value: null, fixed: false }, { value: 2, fixed: true }],
+    ],
+    solution: [[5, 2, 3], [6, 4, 3], [3, 1, 2]],
+    rowOps: ['+', '+', '+'],
+    colOps: ['+', '+', '+'],
+    rowResults: [10, 13, 6],
+    colResults: [14, 7, 8],
+  },
+]
+
+// MEDIUM: 4×4, suma/resta/multiplicación, números 1-12, 5-6 celdas vacías
+const MATH_GRID_MEDIUM: MathGridPuzzle[] = [
+  {
+    size: 4,
+    grid: [
+      [{ value: 2, fixed: true }, { value: null, fixed: false }, { value: 4, fixed: true }, { value: 2, fixed: true }],
+      [{ value: null, fixed: false }, { value: 2, fixed: true }, { value: 3, fixed: true }, { value: 1, fixed: true }],
+      [{ value: 3, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }, { value: 3, fixed: true }],
+      [{ value: 6, fixed: true }, { value: 2, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }],
+    ],
+    solution: [[2, 3, 4, 2], [4, 2, 3, 1], [3, 2, 6, 3], [6, 2, 2, 4]],
+    rowOps: ['×', '+', '×', '+'],
+    colOps: ['+', '×', '+', '×'],
+    rowResults: [18, 11, 27, 14],
+    colResults: [15, 24, 15, 24],
+  },
+  {
+    size: 4,
+    grid: [
+      [{ value: 8, fixed: true }, { value: 2, fixed: true }, { value: null, fixed: false }, { value: 1, fixed: true }],
+      [{ value: null, fixed: false }, { value: 3, fixed: true }, { value: 2, fixed: true }, { value: null, fixed: false }],
+      [{ value: 5, fixed: true }, { value: null, fixed: false }, { value: 3, fixed: true }, { value: 2, fixed: true }],
+      [{ value: null, fixed: false }, { value: 4, fixed: true }, { value: null, fixed: false }, { value: 3, fixed: true }],
+    ],
+    solution: [[8, 2, 4, 1], [6, 3, 2, 4], [5, 1, 3, 2], [7, 4, 5, 3]],
+    rowOps: ['-', '+', '-', '+'],
+    colOps: ['+', '×', '-', '×'],
+    rowResults: [1, 11, -1, 16],
+    colResults: [26, 24, -6, 24],
+  },
+]
+
+// HARD: 4×4, todas las operaciones, números 1-15, 6-8 celdas vacías
+const MATH_GRID_HARD: MathGridPuzzle[] = [
+  {
+    size: 4,
+    grid: [
+      [{ value: 8, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }, { value: 4, fixed: true }],
+      [{ value: null, fixed: false }, { value: 3, fixed: true }, { value: null, fixed: false }, { value: 2, fixed: true }],
+      [{ value: null, fixed: false }, { value: 6, fixed: true }, { value: 3, fixed: true }, { value: null, fixed: false }],
+      [{ value: 2, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }, { value: 3, fixed: true }],
+    ],
+    solution: [[8, 2, 16, 4], [4, 3, 6, 2], [3, 6, 3, 18], [2, 1, 3, 3]],
+    rowOps: ['×', '+', '×', '-'],
+    colOps: ['÷', '÷', '×', '×'],
+    rowResults: [16, 11, 18, -2],
+    colResults: [4, 2, 48, 24],
+  },
+  {
+    size: 4,
+    grid: [
+      [{ value: null, fixed: false }, { value: 3, fixed: true }, { value: 9, fixed: true }, { value: null, fixed: false }],
+      [{ value: 8, fixed: true }, { value: null, fixed: false }, { value: null, fixed: false }, { value: 2, fixed: true }],
+      [{ value: null, fixed: false }, { value: 6, fixed: true }, { value: null, fixed: false }, { value: 3, fixed: true }],
+      [{ value: 4, fixed: true }, { value: null, fixed: false }, { value: 5, fixed: true }, { value: null, fixed: false }],
+    ],
+    solution: [[12, 3, 9, 3], [8, 4, 2, 2], [6, 6, 3, 3], [4, 2, 5, 10]],
+    rowOps: ['÷', '÷', '÷', '+'],
+    colOps: ['×', '×', '-', '×'],
+    rowResults: [4, 4, 2, 21],
+    colResults: [96, 72, 14, 60],
+  },
+]
+
+export function generateMathGridContent(difficulty: Difficulty): MathGridPuzzle {
+  const pool =
+    difficulty === Difficulty.EASY   ? MATH_GRID_EASY   :
+    difficulty === Difficulty.MEDIUM ? MATH_GRID_MEDIUM  :
+                                       MATH_GRID_HARD
+  return pool[Math.floor(Math.random() * pool.length)]
+}

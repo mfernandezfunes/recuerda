@@ -20,6 +20,7 @@ import {
   generateColorMatchContent,
   generateWhatIsThisObjectContent,
   generateWordBuilderContent,
+  generateMathGridContent,
 } from '../services/activityContent.service'
 
 export async function listActivitySettings(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -208,6 +209,9 @@ export async function getActivityContent(req: Request, res: Response, next: Next
         break
       case ActivityType.WORD_BUILDER:
         content = generateWordBuilderContent(diff)
+        break
+      case ActivityType.MATH_GRID:
+        content = generateMathGridContent(diff)
         break
       default:
         content = { message: 'Actividad sin generador de contenido dinámico' }

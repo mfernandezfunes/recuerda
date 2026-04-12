@@ -139,6 +139,7 @@ enum ActivityType {
   COLOR_MATCH
   WHAT_IS_THIS_OBJECT
   WORD_BUILDER
+  MATH_GRID
 }
 
 enum Difficulty {
