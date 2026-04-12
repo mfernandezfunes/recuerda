@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { patientsApi } from '../api/patients.api'
+import apiClient from '../api/client'
 
 interface MedAlarm {
   name: string
@@ -42,9 +42,9 @@ export function useMedicationAlarm(patientId: string | undefined) {
 
   function checkMedications() {
     if (!patientId) return
-    patientsApi.getMedications(patientId)
+    apiClient.get('/patient/medications')
       .then((res) => {
-        const medications: Medication[] = res.data
+        const medications: Medication[] = res.data.medications
         const now = new Date()
         const currentHour = now.getHours()
         const currentMinute = now.getMinutes()
